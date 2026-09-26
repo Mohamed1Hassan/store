@@ -8,7 +8,9 @@
 
 import { env, ownerEmail } from "./env";
 import { buildLeadMessage } from "@/schemas/lead";
+import { buildAppointmentMessage } from "@/schemas/appointment";
 import type { StoredLead } from "./leads-store";
+import type { StoredAppointment } from "./appointments-store";
 
 export type NotifyChannel = "whatsapp" | "email" | "sheets";
 
@@ -128,6 +130,115 @@ export async function notifyOwner(lead: StoredLead): Promise<NotifyResult[]> {
       console.info(`[notify] ${result.channel} sent for lead ${lead.id}`);
     } else {
       console.warn(`[notify] ${result.channel} failed for lead ${lead.id}: ${result.error}`);
+    }
+  }
+  return results;
+}
+
+/** نص حجز المعاينة للإشعارات */
+function appointmentText(appointment: StoredAppointment): string {
+  return `${buildAppointmentMessage(appointment)}\n\nالمصدر: ${appointment.source}\nالوقت: ${appointment.createdAt}`;
+}
+
+/** إشعار المالك بحجز معاينة جديد — نفس سلسلة القنوات، لا يرمي أبداً */
+export async function notifyAppointment(appointment: StoredAppointment): Promise<NotifyResult[]> {
+  const text = appointmentText(appointment);
+  const tasks: Promise<NotifyResult>[] = [];
+
+  if (env.WHATSAPP_TOKEN && env.WHATSAPP_PHONE_NUMBER_ID && env.OWNER_WHATSAPP_NUMBER) {
+    tasks.push(
+      (async () => {
+        const { signal, done } = withTimeout(8000);
+        try {
+          const res = await fetch(
+            `https://graph.facebook.com/v21.0/${env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
+            {
+              method: "POST",
+              signal,
+              headers: { Authorization: `Bearer ${env.WHATSAPP_TOKEN}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                messaging_product: "whatsapp",
+                to: env.OWNER_WHATSAPP_NUMBER,
+                type: "text",
+                text: { body: text },
+              }),
+            }
+          );
+          if (!res.ok) return { channel: "whatsapp", ok: false, error: `HTTP ${res.status}` };
+          return { channel: "whatsapp", ok: true };
+        } catch (error) {
+          return { channel: "whatsapp", ok: false, error: error instanceof Error ? error.message : "unknown" };
+        } finally {
+          done();
+        }
+      })()
+    );
+  } else {
+    tasks.push(Promise.resolve({ channel: "whatsapp", ok: false, skipped: true }));
+  }
+
+  const to = ownerEmail();
+  if (env.RESEND_API_KEY && to) {
+    tasks.push(
+      (async () => {
+        const { signal, done } = withTimeout(8000);
+        try {
+          const res = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            signal,
+            headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: "متجر السلطان <orders@sultan-notify.local>",
+              to: [to],
+              subject: `معاينة جديدة: ${appointment.name} — ${appointment.city || "بدون مدينة"}`,
+              text,
+            }),
+          });
+          if (!res.ok) return { channel: "email", ok: false, error: `HTTP ${res.status}` };
+          return { channel: "email", ok: true };
+        } catch (error) {
+          return { channel: "email", ok: false, error: error instanceof Error ? error.message : "unknown" };
+        } finally {
+          done();
+        }
+      })()
+    );
+  } else {
+    tasks.push(Promise.resolve({ channel: "email", ok: false, skipped: true }));
+  }
+
+  if (env.GOOGLE_SHEETS_WEBHOOK_URL) {
+    const url = env.GOOGLE_SHEETS_WEBHOOK_URL;
+    tasks.push(
+      (async () => {
+        const { signal, done } = withTimeout(8000);
+        try {
+          const res = await fetch(url, {
+            method: "POST",
+            signal,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: "appointment", ...appointment }),
+          });
+          if (!res.ok) return { channel: "sheets", ok: false, error: `HTTP ${res.status}` };
+          return { channel: "sheets", ok: true };
+        } catch (error) {
+          return { channel: "sheets", ok: false, error: error instanceof Error ? error.message : "unknown" };
+        } finally {
+          done();
+        }
+      })()
+    );
+  } else {
+    tasks.push(Promise.resolve({ channel: "sheets", ok: false, skipped: true }));
+  }
+
+  const results = await Promise.all(tasks);
+  for (const result of results) {
+    if (result.skipped) continue;
+    if (result.ok) {
+      console.info(`[notify] appointment ${result.channel} sent for ${appointment.id}`);
+    } else {
+      console.warn(`[notify] appointment ${result.channel} failed for ${appointment.id}: ${result.error}`);
     }
   }
   return results;
