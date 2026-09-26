@@ -55,6 +55,23 @@ export async function listLeads(limit = 50): Promise<StoredLead[]> {
   return leads.slice(0, Math.max(1, Math.min(limit, 200)));
 }
 
+export async function getLeadById(id: string): Promise<StoredLead | null> {
+  const leads = await readAll();
+  return leads.find((lead) => lead.id === id) ?? null;
+}
+
+export async function updateLeadStatus(id: string, status: LeadStatus): Promise<StoredLead | null> {
+  const leads = await readAll();
+  const index = leads.findIndex((lead) => lead.id === id);
+  if (index === -1) return null;
+  const current = leads[index];
+  if (!current) return null;
+  const updated: StoredLead = { ...current, status };
+  leads[index] = updated;
+  await writeAll(leads);
+  return updated;
+}
+
 export async function countLeads(): Promise<number> {
   return (await readAll()).length;
 }

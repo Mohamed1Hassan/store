@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { leadSchema } from "@/schemas/lead";
-import { countLeads, saveLead } from "@/lib/leads-store";
+import { countLeads, listLeads, saveLead } from "@/lib/leads-store";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { trackEventName } from "@/lib/analytics-server";
+import { isAdminRequest } from "@/lib/admin-auth";
+import { notifyOwner } from "@/lib/notify";
 
 function clientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
   return request.headers.get("x-real-ip")?.trim() || "unknown";
 }
+
+const querySchema = z.object({
+  status: z.enum(["NEW", "CONTACTED", "CONFIRMED", "DELIVERED", "CANCELLED"]).optional(),
+  search: z.string().trim().max(40).optional(),
+  page: z.coerce.number().int().min(1).max(1000).optional().default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+});
 
 /**
  * POST /api/leads — استقبال طلب عميل جديد.
@@ -46,6 +55,11 @@ export async function POST(request: Request) {
 
   const lead = await saveLead(parsed.data);
 
+  // B2: إشعار المالك — fire-and-forget ولا يمنع الرد 201 أبداً
+  notifyOwner(lead).catch((error) => {
+    console.warn("[notify] unexpected failure:", error instanceof Error ? error.message : error);
+  });
+
   return NextResponse.json(
     { id: lead.id, message: "تم استلام طلبك بنجاح، وسيتواصل معك فريق السلطان قريباً." },
     { status: 201 }
@@ -53,11 +67,41 @@ export async function POST(request: Request) {
 }
 
 /**
- * GET /api/leads — عدّاد بسيط للمرحلة B1 (تُحمى في B2 بالمصادقة).
- * حالياً تعيد العدد فقط حتى لا تُكشف بيانات العملاء قبل بناء لوحة الإدارة.
+ * GET /api/leads — للإدارة فقط (كوكي sultan_admin).
+ * معاملات: status / search (اسم أو هاتف) / page / pageSize
  */
-export async function GET() {
-  void trackEventName;
-  const total = await countLeads();
-  return NextResponse.json({ total, protected: true });
+export async function GET(request: Request) {
+  if (!isAdminRequest(request)) {
+    return NextResponse.json({ error: "غير مصرح. سجّل الدخول أولاً." }, { status: 401 });
+  }
+
+  const url = new URL(request.url);
+  const parsed = querySchema.safeParse({
+    status: url.searchParams.get("status") ?? undefined,
+    search: url.searchParams.get("search") ?? undefined,
+    page: url.searchParams.get("page") ?? undefined,
+    pageSize: url.searchParams.get("pageSize") ?? undefined,
+  });
+  if (!parsed.success) {
+    return NextResponse.json({ error: "معاملات البحث غير صالحة." }, { status: 400 });
+  }
+
+  const { status, search, page, pageSize } = parsed.data;
+  let leads = await listLeads(200);
+
+  if (status) leads = leads.filter((lead) => lead.status === status);
+  if (search) {
+    const needle = search.trim();
+    leads = leads.filter((lead) => lead.name.includes(needle) || lead.phone.includes(needle));
+  }
+
+  const total = leads.length;
+  const start = (page - 1) * pageSize;
+  const items = leads.slice(start, start + pageSize);
+  const counts = {
+    total: await countLeads(),
+    filtered: total,
+  };
+
+  return NextResponse.json({ items, total, page, pageSize, counts });
 }
