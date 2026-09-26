@@ -69,10 +69,20 @@ export const hasDatabase = (): boolean => Boolean(env.DATABASE_URL);
 export const isAdminConfigured = (): boolean =>
   Boolean(env.ADMIN_EMAIL && env.ADMIN_PASSWORD);
 
-/** سر توقيع جلسة الإدارة — ADMIN_SESSION_SECRET أولاً ثم NEXTAUTH_SECRET */
+/**
+ * سر توقيع جلسة الإدارة — ADMIN_SESSION_SECRET أولاً ثم NEXTAUTH_SECRET.
+ * يقرأ process.env مباشرة للسماح بتغييره أثناء الاختبارات أو التهيئات الديناميكية.
+ */
 export function adminSessionSecret(): string | null {
-  return env.ADMIN_SESSION_SECRET ?? env.NEXTAUTH_SECRET ?? null;
+  return (
+    process.env.ADMIN_SESSION_SECRET ??
+    env.ADMIN_SESSION_SECRET ??
+    process.env.NEXTAUTH_SECRET ??
+    env.NEXTAUTH_SECRET ??
+    null
+  );
 }
+
 
 /** إيميل استقبال التنبيهات — OWNER_EMAIL أولاً ثم ADMIN_EMAIL */
 export function ownerEmail(): string | null {

@@ -8,6 +8,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { appointmentSchema } from "@/schemas/appointment";
+import { trackEventName } from "@/lib/analytics-server";
+
 import {
   countAppointments,
   listAppointments,
@@ -62,7 +64,15 @@ export async function POST(request: Request) {
 
   const appointment = await saveAppointment(parsed.data);
 
+  // B4: تسجيل الحدث في EventLog
+  trackEventName("appointment_created", {
+    appointmentId: appointment.id,
+    source: appointment.source ?? "unknown",
+    city: appointment.city ?? "unknown",
+  });
+
   // B3: إشعار المالك — fire-and-forget ولا يمنع الرد 201 أبداً
+
   notifyAppointment(appointment).catch((error) => {
     console.warn("[notify] appointment failure:", error instanceof Error ? error.message : error);
   });

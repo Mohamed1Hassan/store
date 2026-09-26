@@ -5,6 +5,8 @@ import { countLeads, listLeads, saveLead } from "@/lib/leads-store";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { isAdminRequest } from "@/lib/admin-auth";
 import { notifyOwner } from "@/lib/notify";
+import { trackEventName } from "@/lib/analytics-server";
+
 
 function clientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -55,7 +57,15 @@ export async function POST(request: Request) {
 
   const lead = await saveLead(parsed.data);
 
+  // B4: تسجيل الحدث في EventLog
+  trackEventName("lead_created", {
+    leadId: lead.id,
+    source: lead.source ?? "unknown",
+    product: lead.product,
+  });
+
   // B2: إشعار المالك — fire-and-forget ولا يمنع الرد 201 أبداً
+
   notifyOwner(lead).catch((error) => {
     console.warn("[notify] unexpected failure:", error instanceof Error ? error.message : error);
   });

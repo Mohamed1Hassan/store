@@ -6,8 +6,10 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "tsx --test"
   },
+
   "dependencies": {
     "canvas-confetti": "^1.9.4",
     "lucide-react": "^1.48.0",
@@ -25,6 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }
