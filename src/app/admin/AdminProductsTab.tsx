@@ -89,11 +89,14 @@ export default function AdminProductsTab({ products, onRefresh }: Props) {
           features: featArray.length > 0 ? featArray : ["خامات ممتازة وضمان معتمد"],
         }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const payload = await res.json().catch(() => null);
+        throw new Error(payload?.error || `فشل الحفظ (${res.status})`);
+      }
       setEditingSlug(null);
       onRefresh();
-    } catch {
-      alert("تعذر تعديل المنتج.");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "تعذر تعديل المنتج.");
     } finally {
       setSaving(false);
     }

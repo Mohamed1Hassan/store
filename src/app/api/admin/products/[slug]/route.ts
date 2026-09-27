@@ -51,7 +51,13 @@ export async function PATCH(
     return NextResponse.json({ item: updated });
   } catch (err) {
     console.error("[admin-products] PATCH error:", err);
-    return NextResponse.json({ error: "حدث خطأ أثناء تعديل المنتج." }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "تعذر حفظ التعديلات. تأكد من ضبط DATABASE_URL في إعدادات Vercel وتشغيل prisma db push، فبيئة الاستضافة لا تدعم التخزين المحلي.",
+        detail: err instanceof Error ? err.message : String(err),
+      },
+      { status: 500 }
+    );
   }
 }
 

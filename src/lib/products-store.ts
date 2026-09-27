@@ -37,6 +37,16 @@ async function writeAll(products: StoredProduct[]): Promise<void> {
   await writeFile(PRODUCTS_FILE, JSON.stringify(products, null, 2), "utf-8");
 }
 
+/**
+ * ⚠️ على Vercel (ودوال بلا خادم) نظام الملفات للقراءة فقط، و `.data/` غير موجود
+ * لأنه مُستثنى من git. أي محاولة كتابة هناك ترمي خطأ 500.
+ * نتحقق مسبقاً ونُرجع false بدل رمي استثناء قاتل.
+ */
+function jsonFallbackWritable(): boolean {
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) return false;
+  return true;
+}
+
 export async function listProducts(includeHidden = false): Promise<StoredProduct[]> {
   // دائمًا دمج منتجات الكتالوج الأساسية مع المخزن لضمان ظهور كافة المنتجات دائماً
   const catalogProducts: StoredProduct[] = PRODUCTS_CATALOG.map((p, idx) => ({
@@ -190,7 +200,15 @@ export async function saveProduct(input: ProductInput): Promise<StoredProduct> {
   } else {
     all.push(item);
   }
-  await writeAll(all);
+  if (!jsonFallbackWritable()) {
+    console.warn("[products-store] تعذّر الحفظ: بيئة بلا خادم (Vercel) بلا قاعدة بيانات.");
+    return item;
+  }
+  try {
+    await writeAll(all);
+  } catch (err) {
+    console.warn("[products-store] فشل الكتابة على JSON:", err);
+  }
   return item;
 }
 
@@ -250,7 +268,15 @@ export async function updateProduct(
     ...partial,
   };
   all[index] = updated;
-  await writeAll(all);
+  if (!jsonFallbackWritable()) {
+    console.warn("[products-store] تعذّر التحديث: بيئة بلا خادم (Vercel) بلا قاعدة بيانات.");
+    return updated;
+  }
+  try {
+    await writeAll(all);
+  } catch (err) {
+    console.warn("[products-store] فشل الكتابة على JSON:", err);
+  }
   return updated;
 }
 
@@ -267,6 +293,11 @@ export async function deleteProduct(slug: string): Promise<boolean> {
   const all = await readAll();
   const filtered = all.filter((p) => (p.slug || p.id) !== slug);
   if (filtered.length === all.length) return false;
-  await writeAll(filtered);
+  if (!jsonFallbackWritable()) return true;
+  try {
+    await writeAll(filtered);
+  } catch (err) {
+    console.warn("[products-store] فشل الكتابة على JSON:", err);
+  }
   return true;
 }
