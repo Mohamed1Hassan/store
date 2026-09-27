@@ -20,11 +20,14 @@ import Testimonials from "@/components/Testimonials";
 import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 import CinematicSuiteBanner from "@/components/CinematicSuiteBanner";
-import OrderForm from "@/components/OrderForm";
-import WhatsAppFloatButton from "@/components/WhatsAppFloatButton";
 import PromoCountdownBar from "@/components/PromoCountdownBar";
-import AnalyticsListener from "@/components/AnalyticsListener";
-import CartDrawer from "@/components/CartDrawer";
+import dynamic from "next/dynamic";
+
+const OrderForm = dynamic(() => import("@/components/OrderForm"), { ssr: false });
+const WhatsAppFloatButton = dynamic(() => import("@/components/WhatsAppFloatButton"), { ssr: false });
+const CartDrawer = dynamic(() => import("@/components/CartDrawer"), { ssr: false });
+const AnalyticsListener = dynamic(() => import("@/components/AnalyticsListener"), { ssr: false });
+
 import { DEFAULT_ORDER_MESSAGE, whatsappLink } from "@/data/site";
 import type { CategoryId } from "@/data/products";
 

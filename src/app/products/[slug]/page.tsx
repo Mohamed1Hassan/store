@@ -1,4 +1,8 @@
 import { notFound } from "next/navigation";
+
+// تفعيل الكاش (ISR) - إعادة التوليد كل ساعة لأفضل أداء
+export const revalidate = 3600;
+
 import type { Metadata } from "next";
 import { getProductBySlug, listProducts } from "@/lib/products-store";
 import { SITE_NAME, SITE_URL } from "@/data/site";
