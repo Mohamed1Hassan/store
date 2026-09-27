@@ -27,7 +27,7 @@ const querySchema = z.object({
  */
 export async function POST(request: Request) {
   const ip = clientIp(request);
-  const limit = checkRateLimit(`leads:${ip}`, 5, 60_000);
+  const limit = await checkRateLimit(`leads:${ip}`, 5, 60_000);
 
   if (!limit.allowed) {
     return NextResponse.json(

@@ -27,7 +27,7 @@ function getClientIp(request: Request): string {
  */
 export async function POST(request: Request): Promise<NextResponse> {
   const ip = getClientIp(request);
-  const rate = checkRateLimit(`track:${ip}`, 60, 60_000);
+  const rate = await checkRateLimit(`track:${ip}`, 60, 60_000);
   if (!rate.allowed) {
     return NextResponse.json({ ok: false, error: "تم تجاوز الحد" }, { status: 429 });
   }

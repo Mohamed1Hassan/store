@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   }
 
   const ip = clientIp(request);
-  const limit = checkRateLimit(`admin-login:${ip}`, 10, 60_000);
+  const limit = await checkRateLimit(`admin-login:${ip}`, 10, 60_000);
   if (!limit.allowed) {
     return NextResponse.json(
       { error: "محاولات كثيرة. حاول مرة أخرى بعد دقيقة." },

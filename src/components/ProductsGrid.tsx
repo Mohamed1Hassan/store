@@ -1,7 +1,8 @@
-﻿
+
 
 import { Boxes, Check, Phone, ShoppingBag, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import SectionHeading from "./SectionHeading";
 import { SITE_URL, whatsappLink } from "@/data/site";
 import { PRODUCTS_CATALOG } from "@/data/products";
@@ -57,9 +58,19 @@ export default function ProductsGrid() {
           {PRODUCTS_CATALOG.map((product) => (
             <article
               key={product.id}
-              className="flex flex-col p-6 rounded-3xl bg-[#0b0e17] border border-white/5 hover:border-[#d4af37]/40 hover:bg-[#0e121c] hover:shadow-2xl hover:shadow-[#d4af37]/10 transition-all duration-300"
+              className="flex flex-col p-6 rounded-3xl bg-[#0b0e17] border border-white/5 hover:border-[#d4af37]/40 hover:bg-[#0e121c] hover:shadow-2xl hover:shadow-[#d4af37]/10 transition-all duration-300 relative overflow-hidden"
             >
-              <span className="self-start text-[10px] font-bold text-[#ffd700] bg-[#d4af37]/15 border border-[#d4af37]/30 px-2.5 py-1 rounded-full mb-4">
+              {product.image && (
+                <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden bg-black/20">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                </div>
+              )}
+              <span className="self-start text-[10px] font-bold text-[#ffd700] bg-[#d4af37]/15 border border-[#d4af37]/30 px-2.5 py-1 rounded-full mb-4 z-10">
                 {product.tag}
               </span>
 

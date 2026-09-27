@@ -14,6 +14,7 @@ import {
   Star,
   Truck,
 } from "lucide-react";
+import Image from "next/image";
 import type { StoredProduct } from "@/lib/products-store";
 import { useCartStore } from "@/lib/cart-store";
 import { SITE_URL, whatsappLink } from "@/data/site";
@@ -101,18 +102,36 @@ export default function ProductDetailClient({ product }: { product: StoredProduc
           <div className="flex flex-col gap-4">
             <div className="relative aspect-[4/3] rounded-3xl bg-gradient-to-br from-[#121724] to-[#0a0d16] border border-[#d4af37]/30 p-8 flex flex-col justify-between overflow-hidden shadow-2xl">
               <div className="flex items-center justify-between z-10">
-                <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#d4af37]/20 border border-[#d4af37]/40 text-[#ffd700]">
+                <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#d4af37]/20 border border-[#d4af37]/40 text-[#ffd700] backdrop-blur-md">
                   {product.tag}
                 </span>
-                <span className="text-xs text-zinc-400">{product.category}</span>
+                <span className="text-xs text-zinc-400 backdrop-blur-md bg-black/40 px-2 py-1 rounded-lg">{product.category}</span>
               </div>
 
-              <div className="my-auto text-center z-10 py-8">
-                <Boxes className="w-20 h-20 text-[#d4af37]/40 mx-auto mb-4 stroke-1" />
-                <h1 className="text-2xl md:text-3xl font-black text-white font-serif max-w-md mx-auto leading-tight">
-                  {product.name}
-                </h1>
-              </div>
+              {product.image ? (
+                <div className="absolute inset-0 z-0">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="object-cover opacity-60 mix-blend-overlay"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                </div>
+              ) : (
+                <div className="my-auto text-center z-10 py-8">
+                  <Boxes className="w-20 h-20 text-[#d4af37]/40 mx-auto mb-4 stroke-1" />
+                  <h1 className="text-2xl md:text-3xl font-black text-white font-serif max-w-md mx-auto leading-tight">
+                    {product.name}
+                  </h1>
+                </div>
+              )}
+
+              {product.image && (
+                 <h1 className="text-2xl md:text-3xl font-black text-white font-serif max-w-md mx-auto leading-tight z-10 text-center drop-shadow-lg mb-8">
+                    {product.name}
+                 </h1>
+              )}
 
               <div className="flex items-center justify-between border-t border-white/10 pt-4 z-10 text-xs text-zinc-400">
                 <span className="flex items-center gap-1">
