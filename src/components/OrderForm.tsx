@@ -261,7 +261,7 @@ export default function OrderForm() {
 
             <div>
               <label htmlFor="order-notes" className="block text-xs font-bold text-zinc-300 mb-2">
-                ملاحظات إضافية <span className="font-normal text-zinc-500">(اختياري)</span>
+                ملاحظات إضافية <span className="font-normal text-zinc-300">(اختياري)</span>
               </label>
               <textarea
                 id="order-notes"
