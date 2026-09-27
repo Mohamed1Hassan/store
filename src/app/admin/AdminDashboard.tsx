@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CalendarCheck, Crown, LogOut, Phone, RefreshCw, Search } from "lucide-react";
+import { CalendarCheck, Crown, LogOut, Phone, RefreshCw, Search, Boxes } from "lucide-react";
 import type { LeadStatus, StoredLead } from "@/lib/leads-store";
 import type { AppointmentStatus, StoredAppointment } from "@/lib/appointments-store";
+import type { StoredProduct } from "@/lib/products-store";
+import AdminProductsTab from "./AdminProductsTab";
 
 const STATUSES: { id: LeadStatus | "ALL"; label: string }[] = [
   { id: "ALL", label: "الكل" },
@@ -39,7 +41,7 @@ const APPOINTMENT_STYLE: Record<AppointmentStatus, string> = {
   CANCELLED: "bg-red-500/15 text-red-300 border-red-500/40",
 };
 
-type TabId = "leads" | "appointments";
+type TabId = "leads" | "appointments" | "products";
 
 interface LeadsResponse {
   items: StoredLead[];
@@ -55,8 +57,10 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
   const [tab, setTab] = useState<TabId>("leads");
   const [leads, setLeads] = useState<StoredLead[]>([]);
   const [appointments, setAppointments] = useState<StoredAppointment[]>([]);
+  const [products, setProducts] = useState<StoredProduct[]>([]);
   const [total, setTotal] = useState(0);
   const [appointmentsTotal, setAppointmentsTotal] = useState(0);
+  const [productsTotal, setProductsTotal] = useState(0);
   const [status, setStatus] = useState<LeadStatus | "ALL">("ALL");
   const [appointmentStatus, setAppointmentStatus] = useState<AppointmentStatus | "ALL">("ALL");
   const [search, setSearch] = useState("");
@@ -68,6 +72,19 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
     setLoading(true);
     setError(null);
     try {
+      if (tab === "products") {
+        const res = await fetch("/api/admin/products");
+        if (res.status === 401) {
+          window.location.reload();
+          return;
+        }
+        if (!res.ok) throw new Error("load-failed");
+        const data = (await res.json()) as { items: StoredProduct[]; total: number };
+        setProducts(data.items ?? []);
+        setProductsTotal(data.total ?? 0);
+        return;
+      }
+
       const isLeads = tab === "leads";
       const params = new URLSearchParams();
       const active = isLeads ? status : appointmentStatus;
@@ -102,6 +119,21 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
       setLoading(true);
       setError(null);
       try {
+        if (tab === "products") {
+          const res = await fetch("/api/admin/products");
+          if (res.status === 401) {
+            window.location.reload();
+            return;
+          }
+          if (!res.ok) throw new Error("load-failed");
+          const data = (await res.json()) as { items: StoredProduct[]; total: number };
+          if (!cancelled) {
+            setProducts(data.items ?? []);
+            setProductsTotal(data.total ?? 0);
+          }
+          return;
+        }
+
         const isLeads = tab === "leads";
         const params = new URLSearchParams();
         const active = isLeads ? status : appointmentStatus;
@@ -187,7 +219,9 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
           </span>
           <div>
             <p className="text-sm font-black text-white">مرحباً أيها السلطان</p>
-            <p dir="ltr" className="text-[11px] text-zinc-500">{adminEmail} · {tab === "leads" ? total : appointmentsTotal}</p>
+            <p dir="ltr" className="text-[11px] text-zinc-500">
+              {adminEmail} · {tab === "leads" ? total : tab === "appointments" ? appointmentsTotal : productsTotal}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -200,7 +234,7 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
         </div>
       </div>
 
-      <div role="tablist" aria-label="أقسام الإدارة" className="flex gap-2 rounded-3xl border border-white/10 bg-[#0b0e17] p-2">
+      <div role="tablist" aria-label="أقسام الإدارة" className="flex flex-wrap gap-2 rounded-3xl border border-white/10 bg-[#0b0e17] p-2">
         <button type="button" role="tab" aria-selected={tab === "leads"} onClick={() => setTab("leads")}
           className={`flex flex-1 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-black transition ${tab === "leads" ? "bg-gradient-to-r from-[#d4af37] to-[#aa7c11] text-black" : "text-zinc-300 hover:text-[#ffd700]"}`}>
           <Phone className="h-4 w-4" />الطلبات ({total})
@@ -209,40 +243,50 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
           className={`flex flex-1 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-black transition ${tab === "appointments" ? "bg-gradient-to-r from-[#d4af37] to-[#aa7c11] text-black" : "text-zinc-300 hover:text-[#ffd700]"}`}>
           <CalendarCheck className="h-4 w-4" />حجوزات المعاينة ({appointmentsTotal})
         </button>
+        <button type="button" role="tab" aria-selected={tab === "products"} onClick={() => setTab("products")}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-black transition ${tab === "products" ? "bg-gradient-to-r from-[#d4af37] to-[#aa7c11] text-black" : "text-zinc-300 hover:text-[#ffd700]"}`}>
+          <Boxes className="h-4 w-4" />المنتجات ({productsTotal})
+        </button>
       </div>
 
-      <div className="flex flex-col gap-3 rounded-3xl border border-white/10 bg-[#0b0e17] p-5 lg:flex-row lg:items-center">
-        <div className="flex flex-wrap gap-2">
-          {tab === "leads"
-            ? STATUSES.map((item) => (
-              <button key={item.id} type="button"
-                onClick={() => setStatus(item.id)}
-                aria-pressed={status === item.id}
-                className={`rounded-full px-4 py-1.5 text-xs font-bold ${status === item.id ? "bg-gradient-to-r from-[#d4af37] to-[#aa7c11] text-black" : "border border-white/10 bg-white/5 text-zinc-300 hover:text-[#ffd700]"}`}>
-                {item.label}
-              </button>
-            ))
-            : APPOINTMENT_STATUSES.map((item) => (
-              <button key={item.id} type="button"
-                onClick={() => setAppointmentStatus(item.id)}
-                aria-pressed={appointmentStatus === item.id}
-                className={`rounded-full px-4 py-1.5 text-xs font-bold ${appointmentStatus === item.id ? "bg-gradient-to-r from-[#d4af37] to-[#aa7c11] text-black" : "border border-white/10 bg-white/5 text-zinc-300 hover:text-[#ffd700]"}`}>
-                {item.label}
-              </button>
-            ))}
+      {tab !== "products" && (
+        <div className="flex flex-col gap-3 rounded-3xl border border-white/10 bg-[#0b0e17] p-5 lg:flex-row lg:items-center">
+          <div className="flex flex-wrap gap-2">
+            {tab === "leads"
+              ? STATUSES.map((item) => (
+                <button key={item.id} type="button"
+                  onClick={() => setStatus(item.id)}
+                  aria-pressed={status === item.id}
+                  className={`rounded-full px-4 py-1.5 text-xs font-bold ${status === item.id ? "bg-gradient-to-r from-[#d4af37] to-[#aa7c11] text-black" : "border border-white/10 bg-white/5 text-zinc-300 hover:text-[#ffd700]"}`}>
+                  {item.label}
+                </button>
+              ))
+              : APPOINTMENT_STATUSES.map((item) => (
+                <button key={item.id} type="button"
+                  onClick={() => setAppointmentStatus(item.id)}
+                  aria-pressed={appointmentStatus === item.id}
+                  className={`rounded-full px-4 py-1.5 text-xs font-bold ${appointmentStatus === item.id ? "bg-gradient-to-r from-[#d4af37] to-[#aa7c11] text-black" : "border border-white/10 bg-white/5 text-zinc-300 hover:text-[#ffd700]"}`}>
+                  {item.label}
+                </button>
+              ))}
+          </div>
+          <label className="relative block flex-1 lg:max-w-xs lg:ms-auto">
+            <span className="sr-only">بحث بالاسم أو الهاتف</span>
+            <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+            <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="بحث بالاسم أو الهاتف..."
+              className="w-full rounded-xl border border-white/10 bg-black/40 py-2.5 pe-4 ps-4 text-xs text-zinc-100 outline-none focus:border-[#d4af37]" />
+          </label>
         </div>
-        <label className="relative block flex-1 lg:max-w-xs lg:ms-auto">
-          <span className="sr-only">بحث بالاسم أو الهاتف</span>
-          <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
-          <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="بحث بالاسم أو الهاتف..."
-            className="w-full rounded-xl border border-white/10 bg-black/40 py-2.5 pe-4 ps-4 text-xs text-zinc-100 outline-none focus:border-[#d4af37]" />
-        </label>
-      </div>
+      )}
 
       {error && <p role="alert" className="rounded-2xl border border-red-500/40 bg-red-500/10 p-4 text-xs font-bold text-red-300">{error}</p>}
 
       {loading ? (
-        <p className="py-10 text-center text-sm text-zinc-400">{tab === "leads" ? "جاري تحميل الطلبات..." : "جاري تحميل الحجوزات..."}</p>
+        <p className="py-10 text-center text-sm text-zinc-400">
+          {tab === "leads" ? "جاري تحميل الطلبات..." : tab === "appointments" ? "جاري تحميل الحجوزات..." : "جاري تحميل المنتجات..."}
+        </p>
+      ) : tab === "products" ? (
+        <AdminProductsTab products={products} onRefresh={() => void fetchLeads()} />
       ) : tab === "leads" ? (
         leads.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-white/15 p-10 text-center">

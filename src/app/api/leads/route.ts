@@ -71,7 +71,11 @@ export async function POST(request: Request) {
   });
 
   return NextResponse.json(
-    { id: lead.id, message: "تم استلام طلبك بنجاح، وسيتواصل معك فريق السلطان قريباً." },
+    {
+      id: lead.id,
+      trackingCode: lead.trackingCode ?? null,
+      message: "تم استلام طلبك بنجاح، وسيتواصل معك فريق السلطان قريباً.",
+    },
     { status: 201 }
   );
 }

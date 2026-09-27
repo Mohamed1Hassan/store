@@ -40,3 +40,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local ephemeral data store (JSON fallback)
+/.data/
+
+# local logs & secrets (never commit)
+/b.log
+/passWord*.txt
+*.log
+
+# prisma generated client
+/node_modules/.prisma

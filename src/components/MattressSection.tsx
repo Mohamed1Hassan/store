@@ -1,38 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import { Crown, Layers, ChevronLeft } from "lucide-react";
-import type { ProductMode } from "./Scene3D";
+import { useState } from "react";
+import { Crown, Layers, Phone } from "lucide-react";
+import { whatsappLink } from "@/data/site";
+import { MATTRESS_LAYERS, MATTRESS_MODEL, MATTRESS_SPECS } from "@/data/mattress";
 
-interface MattressSectionProps {
-  onSelectMode: (mode: ProductMode) => void;
-}
+const MATTRESS_ORDER_LINK = whatsappLink(
+  "مرحباً مفروشات السلطان، أود الاستفسار عن مرتبة السلطان رويال بوكيت والكافر المجاني معها"
+);
 
-export default function MattressSection({ onSelectMode }: MattressSectionProps) {
+export default function MattressSection() {
   const [activeLayer, setActiveLayer] = useState(0);
-
-  const layers = [
-    {
-      title: "قماش الجاكار البلجيكي الفاخر",
-      desc: "منسوج بخيوط الحرير والقطن الطبيعي 100%، معالج ضد حشرات الفراش والبكتيريا مع ملمس ناعم كالحرير الملكي.",
-      tag: "الطبقة الخارجية",
-    },
-    {
-      title: "فوم ميموري فوم جل بارد (Cool Gel)",
-      desc: "يتشكل ديناميكياً مع انحناءات العمود الفقري لتخفيف الضغط تماماً، ويحافظ على درجة حرارة نوم مثالية.",
-      tag: "طبقة الراحة الملكية",
-    },
-    {
-      title: "طبقة اللاتكس الطبيعي المرن (Natural Latex)",
-      desc: "توفر ارتداداً متوازناً ودعماً فائقاً للفقرات القطنية وعضلات الظهر مع تهوية مستمرة.",
-      tag: "الدعم المتقدم",
-    },
-    {
-      title: "نظام الشاسيه المنفصل (Pocket Springs)",
-      desc: "نوابض فولاذية كربونية معزولة داخل أكياس قماش تمنع انتقال الحركة بين الشريكين تماماً.",
-      tag: "قلب المرتبة المتين",
-    },
-  ];
 
   return (
     <section className="py-20 relative bg-[#090d16] border-b border-[#d4af37]/20">
@@ -69,16 +47,15 @@ export default function MattressSection({ onSelectMode }: MattressSectionProps) 
               طبقات المرتبة من الداخل للخارج:
             </h3>
 
-            {layers.map((layer, idx) => {
+            {MATTRESS_LAYERS.map((layer, idx) => {
               const isSelected = activeLayer === idx;
               return (
-                <div
+                <button
+                  type="button"
                   key={idx}
-                  onClick={() => {
-                    setActiveLayer(idx);
-                    onSelectMode("mattress");
-                  }}
-                  className={`p-4 rounded-2xl cursor-pointer border transition-all duration-300 ${
+                  onClick={() => setActiveLayer(idx)}
+                  aria-pressed={isSelected}
+                  className={`w-full text-right p-4 rounded-2xl cursor-pointer border transition-all duration-300 ${
                     isSelected
                       ? "bg-[#131929] border-[#d4af37] shadow-xl shadow-[#d4af37]/15 scale-[1.02]"
                       : "bg-[#0b0e17] border-white/5 hover:border-white/20 hover:bg-[#0f1422]"
@@ -96,7 +73,7 @@ export default function MattressSection({ onSelectMode }: MattressSectionProps) 
                   <p className="text-xs text-zinc-400 leading-relaxed">
                     {layer.desc}
                   </p>
-                </div>
+                </button>
               );
             })}
           </div>
@@ -107,25 +84,18 @@ export default function MattressSection({ onSelectMode }: MattressSectionProps) 
             
             <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
               <div>
-                <span className="text-xs text-[#c8aa6e] font-semibold block">موديل الأجنحة الملكية</span>
-                <h3 className="text-2xl font-black text-white font-serif">مرتبة السلطان رويال بوكيت</h3>
+                <span className="text-xs text-[#c8aa6e] font-semibold block">{MATTRESS_MODEL.eyebrow}</span>
+                <h3 className="text-2xl font-black text-white font-serif">{MATTRESS_MODEL.name}</h3>
               </div>
               <div className="text-right">
-                <span className="text-xs text-zinc-400 block line-through">12,500 ج.م</span>
-                <span className="text-2xl font-black text-[#ffd700]">9,400 <span className="text-xs text-zinc-300">ج.م</span></span>
+                <span className="text-xs text-zinc-400 block line-through">{MATTRESS_MODEL.oldPrice}</span>
+                <span className="text-2xl font-black text-[#ffd700]">{MATTRESS_MODEL.price}</span>
               </div>
             </div>
 
             {/* Features Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-              {[
-                { label: "ارتفاع المرتبة", val: "32 سم فاخر" },
-                { label: "نوع النوابض", val: "بوكيت معزولة" },
-                { label: "درجة القساوة", val: "متوسطة مرنة (6.5/10)" },
-                { label: "ضمان الاستبدال", val: "10 سنوات معتمد" },
-                { label: "التقنية الطبية", val: "تقويم العمود الفقري" },
-                { label: "المقاسات", val: "جميع المقاسات متوفرة" },
-              ].map((feat, i) => (
+              {MATTRESS_SPECS.map((feat, i) => (
                 <div key={i} className="p-3 rounded-xl bg-black/40 border border-white/5">
                   <span className="text-[10px] text-zinc-400 block">{feat.label}</span>
                   <span className="text-xs font-bold text-zinc-100">{feat.val}</span>
@@ -144,13 +114,15 @@ export default function MattressSection({ onSelectMode }: MattressSectionProps) 
                   <p className="text-xs text-zinc-400">طبقة عازلة بتقنية TPU تنفسية قطنية 100% مع كل مرتبة</p>
                 </div>
               </div>
-              <button
-                onClick={() => onSelectMode("mattress")}
+              <a
+                href={MATTRESS_ORDER_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="whitespace-nowrap px-4 py-2 rounded-xl bg-[#d4af37] hover:bg-[#ffd700] text-black font-bold text-xs transition flex items-center gap-1.5"
               >
-                <span>معاينة في المشهد 3D</span>
-                <ChevronLeft className="w-4 h-4" />
-              </button>
+                <span>اطلب الآن مع الكافر المجاني</span>
+                <Phone className="w-4 h-4" />
+              </a>
             </div>
 
           </div>

@@ -7,6 +7,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import { prisma } from "./db";
 
 export type ServerTrackEvent =
   | "whatsapp_click"
@@ -59,12 +60,37 @@ export async function logEvent(
   payload?: Record<string, string>,
   ip?: string
 ): Promise<LoggedEvent> {
+  const cleanIp = ip ? ip.replace(/^.*:/, "") : undefined;
+
+  if (prisma) {
+    try {
+      const rec = await prisma.eventLog.create({
+        data: {
+          type,
+          source: source || "unknown",
+          payload: payload || undefined,
+          ip: cleanIp,
+        },
+      });
+      return {
+        id: rec.id,
+        type: rec.type as ServerTrackEvent,
+        source: rec.source ?? undefined,
+        payload: rec.payload as Record<string, string> | undefined,
+        ip: rec.ip ?? undefined,
+        createdAt: rec.createdAt.toISOString(),
+      };
+    } catch (err) {
+      console.warn("[analytics-server] Prisma logEvent fallback:", err);
+    }
+  }
+
   const item: LoggedEvent = {
     id: randomUUID(),
     type,
     source: source || "unknown",
     payload,
-    ip: ip ? ip.replace(/^.*:/, "") : undefined,
+    ip: cleanIp,
     createdAt: new Date().toISOString(),
   };
 
@@ -80,11 +106,46 @@ export async function logEvent(
 }
 
 export async function listEvents(limit = 100): Promise<LoggedEvent[]> {
+  if (prisma) {
+    try {
+      const items = await prisma.eventLog.findMany({
+        take: limit,
+        orderBy: { createdAt: "desc" },
+      });
+      return items.map((rec) => ({
+        id: rec.id,
+        type: rec.type as ServerTrackEvent,
+        source: rec.source ?? undefined,
+        payload: rec.payload as Record<string, string> | undefined,
+        ip: rec.ip ?? undefined,
+        createdAt: rec.createdAt.toISOString(),
+      }));
+    } catch (err) {
+      console.warn("[analytics-server] Prisma listEvents fallback:", err);
+    }
+  }
+
   const all = await readAll();
   return all.slice(-limit).reverse();
 }
 
 export async function countEventsByType(): Promise<Record<string, number>> {
+  if (prisma) {
+    try {
+      const grouped = await prisma.eventLog.groupBy({
+        by: ["type"],
+        _count: { type: true },
+      });
+      const res: Record<string, number> = {};
+      for (const item of grouped) {
+        res[item.type] = item._count.type;
+      }
+      return res;
+    } catch (err) {
+      console.warn("[analytics-server] Prisma count fallback:", err);
+    }
+  }
+
   const all = await readAll();
   const counts: Record<string, number> = {};
   for (const ev of all) {
@@ -97,4 +158,5 @@ export async function countEventsByType(): Promise<Record<string, number>> {
 export function trackEventName(name: ServerTrackEvent, params?: Record<string, string>): void {
   void logEvent(name, params?.source, params);
 }
+
 

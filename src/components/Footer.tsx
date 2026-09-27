@@ -1,8 +1,6 @@
-"use client";
-
-import React from "react";
 import Image from "next/image";
-import { Crown, Phone, MapPin, Clock, ShieldCheck, Heart, Sparkles } from "lucide-react";
+import { Crown, Phone, MapPin, Clock, ShieldCheck, Sparkles } from "lucide-react";
+import { PHONE_DISPLAY, PHONE_TEL, STORE_HOURS } from "@/data/site";
 
 export default function Footer() {
   return (
@@ -16,11 +14,11 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <div className="relative w-12 h-12 rounded-full p-[2px] bg-gradient-to-tr from-[#d4af37] to-[#aa7c11]">
                 <div className="w-full h-full rounded-full overflow-hidden relative bg-black">
-                  <Image src="/logo.jpg" alt="السلطان" fill className="object-cover" />
+                  <Image src="/logo.jpg" alt="السلطان" fill sizes="48px" className="object-cover" />
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-black text-white font-serif">السلطان</h3>
+                <h2 className="text-xl font-black text-white font-serif">السلطان</h2>
                 <p className="text-[10px] text-[#ffd700]">للمفروشات والمراتب والستائر وكافر المراتب</p>
               </div>
             </div>
@@ -35,23 +33,27 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-r-2 border-[#d4af37] pr-3">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-r-2 border-[#d4af37] pr-3">
               أقسام المعرض
-            </h4>
+            </h3>
             <ul className="space-y-2.5 text-xs">
-              <li><a href="#mattress" className="hover:text-[#ffd700] transition">مراتب طبية بوكيت سوست منفصلة</a></li>
-              <li><a href="#curtains" className="hover:text-[#ffd700] transition">ستائر بلاك أوت وقطيفة وشيفون</a></li>
-              <li><a href="#pillows" className="hover:text-[#ffd700] transition">مفروشات وألحفة سرير تركي</a></li>
-              <li><a href="#protector" className="hover:text-[#ffd700] transition">كافر وواقي المراتب ضد السوائل</a></li>
-              <li><a href="#custom" className="hover:text-[#ffd700] transition">تفصيل خاص حسب الطلب</a></li>
+              <li><a href="#mattress-section" className="hover:text-[#ffd700] transition">مراتب طبية بوكيت سوست منفصلة</a></li>
+              <li><a href="#curtains-section" className="hover:text-[#ffd700] transition">ستائر بلاك أوت وقطيفة وشيفون</a></li>
+              <li><a href="#products-section" className="hover:text-[#ffd700] transition">تشكيلة المنتجات الكاملة والأسعار</a></li>
+              <li><a href="/orders/track" className="hover:text-[#ffd700] text-[#ffd700]/90 font-bold transition">متابعة حالة الطلب والمعاينة (Tracking)</a></li>
+              <li><a href="#pillows-section" className="hover:text-[#ffd700] transition">مفروشات وألحفة سرير تركي</a></li>
+              <li><a href="#protector-section" className="hover:text-[#ffd700] transition">كافر وواقي المراتب ضد السوائل</a></li>
+              <li><a href="#order-section" className="hover:text-[#ffd700] transition">اطلب الآن من المعرض</a></li>
+              <li><a href="#testimonials-section" className="hover:text-[#ffd700] transition">آراء العملاء وتقييماتهم</a></li>
+              <li><a href="#faq-section" className="hover:text-[#ffd700] transition">الأسئلة الشائعة</a></li>
             </ul>
           </div>
 
           {/* Guarantees */}
           <div>
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-r-2 border-[#d4af37] pr-3">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-r-2 border-[#d4af37] pr-3">
               ضمانات السلطان
-            </h4>
+            </h3>
             <ul className="space-y-2.5 text-xs">
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-[#ffd700]" />
@@ -74,9 +76,9 @@ export default function Footer() {
 
           {/* Contact & Hours */}
           <div>
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-r-2 border-[#d4af37] pr-3">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-r-2 border-[#d4af37] pr-3">
               خدمة العملاء
-            </h4>
+            </h3>
             <div className="space-y-3 text-xs">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#ffd700] shrink-0 mt-0.5" />
@@ -84,12 +86,12 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2.5">
                 <Clock className="w-4 h-4 text-[#ffd700] shrink-0" />
-                <span>يومياً من 10 صباحاً حتى 11 مساءً</span>
+                <span>{STORE_HOURS}</span>
               </div>
-              <div className="flex items-center gap-2.5">
+              <a href={`tel:${PHONE_TEL}`} className="flex items-center gap-2.5 hover:text-[#ffd700] transition">
                 <Phone className="w-4 h-4 text-[#ffd700] shrink-0" />
-                <span dir="ltr">+20 100 000 0000</span>
-              </div>
+                <span dir="ltr">{PHONE_DISPLAY}</span>
+              </a>
             </div>
           </div>
 

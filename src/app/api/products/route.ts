@@ -5,19 +5,19 @@
  */
 
 import { NextResponse } from "next/server";
-import { PRODUCTS_CATALOG } from "@/data/products";
+import { listProducts } from "@/lib/products-store";
 
 export async function GET() {
+  const items = await listProducts();
   return NextResponse.json(
     {
-      items: PRODUCTS_CATALOG,
-      total: PRODUCTS_CATALOG.length,
+      items,
+      total: items.length,
       currency: "EGP",
     },
     {
       headers: {
-        // الكتالوج يتغير نادراً — كاش قصير على الحافة
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
       },
     }
   );

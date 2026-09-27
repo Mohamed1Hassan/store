@@ -1,0 +1,95 @@
+// Prisma Schema for Al-Sultan Luxury Store
+// Supports PostgreSQL (Supabase / Neon) with fallbacks
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  CONFIRMED
+  DELIVERED
+  CANCELLED
+}
+
+enum AppointmentStatus {
+  NEW
+  CONTACTED
+  SCHEDULED
+  DONE
+  CANCELLED
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  category      String
+  tag           String
+  price         String
+  priceValue    Float
+  originalPrice String?
+  savingLabel   String?
+  description   String
+  features      String[] // Array of strings in Postgres
+  image         String?
+  available     Boolean  @default(true)
+  displayOrder  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([category])
+  @@index([available])
+}
+
+model Lead {
+  id          String     @id @default(uuid())
+  trackingCode String?   @unique
+  name        String
+  phone       String
+  product     String
+  size        String?
+  notes       String?
+  source      String?
+  status      LeadStatus @default(NEW)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([status])
+  @@index([phone])
+}
+
+model Appointment {
+  id           String            @id @default(uuid())
+  trackingCode String?           @unique
+  name         String
+  phone        String
+  city         String?
+  fabricId     String?
+  notes        String?
+  source       String?
+  status       AppointmentStatus @default(NEW)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([status])
+  @@index([phone])
+}
+
+model EventLog {
+  id        String   @id @default(uuid())
+  type      String
+  source    String?
+  payload   Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+}

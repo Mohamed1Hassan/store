@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pause, Play, Sparkles } from "lucide-react";
 
 /* --------------------------------  Data  -------------------------------- */
@@ -102,23 +102,57 @@ const VEILS = [
  */
 export default function CinematicSuiteBanner() {
   const [activeIdx, setActiveIdx] = useState(0);
+  // ⚠️ منع hydration mismatch: القيمة الأولية يجب أن تطابق الخادم (true دائماً)،
+  // لا نكتشف prefers-reduced-motion إلا داخل useEffect بعد اكتمال الـ hydration.
   const [isPlaying, setIsPlaying] = useState(true);
+  /** هل دخل الهيرو نطاق الرؤية؟ (التحميل الذكي 5.2) */
+  const [inView, setInView] = useState(false);
+  /** هل فشل تحميل الفيديو؟ (الرجوع للصورة الثابتة) */
+  const [videoFailed, setVideoFailed] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const scene = SUITE_SCENES[activeIdx];
 
-  /* The ambient films are silent, so they stay muted — which is what lets every
-     browser autoplay them. Switching a scene restarts the film. */
+  /* 5.2: لا نحمّل الفيديو الا عند دخول الهيرو نطاق الرؤية، مع احترام prefers-reduced-motion */
+  useEffect(() => {
+    const host = sectionRef.current;
+    if (!host || typeof IntersectionObserver === "undefined") { setInView(true); return; }
+    const observer = new IntersectionObserver(
+      (entries) => { if (entries.some((e) => e.isIntersecting)) { setInView(true); observer.disconnect(); } },
+      { rootMargin: "200px" }
+    );
+    observer.observe(host);
+    return () => observer.disconnect();
+  }, []);
+
+  /* اشتراك أحداث DOM (play/pause) — مصدر الحالة الوحيد لزر التشغيل، بدون أي
+   * setState متزامن داخل الـ effect (يلزم قواعد react-hooks). */
   useEffect(() => {
     const el = videoRef.current;
-    if (!el) return;
+    if (!el || typeof window === "undefined") return;
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    el.addEventListener("play", handlePlay);
+    el.addEventListener("pause", handlePause);
+    return () => {
+      el.removeEventListener("play", handlePlay);
+      el.removeEventListener("pause", handlePause);
+    };
+  }, [inView, videoFailed, activeIdx]);
 
+  /* الفيديوهات صامتة ليُسمح بالتشغيل التلقائي. تبديل المشهد يعيد التشغيل. */
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el || !inView || videoFailed) return;
     el.muted = true;
+    const prefersReducedMotion = typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) { el.pause(); return; }
     const attempt = el.play();
     if (attempt && typeof attempt.then === "function") {
       attempt.then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
     }
-  }, [activeIdx]);
+  }, [activeIdx, inView, videoFailed]);
 
   const togglePlay = () => {
     const el = videoRef.current;
@@ -137,19 +171,26 @@ export default function CinematicSuiteBanner() {
   return (
     <>
       {/* Full-bleed footage + dissolving veils */}
-      <div className="absolute inset-0">
+      <div ref={sectionRef} className="absolute inset-0">
         <div className="absolute inset-0 overflow-hidden">
-          <video
-            ref={videoRef}
-            src={scene.videoSrc}
-            poster={scene.poster}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            className="absolute inset-0 h-full w-full object-cover animate-slow-zoom"
-          />
+          {(!inView || videoFailed) && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={scene.poster} alt="" aria-hidden={true} className="absolute inset-0 h-full w-full object-cover" />
+          )}
+          {inView && !videoFailed && (
+            <video
+              ref={videoRef}
+              key={scene.id}
+              src={scene.videoSrc}
+              poster={scene.poster}
+              onError={() => setVideoFailed(true)}
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 h-full w-full object-cover animate-slow-zoom"
+            />
+          )}
 
           {VEILS.map((veil) => (
             <div
