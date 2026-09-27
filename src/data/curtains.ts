@@ -32,7 +32,7 @@ export const CURTAIN_FABRICS: CurtainFabric[] = [
     desc: "طبقة ناعمة كالضباب تضيف رومانسية ساحرة وفخامة للأجواء الملكية.",
     colorHex: "#e8d8b0",
     features: ["شفافية شمسية ناعمة", "تطريز ذهبي يدوي", "مقاوم للتجعد"],
-    image: "https://res.cloudinary.com/aogjvfdt/image/upload/v1790468512/curtain-sunlight.jpg",
+    image: "/videos/curtain-sunlight.jpg",
   },
 ];
 
