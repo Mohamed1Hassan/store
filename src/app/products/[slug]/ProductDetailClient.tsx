@@ -170,7 +170,7 @@ export default function ProductDetailClient({ product }: { product: StoredProduc
             <div className="flex items-baseline gap-4 p-4 rounded-2xl bg-[#0b0e17] border border-[#d4af37]/30 mb-6">
               <span className="text-3xl font-black text-[#ffd700] font-mono">{product.price}</span>
               {product.originalPrice && (
-                <span className="text-sm text-zinc-500 line-through">{product.originalPrice}</span>
+                <span className="text-sm text-zinc-300 line-through">{product.originalPrice}</span>
               )}
               {product.savingLabel && (
                 <span className="text-xs font-bold text-emerald-400 mr-auto">

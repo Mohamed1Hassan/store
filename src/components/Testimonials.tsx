@@ -65,7 +65,7 @@ export default function Testimonials() {
             >
               <Quote className="w-7 h-7 text-[#d4af37]/60 mb-4" />
 
-              <div className="flex items-center gap-1 mb-3" aria-label={`تقييم ${item.rating} من 5`}>
+              <div className="flex items-center gap-1 mb-3">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star
                     key={i}
@@ -82,7 +82,7 @@ export default function Testimonials() {
 
               <figcaption className="mt-auto pt-4 border-t border-white/10">
                 <span className="block text-sm font-bold text-white">{item.name}</span>
-                <span className="flex items-center gap-1 text-[11px] text-zinc-500 mt-1">
+                <span className="flex items-center gap-1 text-[11px] text-zinc-300 mt-1">
                   <MapPin className="w-3 h-3" />
                   {item.city}
                 </span>

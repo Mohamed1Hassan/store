@@ -190,7 +190,7 @@ export default function CurtainSection() {
             </div>
             <div>
               <label htmlFor="curtain-book-city" className="block text-xs font-bold text-zinc-300 mb-2">
-                المدينة <span className="font-normal text-zinc-500">(اختياري)</span>
+                المدينة <span className="font-normal text-zinc-300">(اختياري)</span>
               </label>
               <select
                 id="curtain-book-city"

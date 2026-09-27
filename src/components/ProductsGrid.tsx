@@ -74,7 +74,7 @@ export default function ProductsGrid() {
                 {product.tag}
               </span>
 
-              <span className="text-[11px] text-zinc-500 mb-1">{product.category}</span>
+              <span className="text-[11px] text-zinc-300 mb-1">{product.category}</span>
               <h3 className="text-base font-bold text-white leading-snug mb-3">{product.name}</h3>
               <p className="text-xs text-zinc-400 leading-relaxed mb-4">{product.description}</p>
 
@@ -92,7 +92,7 @@ export default function ProductsGrid() {
                   <span className="text-xl font-black text-[#ffd700]">{product.price}</span>
                   <div className="text-left">
                     {product.originalPrice && (
-                      <span className="block text-xs text-zinc-500 line-through">
+                      <span className="block text-xs text-zinc-300 line-through">
                         {product.originalPrice}
                       </span>
                     )}

@@ -98,7 +98,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Rights */}
-        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-4">
+        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-300 gap-4">
           <p>© {new Date().getFullYear()} جميع الحقوق محفوظة لـ مفروشات ومراتب وستائر السلطان (Al-Sultan).</p>
           <div className="flex items-center gap-1 text-[#ffd700]">
             <span>صُنع بفخامة ملكية</span>

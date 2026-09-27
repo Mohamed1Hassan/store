@@ -65,7 +65,7 @@ export default function MattressSection() {
                     <span className="text-xs font-extrabold text-[#ffd700]">
                       {layer.tag}
                     </span>
-                    <span className="text-xs text-zinc-500 font-mono">0{idx + 1}</span>
+                    <span className="text-xs text-zinc-300 font-mono">0{idx + 1}</span>
                   </div>
                   <h4 className="text-base font-bold text-white mb-1">
                     {layer.title}
@@ -110,7 +110,7 @@ export default function MattressSection() {
                   هدية
                 </div>
                 <div>
-                  <h5 className="text-sm font-bold text-white">كافر وواقي مرتبة ضد السوائل والمياه مجاناً</h5>
+                  <h4 className="text-sm font-bold text-white">كافر وواقي مرتبة ضد السوائل والمياه مجاناً</h4>
                   <p className="text-xs text-zinc-400">طبقة عازلة بتقنية TPU تنفسية قطنية 100% مع كل مرتبة</p>
                 </div>
               </div>

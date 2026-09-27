@@ -43,7 +43,7 @@ export default function PillowsSection() {
             <div className="flex flex-wrap items-end gap-3 mb-6">
               <span className="text-3xl font-black text-[#ffd700]">{pillows.price}</span>
               {pillows.originalPrice && (
-                <span className="text-sm text-zinc-500 line-through mb-1">
+                <span className="text-sm text-zinc-300 line-through mb-1">
                   {pillows.originalPrice}
                 </span>
               )}

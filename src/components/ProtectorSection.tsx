@@ -67,7 +67,7 @@ export default function ProtectorSection() {
             <div className="flex flex-wrap items-end gap-3 mb-6">
               <span className="text-3xl font-black text-[#ffd700]">{protector.price}</span>
               {protector.originalPrice && (
-                <span className="text-sm text-zinc-500 line-through mb-1">
+                <span className="text-sm text-zinc-300 line-through mb-1">
                   {protector.originalPrice}
                 </span>
               )}

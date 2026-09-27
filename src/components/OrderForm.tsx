@@ -246,7 +246,7 @@ export default function OrderForm() {
 
             <div>
               <label htmlFor="order-size" className="block text-xs font-bold text-zinc-300 mb-2">
-                المقاس المطلوب <span className="font-normal text-zinc-500">(اختياري)</span>
+                المقاس المطلوب <span className="font-normal text-zinc-300">(اختياري)</span>
               </label>
               <input
                 id="order-size"
