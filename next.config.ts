@@ -4,6 +4,15 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    // ⚠️ إلزامي: بدون هذا يرفض next/image أي نطاق خارجي ويرجع 400
+    // فتظهر أيقونة صورة مكسورة في الرئيسية ولوحة الإدارة.
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
+    ],
   },
   async headers() {
     return [
