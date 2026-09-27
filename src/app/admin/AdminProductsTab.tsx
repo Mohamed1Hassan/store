@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
-import { Plus, Trash2, Edit2, Check, X } from "lucide-react";
+import { Plus, Trash2, Edit2, Check, X, Search, LayoutGrid } from "lucide-react";
 import type { StoredProduct } from "@/lib/products-store";
 import AdminNewProductForm from "./AdminNewProductForm";
 
@@ -25,6 +25,35 @@ export default function AdminProductsTab({ products, onRefresh }: Props) {
   const [editImage, setEditImage] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editFeatures, setEditFeatures] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  /** استخراج الأقسام الفريدة مع عدد كل قسم — يعمل مع منتجات الكتالوج وقاعدة البيانات */
+  const categories = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const p of products) {
+      const key = p.category?.trim() || "أخرى";
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "ar"));
+  }, [products]);
+
+  const visibleProducts = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    return products.filter((p) => {
+      const matchesCategory =
+        activeCategory === "all" || (p.category?.trim() || "أخرى") === activeCategory;
+      const matchesSearch =
+        term === "" ||
+        p.name.toLowerCase().includes(term) ||
+        (p.slug || p.id).toLowerCase().includes(term) ||
+        (p.category ?? "").toLowerCase().includes(term) ||
+        p.price.toLowerCase().includes(term);
+      return matchesCategory && matchesSearch;
+    });
+  }, [products, activeCategory, searchTerm]);
 
   const startEdit = (p: StoredProduct) => {
     setEditingSlug(p.slug || p.id);
@@ -87,6 +116,11 @@ export default function AdminProductsTab({ products, onRefresh }: Props) {
         <div>
           <h2 className="text-base font-black text-white">إدارة كتالوج المنتجات</h2>
           <p className="text-xs text-zinc-400">إضافة وتعديل وحذف المنتجات والأسعار لحظياً.</p>
+          {visibleProducts.length !== products.length && (
+            <p className="text-[11px] text-[#d4af37] mt-1">
+              معروض {visibleProducts.length} من {products.length} منتج
+            </p>
+          )}
         </div>
         <button
           type="button"
@@ -108,8 +142,70 @@ export default function AdminProductsTab({ products, onRefresh }: Props) {
         />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {products.map((p) => {
+      {/* شريط البحث */}
+      <div className="relative">
+        <Search className="absolute top-1/2 right-3 w-4 h-4 -translate-y-1/2 text-zinc-500 pointer-events-none" />
+        <input
+          type="search"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="ابحث باسم المنتج أو القسم أو السعر…"
+          aria-label="بحث في المنتجات"
+          className="w-full rounded-xl border border-white/15 bg-black/40 pr-10 pl-3 py-2.5 text-xs text-white placeholder:text-zinc-500 focus:border-[#d4af37]/50 focus:outline-none"
+        />
+      </div>
+
+      {/* تبويبات الأقسام مع العدّاد */}
+      <div className="flex flex-wrap gap-2" role="tablist" aria-label="أقسام المنتجات">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeCategory === "all"}
+          onClick={() => setActiveCategory("all")}
+          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition ${
+            activeCategory === "all"
+              ? "bg-[#d4af37] text-black border-[#d4af37]"
+              : "bg-white/5 text-zinc-300 border-white/10 hover:border-[#d4af37]/40 hover:text-white"
+          }`}
+        >
+          <LayoutGrid className="w-3.5 h-3.5" />
+          <span>الكل</span>
+          <span className={`px-1.5 rounded-full text-[10px] ${activeCategory === "all" ? "bg-black/20" : "bg-white/10"}`}>
+            {products.length}
+          </span>
+        </button>
+        {categories.map((cat) => {
+          const isActive = activeCategory === cat.name;
+          return (
+            <button
+              key={cat.name}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => setActiveCategory(cat.name)}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition ${
+                isActive
+                  ? "bg-[#d4af37] text-black border-[#d4af37]"
+                  : "bg-white/5 text-zinc-300 border-white/10 hover:border-[#d4af37]/40 hover:text-white"
+              }`}
+            >
+              <span>{cat.name}</span>
+              <span className={`px-1.5 rounded-full text-[10px] ${isActive ? "bg-black/20" : "bg-white/10"}`}>
+                {cat.count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {visibleProducts.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.02] py-14 text-center">
+          <p className="text-sm font-bold text-zinc-300">لا توجد منتجات مطابقة</p>
+          <p className="text-xs text-zinc-500 mt-1">جرّب تغيير القسم أو مسح البحث.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {visibleProducts.map((p) => {
           const pSlug = p.slug || p.id;
           const isEditing = editingSlug === pSlug;
           return (
@@ -208,7 +304,8 @@ export default function AdminProductsTab({ products, onRefresh }: Props) {
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
