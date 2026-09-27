@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Plus, Trash2, Edit2, Check, X } from "lucide-react";
 import type { StoredProduct } from "@/lib/products-store";
 import AdminNewProductForm from "./AdminNewProductForm";
