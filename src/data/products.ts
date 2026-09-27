@@ -14,6 +14,7 @@ export interface Product {
   savingLabel?: string;
   description: string;
   features: string[];
+  image?: string;
 }
 
 export const PRODUCTS_CATALOG: Product[] = [
