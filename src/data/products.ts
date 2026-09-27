@@ -34,6 +34,25 @@ export const PRODUCTS_CATALOG: Product[] = [
       "مفارش قطنية تركية مطرزة",
       "كافر وواقي حماية للمرتبة"
     ],
+    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535057/%D8%A7%D9%84%D9%82%D8%B7%D9%8A%D9%81%D8%A9_%D8%A7%D9%84%D9%85%D8%AE%D9%85%D9%84%D9%8A%D8%A9_%D8%A7%D9%84%D8%AB%D9%82%D9%8A%D9%84%D8%A9_Velvet_Blackout.jpg",
+  },
+  {
+    id: "sultan-royal-mattress",
+    name: "مرتبة السلطان رويال بوكيت الطبية (Royal Pocket)",
+    category: "المرتبة الملكية",
+    tag: "ضمان 10 سنوات",
+    price: "9,400 ج.م",
+    priceValue: 9400,
+    originalPrice: "12,500 ج.م",
+    savingLabel: "3,100 ج.م",
+    description: "مرتبة السلطان رويال بوكيت مع نوابض منفصلة وطبقة ميموري فوم جل لراحة مثالية وتقويم العمود الفقري.",
+    features: [
+      "ارتفاع 32 سم فاخر",
+      "شاسيه نوابض بوكيت معزولة لمنع انتقال الحركة",
+      "طبقة ميموري فوم جل بارد",
+      "قماش جاكار بلجيكي معالج ضد البكتيريا"
+    ],
+    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535057/%D8%A7%D9%84%D9%82%D8%B7%D9%8A%D9%81%D8%A9_%D8%A7%D9%84%D9%85%D8%AE%D9%85%D9%84%D9%8A%D8%A9_%D8%A7%D9%84%D8%AB%D9%82%D9%8A%D9%84%D8%A9_Velvet_Blackout.jpg",
   },
   {
     id: "medical-mattress-protector",
@@ -54,20 +73,57 @@ export const PRODUCTS_CATALOG: Product[] = [
   },
   {
     id: "royal-curtains",
-    name: "ستائر السلطان المخملية الفاخرة (Royal Velvet Curtains)",
+    name: "ستائر السلطان المخملية الفاخرة (Velvet Blackout)",
     category: "الستائر الملكية",
-    tag: "تفصيل حسب المقاس",
+    tag: "عزل ضوئي 100%",
     price: "4,600 ج.م",
     priceValue: 4600,
     originalPrice: "6,000 ج.م",
     savingLabel: "1,400 ج.م",
-    description: "ستائر قطيفة إيطالية ثقيلة مع طبقة شيفون فرنسية مهدلة لعزل الضوء بنسبة 100% وإعطاء مظهر قصر ملكي للغرفة.",
+    description: "ستائر قطيفة إيطالية ثقيلة مع عزل ضوئي وصوتي وحراري تام وإعطاء مظهر قصر ملكي للغرفة.",
     features: [
       "عزل ضوئي وحراري تام (Blackout 100%)",
       "أقمشة قطيفة وشانيل مستوردة فاخرة",
       "تطريز يدوي وحلقات ستانلس مذهبة ومقاومة للصدأ",
       "معاينة ورفع مقاسات وتفصيل مجاني حتى باب المنزل"
     ],
+    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535057/%D8%A7%D9%84%D9%82%D8%B7%D9%8A%D9%81%D8%A9_%D8%A7%D9%84%D9%85%D8%AE%D9%85%D9%84%D9%8A%D8%A9_%D8%A7%D9%84%D8%AB%D9%82%D9%8A%D9%84%D8%A9_Velvet_Blackout.jpg",
+  },
+  {
+    id: "natural-linen-curtains",
+    name: "ستائر الكتان الإسباني الطبيعي (Natural Linen)",
+    category: "الستائر الملكية",
+    tag: "مودرن كلاسيك",
+    price: "3,800 ج.م",
+    priceValue: 3800,
+    originalPrice: "4,900 ج.م",
+    savingLabel: "1,100 ج.م",
+    description: "طراز مودرن كلاسيك راقي من الكتان الإسباني، يسمح بمرور نسيم الهواء والضوء الخافت الطبيعي.",
+    features: [
+      "طبيعي 100%",
+      "مظهر عصري أنيق ومريح",
+      "سهل الغسيل والعناية",
+      "تفصيل حسب المقاس مجاناً"
+    ],
+    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
+  },
+  {
+    id: "chiffon-curtains",
+    name: "ستائر الشيفون والحرير الفرنسي (Soft Sheer)",
+    category: "الستائر الملكية",
+    tag: "تطريز يدوي",
+    price: "2,900 ج.م",
+    priceValue: 2900,
+    originalPrice: "3,800 ج.م",
+    savingLabel: "900 ج.م",
+    description: "طبقة شيفون وحرير فرنسي ناعمة كالضباب تضيف رومانسية ساحرة وفخامة للأجواء الملكية.",
+    features: [
+      "شفافية شمسية ناعمة",
+      "تطريز ذهبي يدوي فاخر",
+      "مقاوم للتجعد والغسيل المتكرر",
+      "تركيب ومعاينة مجانية"
+    ],
+    image: "https://res.cloudinary.com/aogjvfdt/image/upload/v1790468512/curtain-sunlight.jpg",
   },
   {
     id: "hotel-pillow-suite",
