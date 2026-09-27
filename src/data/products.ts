@@ -34,7 +34,7 @@ export const PRODUCTS_CATALOG: Product[] = [
       "مفارش قطنية تركية مطرزة",
       "كافر وواقي حماية للمرتبة"
     ],
-    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535057/%D8%A7%D9%84%D9%82%D8%B7%D9%8A%D9%81%D8%A9_%D8%A7%D9%84%D9%85%D8%AE%D9%85%D9%84%D9%8A%D8%A9_%D8%A7%D8%AB%D9%82%D9%8A%D9%84%D8%A9_Velvet_Blackout.jpg",
+    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
   },
   {
     id: "sultan-royal-mattress",
@@ -52,7 +52,7 @@ export const PRODUCTS_CATALOG: Product[] = [
       "طبقة ميموري فوم جل بارد",
       "قماش جاكار بلجيكي معالج ضد البكتيريا"
     ],
-    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535057/%D8%A7%D9%84%D9%82%D8%B7%D9%8A%D9%81%D8%A9_%D8%A7%D9%84%D9%85%D8%AE%D9%85%D9%84%D9%8A%D8%A9_%D8%A7%D8%AB%D9%82%D9%8A%D9%84%D8%A9_Velvet_Blackout.jpg",
+    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
   },
   {
     id: "medical-mattress-protector",
@@ -87,7 +87,7 @@ export const PRODUCTS_CATALOG: Product[] = [
       "تطريز يدوي وحلقات ستانلس مذهبة ومقاومة للصدأ",
       "معاينة ورفع مقاسات وتفصيل مجاني حتى باب المنزل"
     ],
-    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535057/%D8%A7%D9%84%D9%82%D8%B7%D9%8A%D9%81%D8%A9_%D8%A7%D9%84%D9%85%D8%AE%D9%85%D9%84%D9%8A%D8%A9_%D8%A7%D8%AB%D9%82%D9%8A%D9%84%D8%A9_Velvet_Blackout.jpg",
+    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
   },
   {
     id: "natural-linen-curtains",
@@ -141,6 +141,6 @@ export const PRODUCTS_CATALOG: Product[] = [
       "دعم مثالي لفقرات العنق وتخفيف آلام النوم",
       "مضادة للبكتيريا وعثة الفراش ومسببات الحساسية"
     ],
-    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535057/%D8%A7%D9%84%D9%82%D8%B7%D9%8A%D9%81%D8%A9_%D8%A7%D9%84%D9%85%D8%AE%D9%85%D9%84%D9%8A%D8%A9_%D8%A7%D8%AB%D9%82%D9%8A%D9%84%D8%A9_Velvet_Blackout.jpg",
+    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
   },
 ];
