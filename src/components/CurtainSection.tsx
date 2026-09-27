@@ -105,7 +105,21 @@ export default function CurtainSection() {
                 }`}
               >
                 <div>
-                  <div className="w-full h-3 rounded-full mb-4 opacity-80" style={{ backgroundColor: item.colorHex }} />
+                  <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-5 border border-white/10 group-hover:border-[#d4af37]/40 transition">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#07090e]/80 via-transparent to-transparent" />
+                    <div className="absolute bottom-2 right-3 left-3 flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-black bg-[#ffd700] px-2.5 py-0.5 rounded-full shadow">
+                        خامات أصلية مضمونة
+                      </span>
+                    </div>
+                  </div>
+
                   <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
                   <p className="text-zinc-400 text-xs leading-relaxed mb-6">{item.desc}</p>
 
