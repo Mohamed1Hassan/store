@@ -22,6 +22,7 @@ body {
   color: #f4efe6;
   font-family: var(--font-cairo), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Custom Scrollbar */

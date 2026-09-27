@@ -54,11 +54,11 @@ export default function ProductsGrid() {
           description="أسعار واضحة وتفصيل على المقاس لكل المنتجات: مراتب طبية، ستائر فاخرة، كافر مراتب، ومفروشات فندقية."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-5 pb-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {PRODUCTS_CATALOG.map((product) => (
             <article
               key={product.id}
-              className="flex flex-col p-6 rounded-3xl bg-[#0b0e17] border border-white/5 hover:border-[#d4af37]/40 hover:bg-[#0e121c] hover:shadow-2xl hover:shadow-[#d4af37]/10 transition-all duration-300 relative overflow-hidden"
+              className="min-w-[85vw] sm:min-w-[60vw] md:min-w-0 snap-center flex flex-col p-6 rounded-3xl bg-[#0b0e17] border border-white/5 hover:border-[#d4af37]/40 hover:bg-[#0e121c] hover:shadow-2xl hover:shadow-[#d4af37]/10 transition-all duration-300 relative overflow-hidden"
             >
               {product.image && (
                 <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden bg-black/20">

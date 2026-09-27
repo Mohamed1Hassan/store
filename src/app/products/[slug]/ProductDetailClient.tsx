@@ -264,6 +264,27 @@ export default function ProductDetailClient({ product }: { product: StoredProduc
         </div>
       </main>
 
+      {/* شريط الأزرار الثابت للموبايل (Sticky Mobile CTA) */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-[#07090e]/90 backdrop-blur-xl border-t border-white/10 md:hidden flex items-center gap-3 animate-fade-in pb-6">
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className="flex-1 bg-gradient-to-r from-[#d4af37] via-[#ffd700] to-[#b8860b] text-black font-extrabold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,215,0,0.25)]"
+        >
+          <ShoppingBag className="w-5 h-5" />
+          <span>إضافة للسلة</span>
+        </button>
+        <a
+          href={productWhatsAppUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-shrink-0 bg-white/5 border border-white/10 p-3.5 rounded-xl text-zinc-300 hover:text-[#ffd700] hover:border-[#d4af37]/40 transition"
+          aria-label="تواصل عبر واتساب"
+        >
+          <Phone className="w-5 h-5" />
+        </a>
+      </div>
+
       <CartDrawer />
       <WhatsAppFloatButton />
     </div>
