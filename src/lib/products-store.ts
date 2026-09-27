@@ -38,6 +38,15 @@ async function writeAll(products: StoredProduct[]): Promise<void> {
 }
 
 export async function listProducts(includeHidden = false): Promise<StoredProduct[]> {
+  // دائمًا دمج منتجات الكتالوج الأساسية مع المخزن لضمان ظهور كافة المنتجات دائماً
+  const catalogProducts: StoredProduct[] = PRODUCTS_CATALOG.map((p, idx) => ({
+    ...p,
+    slug: p.id,
+    available: true,
+    displayOrder: idx,
+  }));
+
+  let storedItems: StoredProduct[] = [];
   if (prisma) {
     try {
       const dbItems = await prisma.product.findMany({
@@ -45,7 +54,7 @@ export async function listProducts(includeHidden = false): Promise<StoredProduct
         orderBy: { displayOrder: "asc" },
       });
       if (dbItems.length > 0) {
-        return dbItems.map((item) => ({
+        storedItems = dbItems.map((item) => ({
           id: item.slug,
           slug: item.slug,
           name: item.name,
@@ -67,8 +76,21 @@ export async function listProducts(includeHidden = false): Promise<StoredProduct
     }
   }
 
-  const all = await readAll();
-  return includeHidden ? all : all.filter((p) => p.available !== false);
+  if (storedItems.length === 0) {
+    storedItems = await readAll();
+  }
+
+  // دمج الكتالوج مع المنتجات المخزنة بحيث لا تتكرر بناءً على الـ slug
+  const map = new Map<string, StoredProduct>();
+  for (const p of catalogProducts) {
+    map.set(p.slug || p.id, p);
+  }
+  for (const p of storedItems) {
+    map.set(p.slug || p.id, p);
+  }
+
+  const combined = Array.from(map.values());
+  return includeHidden ? combined : combined.filter((p) => p.available !== false);
 }
 
 export async function getProductBySlug(slug: string): Promise<StoredProduct | null> {
