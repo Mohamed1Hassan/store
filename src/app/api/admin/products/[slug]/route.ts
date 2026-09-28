@@ -70,11 +70,20 @@ export async function DELETE(
   }
 
   const { slug } = await context.params;
-  const ok = await deleteProduct(slug);
-
-  if (!ok) {
-    return NextResponse.json({ error: "تعذر العثور على المنتج لحذفه." }, { status: 404 });
+  try {
+    const ok = await deleteProduct(slug);
+    if (!ok) {
+      return NextResponse.json({ error: "تعذر العثور على المنتج لحذفه." }, { status: 404 });
+    }
+    return NextResponse.json({ ok: true, message: "تم حذف المنتج بنجاح." });
+  } catch (err) {
+    console.error("[admin-products] DELETE error:", err);
+    return NextResponse.json(
+      {
+        error: "تعذر حذف المنتج. تأكد من ضبط DATABASE_URL في إعدادات Vercel.",
+        detail: err instanceof Error ? err.message : String(err),
+      },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ ok: true, message: "تم حذف المنتج بنجاح." });
 }

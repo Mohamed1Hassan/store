@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
-// تفعيل الكاش (ISR) - إعادة التوليد كل ساعة لأفضل أداء
-export const revalidate = 3600;
+// الرئيسية تُقرأ من قاعدة البيانات، فلا يجوز تجميدها في كاش المنصة.
+export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import { getProductBySlug, listProducts } from "@/lib/products-store";

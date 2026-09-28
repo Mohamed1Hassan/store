@@ -123,7 +123,8 @@ export const PRODUCTS_CATALOG: Product[] = [
       "مقاوم للتجعد والغسيل المتكرر",
       "تركيب ومعاينة مجانية"
     ],
-    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
+    // لا صورة احتياطية عمداً: الصورة تُدار من لوحة الإدارة، وأي قيمة هنا
+    // ستظهر مجدداً على الرئيسية عند تعذّر الوصول لقاعدة البيانات.
   },
   {
     id: "hotel-pillow-suite",

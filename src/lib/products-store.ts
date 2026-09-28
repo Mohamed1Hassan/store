@@ -201,8 +201,9 @@ export async function saveProduct(input: ProductInput): Promise<StoredProduct> {
     all.push(item);
   }
   if (!jsonFallbackWritable()) {
-    console.warn("[products-store] تعذّر الحفظ: بيئة بلا خادم (Vercel) بلا قاعدة بيانات.");
-    return item;
+    throw new Error(
+      "تعذّر الحفظ: لا توجد قاعدة بيانات (DATABASE_URL غير مضبوط على Vercel) ونظام الملفات للقراءة فقط."
+    );
   }
   try {
     await writeAll(all);
@@ -269,8 +270,9 @@ export async function updateProduct(
   };
   all[index] = updated;
   if (!jsonFallbackWritable()) {
-    console.warn("[products-store] تعذّر التحديث: بيئة بلا خادم (Vercel) بلا قاعدة بيانات.");
-    return updated;
+    throw new Error(
+      "تعذّر التحديث: لا توجد قاعدة بيانات (DATABASE_URL غير مضبوط على Vercel) ونظام الملفات للقراءة فقط."
+    );
   }
   try {
     await writeAll(all);
@@ -293,7 +295,11 @@ export async function deleteProduct(slug: string): Promise<boolean> {
   const all = await readAll();
   const filtered = all.filter((p) => (p.slug || p.id) !== slug);
   if (filtered.length === all.length) return false;
-  if (!jsonFallbackWritable()) return true;
+  if (!jsonFallbackWritable()) {
+    throw new Error(
+      "تعذّر الحذف: لا توجد قاعدة بيانات (DATABASE_URL غير مضبوط على Vercel) ونظام الملفات للقراءة فقط."
+    );
+  }
   try {
     await writeAll(filtered);
   } catch (err) {

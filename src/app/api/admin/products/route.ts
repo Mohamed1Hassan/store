@@ -33,6 +33,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ item: saved }, { status: 201 });
   } catch (err) {
     console.error("[admin-products] error saving product:", err);
-    return NextResponse.json({ error: "حدث خطأ أثناء حفظ المنتج." }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "تعذر حفظ المنتج. تأكد من ضبط DATABASE_URL في إعدادات Vercel.",
+        detail: err instanceof Error ? err.message : String(err),
+      },
+      { status: 500 }
+    );
   }
 }
