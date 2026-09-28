@@ -2,6 +2,7 @@
 
 import { Droplets } from "lucide-react";
 import type { SiteContent } from "@/schemas/site-content";
+import AdminImageField from "./AdminImageField";
 
 interface Props {
   content: SiteContent;
@@ -110,6 +111,18 @@ export default function ContentProtectorTab({ content, onChange }: Props) {
             />
           </div>
         </div>
+
+        <AdminImageField
+          label="صورة القسم (تُعرض داخل كارت السعر — فارغ = مخفي)"
+          value={protector.image || ""}
+          placeholder="https://... أو ارفع صورة من جهازك"
+          onChange={(url) =>
+            onChange((prev) => ({
+              ...prev,
+              protector: { ...prev.protector, image: url },
+            }))
+          }
+        />
 
         <p className="rounded-2xl border border-white/5 bg-white/5 p-4 text-xs leading-relaxed text-zinc-400">
           ملاحظة: اسم المنتج والسعر والوصف والمميزات التفصيلية لهذا القسم تأتي من تبويب

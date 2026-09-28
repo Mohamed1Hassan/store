@@ -21,6 +21,7 @@ export default function PillowsSection({ product, pillowsContent }: Props) {
   const title = pillowsContent?.title || "مفروشات ووسائد";
   const accent = pillowsContent?.accent || "النخبة الفاخرة";
   const ctaText = pillowsContent?.ctaText || "اطلب طقم الوسائد الآن";
+  const image = pillowsContent?.image || "";
   const highlights =
     pillowsContent?.highlights && pillowsContent.highlights.length > 0
       ? pillowsContent.highlights
@@ -44,6 +45,18 @@ export default function PillowsSection({ product, pillowsContent }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Price panel */}
           <div className="order-2 lg:order-1 lg:col-span-5 bg-gradient-to-br from-[#101522] to-[#0a0d16] p-6 md:p-8 rounded-3xl border border-[#d4af37]/30 shadow-2xl">
+            {image && (
+              <div className="mb-4 h-44 w-full overflow-hidden rounded-2xl border border-[#d4af37]/20 bg-black/40">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={image}
+                  alt={pillows.name}
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+
             <span className="inline-flex items-center gap-2 text-[10px] font-bold text-[#ffd700] bg-[#d4af37]/15 px-2.5 py-1 rounded-full mb-4">
               <BadgeCheck className="w-3.5 h-3.5" />
               {pillows.tag}

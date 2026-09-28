@@ -193,6 +193,7 @@ export const siteContentSchema = z.object({
         "يتضمن الكافر والواقي مجاناً مع أي مرتبة من مراتب السلطان الطبية."
       ),
       ctaText: z.string().default("اطلب الكافر الآن"),
+      image: z.string().default(""),
     })
     .default({
       badge: "حماية كاملة لمرتبتك",
@@ -201,6 +202,7 @@ export const siteContentSchema = z.object({
       giftTitle: "هدية مجانية مع كل مرتبة",
       giftDesc: "يتضمن الكافر والواقي مجاناً مع أي مرتبة من مراتب السلطان الطبية.",
       ctaText: "اطلب الكافر الآن",
+      image: "",
     }),
   pillows: z
     .object({
@@ -211,6 +213,7 @@ export const siteContentSchema = z.object({
       highlights: z
         .array(z.string())
         .default(["قطن مصري 100%", "مضادة للبكتيريا", "تفصيل حسب المقاس"]),
+      image: z.string().default(""),
     })
     .default({
       badge: "نوم فندقي 7 نجوم",
@@ -218,6 +221,7 @@ export const siteContentSchema = z.object({
       accent: "النخبة الفاخرة",
       ctaText: "اطلب طقم الوسائد الآن",
       highlights: ["قطن مصري 100%", "مضادة للبكتيريا", "تفصيل حسب المقاس"],
+      image: "",
     }),
   footer: z
     .object({

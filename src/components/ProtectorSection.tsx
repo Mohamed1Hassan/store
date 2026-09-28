@@ -25,6 +25,7 @@ export default function ProtectorSection({ product, protectorContent }: Props) {
     protectorContent?.giftDesc ||
     "يتضمن الكافر والواقي مجاناً مع أي مرتبة من مراتب السلطان الطبية.";
   const ctaText = protectorContent?.ctaText || "اطلب الكافر الآن";
+  const image = protectorContent?.image || "";
 
   const orderLink = whatsappLink(
     `مرحباً مفروشات السلطان، أود الاستفسار عن ${protector.name} (السعر: ${protector.price})`
@@ -70,6 +71,18 @@ export default function ProtectorSection({ product, protectorContent }: Props) {
 
           {/* Price panel */}
           <div className="lg:col-span-5 bg-gradient-to-br from-[#121828] to-[#0a0d16] p-6 md:p-8 rounded-3xl border border-[#d4af37]/30 shadow-2xl">
+            {image && (
+              <div className="mb-4 h-44 w-full overflow-hidden rounded-2xl border border-[#d4af37]/20 bg-black/40">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={image}
+                  alt={protector.name}
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+
             <span className="inline-flex items-center gap-2 text-[10px] font-bold text-[#ffd700] bg-[#d4af37]/15 px-2.5 py-1 rounded-full mb-4">
               <BadgeCheck className="w-3.5 h-3.5" />
               {protector.tag}

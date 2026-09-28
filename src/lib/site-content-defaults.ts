@@ -141,6 +141,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     giftTitle: "هدية مجانية مع كل مرتبة",
     giftDesc: "يتضمن الكافر والواقي مجاناً مع أي مرتبة من مراتب السلطان الطبية.",
     ctaText: "اطلب الكافر الآن",
+    image: "",
   },
   pillows: {
     badge: "نوم فندقي 7 نجوم",
@@ -148,6 +149,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     accent: "النخبة الفاخرة",
     ctaText: "اطلب طقم الوسائد الآن",
     highlights: ["قطن مصري 100%", "مضادة للبكتيريا", "تفصيل حسب المقاس"],
+    image: "",
   },
   contact: {
     phoneDisplay: PHONE_DISPLAY,

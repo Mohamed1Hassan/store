@@ -137,6 +137,9 @@ test('DEFAULT_SITE_CONTENT ships every CMS section with data', () => {
   assert.ok(DEFAULT_SITE_CONTENT.curtains.fabrics.every((f) => f.title && f.image));
   // صورة الموديل اختيارية وتُخفى افتراضياً للحفاظ على الشكل الحالي.
   assert.equal(DEFAULT_SITE_CONTENT.mattress.modelImage, '');
+  // صور قسمي الواقي والوسائد اختيارية likewise (فارغ = مخفي حتى يرفعها المدير).
+  assert.equal(DEFAULT_SITE_CONTENT.protector.image, '');
+  assert.equal(DEFAULT_SITE_CONTENT.pillows.image, '');
   // يجب أن تطابق القيم الافتراضية النص المرئي في الصفحة الرئيسية
   assert.equal(DEFAULT_SITE_CONTENT.hero.titleLine2, 'للمفروشات والستائر');
   assert.equal(DEFAULT_SITE_CONTENT.footer.subTagline, 'راحة ملكية تستحقها في كل تفصيلة');
@@ -187,6 +190,9 @@ test('legacy stored site content upgrades cleanly to the new schema', () => {
   assert.equal(parsed.curtains.fabrics.length, DEFAULT_SITE_CONTENT.curtains.fabrics.length);
   assert.equal(parsed.protector.title, DEFAULT_SITE_CONTENT.protector.title);
   assert.equal(parsed.pillows.ctaText, DEFAULT_SITE_CONTENT.pillows.ctaText);
+  // حقول الصورة الجديدة تُملأ تلقائياً للحمولات القديمة (تُخفى حتى يُرفع لها صور).
+  assert.equal(parsed.protector.image, '');
+  assert.equal(parsed.pillows.image, '');
   assert.equal(
     parsed.testimonials.ratingAverage,
     DEFAULT_SITE_CONTENT.testimonials.ratingAverage
