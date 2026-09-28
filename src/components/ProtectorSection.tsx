@@ -1,13 +1,13 @@
 import { BadgeCheck, Check, Droplets, Feather, Phone, Ruler, Sparkles } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import { whatsappLink } from "@/data/site";
-import { PRODUCTS_CATALOG } from "@/data/products";
+import type { Product } from "@/data/products";
 
 /** أيقونة لكل ميزة في نفس ترتيب المميزات داخل الكتالوج */
 const FEATURE_ICONS = [Droplets, Feather, Ruler, Sparkles];
 
-export default function ProtectorSection() {
-  const protector = PRODUCTS_CATALOG.find((p) => p.id === "medical-mattress-protector");
+export default function ProtectorSection({ product }: { product?: Product }) {
+  const protector = product;
 
   if (!protector) return null;
 

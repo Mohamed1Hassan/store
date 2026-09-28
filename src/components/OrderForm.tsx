@@ -5,7 +5,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import confetti from "canvas-confetti";
 import { Check, Phone, Send, ShieldCheck, Truck } from "lucide-react";
 import SectionHeading from "./SectionHeading";
-import { PRODUCTS_CATALOG } from "@/data/products";
+import type { Product } from "@/data/products";
 import { PHONE_DISPLAY, PHONE_TEL, STORE_HOURS, whatsappLink } from "@/data/site";
 import { trackEvent } from "@/lib/analytics";
 
@@ -44,7 +44,7 @@ const ORDER_STEPS = [
 
 const CUSTOM_PRODUCT = "تفصيل خاص / استفسار آخر";
 
-export default function OrderForm() {
+export default function OrderForm({ products }: { products: Product[] }) {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [sent, setSent] = useState(false);
@@ -230,7 +230,7 @@ export default function OrderForm() {
                 className={`${fieldClass(Boolean(errors.product))} [color-scheme:dark]`}
               >
                 <option value="">— اختر المنتج —</option>
-                {PRODUCTS_CATALOG.map((product) => (
+                {products.map((product) => (
                   <option key={product.id} value={`${product.name} (${product.price})`}>
                     {product.name} — {product.price}
                   </option>

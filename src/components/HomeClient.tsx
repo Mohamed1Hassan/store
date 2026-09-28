@@ -22,6 +22,7 @@ import Footer from "@/components/Footer";
 import CinematicSuiteBanner from "@/components/CinematicSuiteBanner";
 import PromoCountdownBar from "@/components/PromoCountdownBar";
 import dynamic from "next/dynamic";
+import type { Product } from "@/data/products";
 
 const OrderForm = dynamic(() => import("@/components/OrderForm"), { ssr: false });
 const WhatsAppFloatButton = dynamic(() => import("@/components/WhatsAppFloatButton"), { ssr: false });
@@ -40,7 +41,7 @@ const HERO_FEATURES = [
 
 const WHATSAPP_LINK = whatsappLink(DEFAULT_ORDER_MESSAGE);
 
-export default function HomeClient() {
+export default function HomeClient({ products }: { products: Product[] }) {
   const [activeCategory, setActiveCategory] = useState<CategoryId>("room");
 
   const scrollToSection = (id: string) => {
@@ -159,13 +160,13 @@ export default function HomeClient() {
       </div>
 
       {/* MATTRESS PROTECTOR SECTION (كافر المراتب) */}
-      <ProtectorSection />
+      <ProtectorSection product={products.find((p) => p.id === "medical-mattress-protector")} />
 
       {/* PILLOWS & BEDDING SECTION */}
-      <PillowsSection />
+      <PillowsSection product={products.find((p) => p.id === "hotel-pillow-suite")} />
 
       {/* FULL PRODUCTS CATALOG */}
-      <ProductsGrid />
+      <ProductsGrid products={products} />
 
       {/* CUSTOMER TESTIMONIALS */}
       <Testimonials />
@@ -174,7 +175,7 @@ export default function HomeClient() {
       <FaqSection />
 
       {/* ORDER FORM */}
-      <OrderForm />
+      <OrderForm products={products} />
 
 
       {/* FOOTER */}

@@ -1,15 +1,15 @@
 import { BadgeCheck, Check, Feather, Phone, ShieldCheck, Star } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import { whatsappLink } from "@/data/site";
-import { PRODUCTS_CATALOG } from "@/data/products";
+import type { Product } from "@/data/products";
 
 /** أيقونة لكل ميزة في نفس ترتيب المميزات داخل الكتالوج */
 const FEATURE_ICONS = [Feather, Star, ShieldCheck, BadgeCheck];
 
 const HIGHLIGHTS = ["قطن مصري 100%", "مضادة للبكتيريا", "تفصيل حسب المقاس"];
 
-export default function PillowsSection() {
-  const pillows = PRODUCTS_CATALOG.find((p) => p.id === "hotel-pillow-suite");
+export default function PillowsSection({ product }: { product?: Product }) {
+  const pillows = product;
 
   if (!pillows) return null;
 

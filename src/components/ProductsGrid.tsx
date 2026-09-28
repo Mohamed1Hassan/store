@@ -5,14 +5,14 @@ import Link from "next/link";
 import Image from "next/image";
 import SectionHeading from "./SectionHeading";
 import { SITE_URL, whatsappLink } from "@/data/site";
-import { PRODUCTS_CATALOG } from "@/data/products";
+import type { Product } from "@/data/products";
 import { useCartStore } from "@/lib/cart-store";
 
 /** بيانات منظمة لمحركات البحث: كل منتج في الكتالوج كـ Product + Offer */
-const PRODUCTS_JSON_LD = {
+const buildProductsJsonLd = (products: Product[]) => ({
   "@context": "https://schema.org",
   "@type": "ItemList",
-  itemListElement: PRODUCTS_CATALOG.map((product, index) => ({
+  itemListElement: products.map((product, index) => ({
     "@type": "ListItem",
     position: index + 1,
     item: {
@@ -20,6 +20,7 @@ const PRODUCTS_JSON_LD = {
       name: product.name,
       description: product.description,
       category: product.category,
+      image: product.image,
       url: `${SITE_URL}/#products-section`,
       offers: {
         "@type": "Offer",
@@ -30,11 +31,12 @@ const PRODUCTS_JSON_LD = {
       },
     },
   })),
-};
+});
 
 /** شبكة كتالوج المنتجات الكامل بالأسعار وأزرار الطلب */
-export default function ProductsGrid() {
+export default function ProductsGrid({ products }: { products: Product[] }) {
   const addItem = useCartStore((s) => s.addItem);
+  const PRODUCTS_JSON_LD = buildProductsJsonLd(products);
   return (
     <section
       id="products-section"
@@ -55,7 +57,7 @@ export default function ProductsGrid() {
         />
 
         <div className="flex overflow-x-auto snap-x snap-mandatory gap-5 pb-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          {PRODUCTS_CATALOG.map((product) => (
+          {products.map((product) => (
             <article
               key={product.id}
               className="min-w-[85vw] sm:min-w-[60vw] md:min-w-0 snap-center flex flex-col p-6 rounded-3xl bg-[#0b0e17] border border-white/5 hover:border-[#d4af37]/40 hover:bg-[#0e121c] hover:shadow-2xl hover:shadow-[#d4af37]/10 transition-all duration-300 relative overflow-hidden"
