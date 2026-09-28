@@ -44,7 +44,14 @@ export async function priceCart(
     if (product.available === false) {
       return { ok: false, error: `المنتج «${product.name}» غير متوفر حالياً — أزاله من السلة.` };
     }
-    amount += product.priceValue * item.quantity;
+    let unitPrice = product.priceValue;
+    if (item.size && product.sizes && product.sizes.length > 0) {
+      const matchedSize = product.sizes.find(s => s.label === item.size);
+      if (matchedSize) {
+        unitPrice = matchedSize.priceValue;
+      }
+    }
+    amount += unitPrice * item.quantity;
     lines.push(
       `${product.name} (الكمية: ${item.quantity}${item.size ? ` - المقاس: ${item.size}` : ""})`
     );

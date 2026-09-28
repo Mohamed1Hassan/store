@@ -46,6 +46,7 @@ model Product {
   description   String
   features      String[] // Array of strings in Postgres
   image         String?
+  sizes         Json?
   available     Boolean  @default(true)
   displayOrder  Int      @default(0)
   createdAt     DateTime @default(now())
@@ -56,31 +57,39 @@ model Product {
 }
 
 model Lead {
-  id          String     @id @default(uuid())
-  trackingCode String?   @unique
-  name        String
-  phone       String
-  product     String
-  size        String?
-  notes       String?
-  source      String?
-  status      LeadStatus @default(NEW)
-  /** الإجمالي بالجنيه — يحسبه السيرفر من أسعار القاعدة (لا يُقبل من العميل) */
-  amount      Float?
-  /** أسطر السلة [{slug, quantity, size}] — يُرسلها العميل بدون أسعار */
-  items       Json?
+  id            String        @id @default(uuid())
+  trackingCode  String?       @unique
+  name          String
+  phone         String
+  product       String
+  size          String?
+  notes         String?
+  source        String?
+  status        LeadStatus    @default(NEW)
+  /**
+   * الإجمالي بالجنيه — يحسبه السيرفر من أسعار القاعدة (لا يُقبل من العميل)
+   */
+  amount        Float?
+  /**
+   * أسطر السلة [{slug, quantity, size}] — يُرسلها العميل بدون أسعار
+   */
+  items         Json?
   // ── P2: الدفع والشحن ──
-  /** "cod" أو معرّف طريقة التحويل المفعّلة عند الأدمن */
+  /**
+   * /** "cod" أو معرّف طريقة التحويل المفعّلة عند الأدمن
+   */
   paymentMethod String?
   paymentStatus PaymentStatus @default(UNPAID)
   paidAt        DateTime?
-  /** رابط صورة إيصال التحويل (public/uploads/receipts أو Cloudinary) */
-  receiptUrl  String?
-  governorate String?
-  city        String?
-  address     String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  /**
+   * رابط صورة إيصال التحويل (public/uploads/receipts أو Cloudinary)
+   */
+  receiptUrl    String?
+  governorate   String?
+  city          String?
+  address       String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   @@index([status])
   @@index([phone])
@@ -125,4 +134,3 @@ model DeletedProduct {
   slug      String   @id
   deletedAt DateTime @default(now())
 }
-

@@ -1,6 +1,14 @@
 /** تبويبات الموقع وأقسام المعرض */
 export type CategoryId = "room" | "mattress" | "curtains" | "pillows" | "specs" | "duvet";
 
+export interface ProductSize {
+  label: string;
+  price: string;
+  priceValue: number;
+  originalPrice?: string;
+  savingLabel?: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -15,6 +23,7 @@ export interface Product {
   description: string;
   features: string[];
   image?: string;
+  sizes?: ProductSize[];
 }
 
 export const PRODUCTS_CATALOG: Product[] = [
@@ -53,6 +62,13 @@ export const PRODUCTS_CATALOG: Product[] = [
       "قماش جاكار بلجيكي معالج ضد البكتيريا"
     ],
     image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
+    sizes: [
+      { label: "100×200 سم", price: "5,800 ج.م", priceValue: 5800 },
+      { label: "120×200 سم", price: "7,000 ج.م", priceValue: 7000 },
+      { label: "160×200 سم", price: "9,400 ج.م", priceValue: 9400 },
+      { label: "180×200 سم", price: "10,500 ج.م", priceValue: 10500 },
+      { label: "200×200 سم", price: "11,800 ج.م", priceValue: 11800 },
+    ],
   },
   {
     id: "medical-mattress-protector",
@@ -69,6 +85,13 @@ export const PRODUCTS_CATALOG: Product[] = [
       "سطح قطني ناعم وصامت بدون أي أصوات مزعجة",
       "جوانب مطاطية كاملة تثبت بإحكام لكافة الارتفاعات",
       "قابل للغسيل المتكرر في الغسالة الأوتوماتيكية"
+    ],
+    sizes: [
+      { label: "100×200 سم", price: "550 ج.م", priceValue: 550 },
+      { label: "120×200 سم", price: "650 ج.م", priceValue: 650 },
+      { label: "160×200 سم", price: "850 ج.م", priceValue: 850 },
+      { label: "180×200 سم", price: "950 ج.م", priceValue: 950 },
+      { label: "200×200 سم", price: "1,100 ج.م", priceValue: 1100 },
     ],
   },
   {

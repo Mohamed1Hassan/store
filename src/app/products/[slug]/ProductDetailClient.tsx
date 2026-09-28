@@ -22,11 +22,25 @@ import CartDrawer from "@/components/CartDrawer";
 import WhatsAppFloatButton from "@/components/WhatsAppFloatButton";
 
 export default function ProductDetailClient({ product }: { product: StoredProduct }) {
-  const [selectedSize, setSelectedSize] = useState<string>("مقاس قياسي");
+  const hasSizes = product.sizes && product.sizes.length > 0;
+  const sizeOptions = hasSizes
+    ? product.sizes!.map((s) => s.label)
+    : ["مقاس قياسي", "تفصيل خاص"];
+
+  const [selectedSize, setSelectedSize] = useState<string>(sizeOptions[0]);
   const [quantity, setQuantity] = useState(1);
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
   const productSlug = product.slug || product.id;
+
+  const currentSizeObj = hasSizes
+    ? product.sizes!.find((s) => s.label === selectedSize)
+    : null;
+
+  const displayPrice = currentSizeObj ? currentSizeObj.price : product.price;
+  const displayPriceValue = currentSizeObj ? currentSizeObj.priceValue : product.priceValue;
+  const displayOriginalPrice = currentSizeObj ? currentSizeObj.originalPrice : product.originalPrice;
+  const displaySavingLabel = currentSizeObj ? currentSizeObj.savingLabel : product.savingLabel;
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -40,7 +54,7 @@ export default function ProductDetailClient({ product }: { product: StoredProduc
       "@type": "Offer",
       url: `${SITE_URL}/products/${productSlug}`,
       priceCurrency: "EGP",
-      price: product.priceValue,
+      price: displayPriceValue,
       availability: product.available === false
         ? "https://schema.org/OutOfStock"
         : "https://schema.org/InStock",
@@ -52,17 +66,19 @@ export default function ProductDetailClient({ product }: { product: StoredProduc
       {
         id: productSlug,
         slug: productSlug,
+        image: product.image,
         name: product.name,
-        price: product.price,
-        priceValue: product.priceValue,
+        price: displayPrice,
+        priceValue: displayPriceValue,
         size: selectedSize,
       },
       quantity
     );
+    openCart();
   };
 
   const productWhatsAppUrl = whatsappLink(
-    `مرحباً مفروشات السلطان، أود طلب: ${product.name} (المقاس: ${selectedSize}) - السعر: ${product.price}`
+    `مرحباً مفروشات السلطان، أود طلب: ${product.name} (المقاس: ${selectedSize}) - السعر: ${displayPrice}`
   );
 
   return (
@@ -168,13 +184,13 @@ export default function ProductDetailClient({ product }: { product: StoredProduc
             </h2>
 
             <div className="flex items-baseline gap-4 p-4 rounded-2xl bg-[#0b0e17] border border-[#d4af37]/30 mb-6">
-              <span className="text-3xl font-black text-[#ffd700] font-mono">{product.price}</span>
-              {product.originalPrice && (
-                <span className="text-sm text-zinc-300 line-through">{product.originalPrice}</span>
+              <span className="text-3xl font-black text-[#ffd700] font-mono">{displayPrice}</span>
+              {displayOriginalPrice && (
+                <span className="text-sm text-zinc-300 line-through">{displayOriginalPrice}</span>
               )}
-              {product.savingLabel && (
+              {displaySavingLabel && (
                 <span className="text-xs font-bold text-emerald-400 mr-auto">
-                  وفرت {product.savingLabel}
+                  وفرت {displaySavingLabel}
                 </span>
               )}
             </div>
@@ -196,11 +212,11 @@ export default function ProductDetailClient({ product }: { product: StoredProduc
               </ul>
             </div>
 
-            <div className="mb-6">
-              <label className="block text-xs font-bold text-zinc-300 mb-2">المقاس المطلوب:</label>
-              <div className="flex flex-wrap gap-2">
-                {["مقاس قياسي", "120 × 200 سم", "160 × 200 سم", "180 × 200 سم", "تفصيل خاص"].map(
-                  (size) => (
+            {hasSizes && (
+              <div className="mb-6">
+                <label className="block text-xs font-bold text-zinc-300 mb-2">المقاس المطلوب:</label>
+                <div className="flex flex-wrap gap-2">
+                  {sizeOptions.map((size) => (
                     <button
                       key={size}
                       type="button"
@@ -213,10 +229,10 @@ export default function ProductDetailClient({ product }: { product: StoredProduc
                     >
                       {size}
                     </button>
-                  )
-                )}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="space-y-3 pt-4 border-t border-white/10">
               <div className="flex items-center gap-3">
