@@ -1,5 +1,5 @@
 /** تبويبات الموقع وأقسام المعرض */
-export type CategoryId = "room" | "mattress" | "curtains" | "pillows" | "specs";
+export type CategoryId = "room" | "mattress" | "curtains" | "pillows" | "specs" | "duvet";
 
 export interface Product {
   id: string;
@@ -144,4 +144,23 @@ export const PRODUCTS_CATALOG: Product[] = [
     ],
     image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
   },
+  {
+    id: "sultan-royal-duvet",
+    name: "لحاف السلطان الملكي الشتوي الفاخر (Royal Winter Duvet)",
+    category: "اللحاف الملكي",
+    tag: "دفء ملكي طوال الليل",
+    price: "2,800 ج.م",
+    priceValue: 2800,
+    originalPrice: "3,600 ج.م",
+    savingLabel: "800 ج.م",
+    description: "لحاف ملكي فاخر بحشوة مايكروفايبر عذراء عالية الكثافة يمنحك دفئاً استثنائياً في الشتاء مع خفة لا مثيل لها، بغطاء قطن مصري ناعم الملمس.",
+    features: [
+      "حشوة مايكروفايبر عذراء 400 جرام/م² للدفء الفائق",
+      "غطاء قطن مصري 100% ناعم كالحرير",
+      "تقنية anti-clump تمنع تجمع الحشوة",
+      "مضاد للبكتيريا وعثة الفراش وآمن للبشرة الحساسة",
+    ],
+    image: "https://res.cloudinary.com/aogjvfdt/image/upload/v1790637937/WhatsApp_Image_2026-09-28_at_2.58.11_PM.jpg",
+  },
 ];
+

@@ -223,6 +223,25 @@ export const siteContentSchema = z.object({
       highlights: ["قطن مصري 100%", "مضادة للبكتيريا", "تفصيل حسب المقاس"],
       image: "",
     }),
+  duvet: z
+    .object({
+      badge: z.string().default("دفء ملكي طوال الشتاء"),
+      title: z.string().default("لحاف السلطان"),
+      accent: z.string().default("الملكي الفاخر"),
+      ctaText: z.string().default("اطلب اللحاف الملكي الآن"),
+      highlights: z
+        .array(z.string())
+        .default(["مايكروفايبر عذراء", "قطن مصري 100%", "ضد الحساسية"]),
+      image: z.string().default(""),
+    })
+    .default({
+      badge: "دفء ملكي طوال الشتاء",
+      title: "لحاف السلطان",
+      accent: "الملكي الفاخر",
+      ctaText: "اطلب اللحاف الملكي الآن",
+      highlights: ["مايكروفايبر عذراء", "قطن مصري 100%", "ضد الحساسية"],
+      image: "https://res.cloudinary.com/aogjvfdt/image/upload/v1790637937/WhatsApp_Image_2026-09-28_at_2.58.11_PM.jpg",
+    }),
   footer: z
     .object({
       tagline: z.string().default(

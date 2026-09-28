@@ -24,6 +24,7 @@ import ContentFooterTab from "./ContentFooterTab";
 import ContentContactFaqTab from "./ContentContactFaqTab";
 import ContentProtectorTab from "./ContentProtectorTab";
 import ContentPillowsTab from "./ContentPillowsTab";
+import ContentDuvetTab from "./ContentDuvetTab";
 
 interface Props {
   initialContent: SiteContent | null;
@@ -36,6 +37,7 @@ type SubTabId =
   | "curtains"
   | "protector"
   | "pillows"
+  | "duvet"
   | "testimonials"
   | "footer"
   | "contact";
@@ -46,6 +48,7 @@ const SUB_TABS: { id: SubTabId; label: string; icon: typeof Megaphone }[] = [
   { id: "curtains", label: "تفصيل الستائر الملكية", icon: Sparkles },
   { id: "protector", label: "كافر وواقي المراتب", icon: Droplets },
   { id: "pillows", label: "المفروشات والوسائد", icon: Feather },
+  { id: "duvet", label: "لحاف السلطان الملكي", icon: Feather },
   { id: "testimonials", label: "آراء العملاء والتقييمات", icon: MessageSquare },
   { id: "footer", label: "الفوتر والضمانات الملكية", icon: ShieldCheck },
   { id: "contact", label: "التواصل والأسئلة الشائعة", icon: Phone },
@@ -163,6 +166,9 @@ export default function AdminContentTab({ initialContent, onRefresh }: Props) {
       )}
       {activeSubTab === "pillows" && (
         <ContentPillowsTab content={content} onChange={setContent} />
+      )}
+      {activeSubTab === "duvet" && (
+        <ContentDuvetTab content={content} onChange={setContent} />
       )}
       {activeSubTab === "testimonials" && (
         <ContentTestimonialsTab content={content} onChange={setContent} />

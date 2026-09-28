@@ -23,6 +23,7 @@ export default function Navbar({ onSelectCategory, activeCategory }: NavbarProps
     { id: "mattress", label: "المراتب" },
     { id: "curtains", label: "الستائر" },
     { id: "pillows", label: "المفروشات" },
+    { id: "duvet", label: "الحاف" },
     { id: "specs", label: "كافر المراتب" },
   ];
 

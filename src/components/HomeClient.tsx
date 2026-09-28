@@ -15,6 +15,7 @@ import MattressSection from "@/components/MattressSection";
 import CurtainSection from "@/components/CurtainSection";
 import ProtectorSection from "@/components/ProtectorSection";
 import PillowsSection from "@/components/PillowsSection";
+import DuvetSection from "@/components/DuvetSection";
 import ProductsGrid from "@/components/ProductsGrid";
 import Testimonials from "@/components/Testimonials";
 import FaqSection from "@/components/FaqSection";
@@ -70,6 +71,8 @@ export default function HomeClient({ products, siteContent }: Props) {
       scrollToSection("curtains-section");
     } else if (cat === "pillows") {
       scrollToSection("pillows-section");
+    } else if (cat === "duvet") {
+      scrollToSection("duvet-section");
     } else if (cat === "specs") {
       scrollToSection("protector-section");
     } else if (cat === "room") {
@@ -185,6 +188,12 @@ export default function HomeClient({ products, siteContent }: Props) {
       <PillowsSection
         product={products.find((p) => p.id === "hotel-pillow-suite")}
         pillowsContent={siteContent?.pillows}
+      />
+
+      {/* DUVET SECTION (اللحاف الملكي) */}
+      <DuvetSection
+        product={products.find((p) => p.id === "sultan-royal-duvet")}
+        duvetContent={siteContent?.duvet}
       />
 
       {/* FULL PRODUCTS CATALOG */}
