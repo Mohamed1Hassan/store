@@ -19,11 +19,11 @@ export default function Navbar({ onSelectCategory, activeCategory }: NavbarProps
   const totalCartCount = useCartStore((s) => s.getTotalCount());
 
   const navItems: { id: CategoryId; label: string; href?: string }[] = [
-    { id: "room", label: "الرئيسية الملكية", href: "/" },
-    { id: "mattress", label: "المراتب الطبية" },
-    { id: "curtains", label: "الستائر الفاخرة" },
-    { id: "pillows", label: "المفروشات والوسائد" },
-    { id: "specs", label: "كافر المراتب والمواصفات" },
+    { id: "room", label: "الرئيسية", href: "/" },
+    { id: "mattress", label: "المراتب" },
+    { id: "curtains", label: "الستائر" },
+    { id: "pillows", label: "المفروشات" },
+    { id: "specs", label: "كافر المراتب" },
   ];
 
   return (
