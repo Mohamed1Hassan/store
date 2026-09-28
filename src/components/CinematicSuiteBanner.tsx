@@ -2,44 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play, Sparkles } from "lucide-react";
-
-/* --------------------------------  Data  -------------------------------- */
-
-interface SuiteScene {
-  id: string;
-  short: string;
-  tag: string;
-  videoSrc: string;
-  poster: string;
-  badges: string[];
-}
-
-const SUITE_SCENES: SuiteScene[] = [
-  {
-    id: "royal-suite",
-    short: "الجناح الملكي",
-    tag: "Master Presidential Suite",
-    videoSrc: "https://res.cloudinary.com/aogjvfdt/video/upload/f_auto,q_auto/v1790468749/luxury-bed-suite.mp4",
-    poster: "https://res.cloudinary.com/aogjvfdt/video/upload/f_auto,q_auto/v1790468749/luxury-bed-suite.jpg",
-    badges: ["قطن مصري 100%", "عزل كامل للضوء", "شاسيه بوكيت ألماني"],
-  },
-  {
-    id: "bespoke-curtains",
-    short: "الستائر الفاخرة",
-    tag: "Bespoke Royal Drapery",
-    videoSrc: "https://res.cloudinary.com/aogjvfdt/video/upload/f_auto,q_auto/v1790468512/curtain-sunlight.mp4",
-    poster: "https://res.cloudinary.com/aogjvfdt/video/upload/f_auto,q_auto/v1790468512/curtain-sunlight.jpg",
-    badges: ["عزل حراري وصوتي", "مقاومة للتجعد", "خياطة ليزر دقيقة"],
-  },
-  {
-    id: "ultimate-comfort",
-    short: "الراحة الملكية",
-    tag: "Orthopedic Sleep Comfort",
-    videoSrc: "https://res.cloudinary.com/aogjvfdt/video/upload/f_auto,q_auto/v1790468618/hotel-detail-4197.mp4",
-    poster: "https://res.cloudinary.com/aogjvfdt/video/upload/f_auto,q_auto/v1790468618/hotel-detail-4197.jpg",
-    badges: ["دعم فقرات الظهر", "معالجة ضد البكتيريا", "ضمان 10 سنوات"],
-  },
-];
+import type { HeroScene } from "@/schemas/site-content";
+import { DEFAULT_SUITE_SCENES } from "@/lib/site-content-defaults";
 
 /* ----------  Full-bleed veils: melt the film into the page colour  ---------- */
 
@@ -100,19 +64,20 @@ const VEILS = [
  * The footage bleeds edge to edge and melts into the page colour, with a slim
  * media bar for playback and for switching between the three showcase scenes.
  */
-export default function CinematicSuiteBanner() {
+interface Props {
+  scenes?: HeroScene[];
+}
+
+export default function CinematicSuiteBanner({ scenes: passedScenes }: Props) {
+  const scenes = passedScenes && passedScenes.length > 0 ? passedScenes : DEFAULT_SUITE_SCENES;
   const [activeIdx, setActiveIdx] = useState(0);
-  // ⚠️ منع hydration mismatch: القيمة الأولية يجب أن تطابق الخادم (true دائماً)،
-  // لا نكتشف prefers-reduced-motion إلا داخل useEffect بعد اكتمال الـ hydration.
   const [isPlaying, setIsPlaying] = useState(true);
-  /** هل دخل الهيرو نطاق الرؤية؟ (التحميل الذكي 5.2) */
   const [inView, setInView] = useState(false);
-  /** هل فشل تحميل الفيديو؟ (الرجوع للصورة الثابتة) */
   const [videoFailed, setVideoFailed] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const scene = SUITE_SCENES[activeIdx];
+  const scene = scenes[activeIdx] || scenes[0];
 
   /* 5.2: لا نحمّل الفيديو الا عند دخول الهيرو نطاق الرؤية، مع احترام prefers-reduced-motion */
   useEffect(() => {
@@ -231,7 +196,7 @@ export default function CinematicSuiteBanner() {
                 aria-label="مشاهد المعرض"
                 className="flex items-center gap-1 rounded-full border border-white/10 bg-[#07090e]/45 p-1 backdrop-blur-md"
               >
-                {SUITE_SCENES.map((item, i) => {
+                {scenes.map((item, i) => {
                   const isActive = i === activeIdx;
                   return (
                     <button

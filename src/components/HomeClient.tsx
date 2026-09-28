@@ -90,7 +90,7 @@ export default function HomeClient({ products, siteContent }: Props) {
       {/* ══ HERO · full-bleed cinematic film with the copy layered on top ══ */}
       <section className="relative flex min-h-[100svh] items-center overflow-hidden pb-36 pt-28 lg:pb-40 lg:pt-32">
         {/* Full-bleed film (edges dissolve into the page) + media bar */}
-        <CinematicSuiteBanner />
+        <CinematicSuiteBanner scenes={siteContent?.hero?.scenes} />
 
         {/* Copy */}
         <div className="pointer-events-none relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -167,12 +167,12 @@ export default function HomeClient({ products, siteContent }: Props) {
 
       {/* DETAILED MATTRESS ANATOMY SECTION */}
       <div id="mattress-section">
-        <MattressSection />
+        <MattressSection mattressContent={siteContent?.mattress} />
       </div>
 
       {/* CURTAIN FABRIC & BESPOKE TAILORING SECTION */}
       <div id="curtains-section">
-        <CurtainSection products={products} />
+        <CurtainSection products={products} curtainsContent={siteContent?.curtains} />
       </div>
 
       {/* MATTRESS PROTECTOR SECTION (كافر المراتب) */}
@@ -185,7 +185,7 @@ export default function HomeClient({ products, siteContent }: Props) {
       <ProductsGrid products={products} />
 
       {/* CUSTOMER TESTIMONIALS */}
-      <Testimonials />
+      <Testimonials testimonialsContent={siteContent?.testimonials} />
 
       {/* FAQ */}
       <FaqSection faq={siteContent?.faq} />
@@ -195,7 +195,7 @@ export default function HomeClient({ products, siteContent }: Props) {
 
 
       {/* FOOTER */}
-      <Footer />
+      <Footer footerContent={siteContent?.footer} contactContent={siteContent?.contact} />
       <WhatsAppFloatButton />
       <CartDrawer />
 

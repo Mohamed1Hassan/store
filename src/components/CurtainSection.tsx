@@ -8,8 +8,14 @@ import { CURTAIN_FABRICS, DEFAULT_FABRIC_ID } from "@/data/curtains";
 import { buildAppointmentMessage, EGYPTIAN_CITIES } from "@/schemas/appointment";
 import { trackEvent } from "@/lib/analytics";
 import type { Product } from "@/data/products";
+import type { SiteContent } from "@/schemas/site-content";
 
-export default function CurtainSection({ products = [] }: { products?: Product[] }) {
+interface Props {
+  products?: Product[];
+  curtainsContent?: SiteContent["curtains"];
+}
+
+export default function CurtainSection({ products = [], curtainsContent }: Props) {
   const [selectedFabric, setSelectedFabric] = useState(DEFAULT_FABRIC_ID);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -17,6 +23,15 @@ export default function CurtainSection({ products = [] }: { products?: Product[]
   const [formError, setFormError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [booked, setBooked] = useState(false);
+
+  const badge = curtainsContent?.badge || "تفصيل وتصميم حسب المقاس";
+  const title = curtainsContent?.title || "ستائر";
+  const accent = curtainsContent?.accent || "السلطان الفاخرة";
+  const description =
+    curtainsContent?.description ||
+    "نقدم لكم أرقى الأقمشة العالمية المفصلة خصيصاً على أيدي أمهر فناني الديكور والستائر الكلاسيكية والمودرن.";
+  const freeInspectionNote =
+    curtainsContent?.freeInspectionNote || "خدمة المعاينة المنزلية ورفع المقاسات مجانية بالكامل داخل القاهرة والجيزة";
 
   // خريطة لربط نوع القماش بمنتج الستارة المقابل له في الكتالوج المحدث من الأدمن
   const fabricToSlugMap: Record<string, string> = {
@@ -101,14 +116,14 @@ export default function CurtainSection({ products = [] }: { products?: Product[]
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
           <div>
             <span className="text-[#ffd700] text-xs font-bold tracking-widest uppercase flex items-center gap-2">
-              <Scissors className="w-4 h-4" /> تفصيل وتصميم حسب المقاس
+              <Scissors className="w-4 h-4" /> {badge}
             </span>
             <h2 className="text-3xl md:text-5xl font-black text-white font-serif mt-2">
-              ستائر <span className="gold-gradient-text">السلطان الفاخرة</span>
+              {title} <span className="gold-gradient-text">{accent}</span>
             </h2>
           </div>
           <p className="text-zinc-400 text-sm md:text-base max-w-md">
-            نقدم لكم أرقى الأقمشة العالمية المفصلة خصيصاً على أيدي أمهر فناني الديكور والستائر الكلاسيكية والمودرن.
+            {description}
           </p>
         </div>
 
@@ -178,7 +193,7 @@ export default function CurtainSection({ products = [] }: { products?: Product[]
                 <Scissors className="w-7 h-7" />
               </div>
               <div>
-                <h4 className="text-lg font-bold text-white">خدمة المعاينة المنزلية ورفع المقاسات مجاناً</h4>
+                <h4 className="text-lg font-bold text-white">{freeInspectionNote}</h4>
                 <p className="text-xs md:text-sm text-zinc-400">
                   فريقنا المتخصص يصلك بأحدث كتالوجات الأقمشة ليقيس النوافذ ويقترح أفضل تصميم يلائم صالونك وغرفتك.
                 </p>

@@ -4,13 +4,40 @@ import { useState } from "react";
 import { Crown, Layers, Phone } from "lucide-react";
 import { whatsappLink } from "@/data/site";
 import { MATTRESS_LAYERS, MATTRESS_MODEL, MATTRESS_SPECS } from "@/data/mattress";
+import type { SiteContent } from "@/schemas/site-content";
 
 const MATTRESS_ORDER_LINK = whatsappLink(
   "مرحباً مفروشات السلطان، أود الاستفسار عن مرتبة السلطان رويال بوكيت والكافر المجاني معها"
 );
 
-export default function MattressSection() {
+interface Props {
+  mattressContent?: SiteContent["mattress"];
+}
+
+export default function MattressSection({ mattressContent }: Props) {
   const [activeLayer, setActiveLayer] = useState(0);
+
+  const badge = mattressContent?.badge || "هندسة النوم الملكي";
+  const title = mattressContent?.title || "مراتب";
+  const accent = mattressContent?.accent || "السلطان الطبية";
+  const description =
+    mattressContent?.description ||
+    "صُممت بعناية فائقة لتمنحك نوماً هنيئاً وراحة لا تضاهى. هيكل مدعم بنوابض منفصلة وتقنيات العزل الحراري المتقدمة.";
+
+  const modelName = mattressContent?.modelName || MATTRESS_MODEL.name;
+  const modelEyebrow = mattressContent?.modelEyebrow || MATTRESS_MODEL.eyebrow;
+  const price = mattressContent?.price || MATTRESS_MODEL.price;
+  const oldPrice = mattressContent?.oldPrice || MATTRESS_MODEL.oldPrice;
+
+  const layers =
+    mattressContent?.layers && mattressContent.layers.length > 0
+      ? mattressContent.layers
+      : MATTRESS_LAYERS;
+
+  const specs =
+    mattressContent?.specs && mattressContent.specs.length > 0
+      ? mattressContent.specs
+      : MATTRESS_SPECS;
 
   return (
     <section className="py-20 relative bg-[#090d16] border-b border-[#d4af37]/20">
@@ -27,13 +54,13 @@ export default function MattressSection() {
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#d4af37]/10 border border-[#d4af37]/30 text-[#ffd700] text-xs font-bold mb-4">
-            <Crown className="w-3.5 h-3.5" /> هندسة النوم الملكي
+            <Crown className="w-3.5 h-3.5" /> {badge}
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white font-serif mb-4 leading-tight">
-            مراتب <span className="gold-gradient-text">السلطان الطبية</span>
+            {title} <span className="gold-gradient-text">{accent}</span>
           </h2>
           <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
-            صُممت بعناية فائقة لتمنحك نوماً هنيئاً وراحة لا تضاهى. هيكل مدعم بنوابض منفصلة وتقنيات العزل الحراري المتقدمة.
+            {description}
           </p>
         </div>
 
@@ -47,7 +74,7 @@ export default function MattressSection() {
               طبقات المرتبة من الداخل للخارج:
             </h3>
 
-            {MATTRESS_LAYERS.map((layer, idx) => {
+            {layers.map((layer, idx) => {
               const isSelected = activeLayer === idx;
               return (
                 <button
@@ -84,18 +111,18 @@ export default function MattressSection() {
             
             <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
               <div>
-                <span className="text-xs text-[#c8aa6e] font-semibold block">{MATTRESS_MODEL.eyebrow}</span>
-                <h3 className="text-2xl font-black text-white font-serif">{MATTRESS_MODEL.name}</h3>
+                <span className="text-xs text-[#c8aa6e] font-semibold block">{modelEyebrow}</span>
+                <h3 className="text-2xl font-black text-white font-serif">{modelName}</h3>
               </div>
               <div className="text-right">
-                <span className="text-xs text-zinc-400 block line-through">{MATTRESS_MODEL.oldPrice}</span>
-                <span className="text-2xl font-black text-[#ffd700]">{MATTRESS_MODEL.price}</span>
+                <span className="text-xs text-zinc-400 block line-through">{oldPrice}</span>
+                <span className="text-2xl font-black text-[#ffd700]">{price}</span>
               </div>
             </div>
 
             {/* Features Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-              {MATTRESS_SPECS.map((feat, i) => (
+              {specs.map((feat, i) => (
                 <div key={i} className="p-3 rounded-xl bg-black/40 border border-white/5">
                   <span className="text-[10px] text-zinc-400 block">{feat.label}</span>
                   <span className="text-xs font-bold text-zinc-100">{feat.val}</span>

@@ -1,8 +1,35 @@
 import Image from "next/image";
 import { Crown, Phone, MapPin, Clock, ShieldCheck, Sparkles } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_TEL, STORE_HOURS } from "@/data/site";
+import type { SiteContent } from "@/schemas/site-content";
 
-export default function Footer() {
+interface Props {
+  footerContent?: SiteContent["footer"];
+  contactContent?: SiteContent["contact"];
+}
+
+const DEFAULT_GUARANTEES = [
+  "ضمان استبدال مباشر 10 سنوات",
+  "خامات معالجة طبياً ضد عتة الفراش",
+  "تجربة نوم مريحة وداعمة للفقرات",
+  "فريق فني متخصص لرفع المقاسات والتركيب",
+];
+
+export default function Footer({ footerContent, contactContent }: Props) {
+  const tagline =
+    footerContent?.tagline ||
+    "عنوان الفخامة والجودة العالية لأكثر من 20 عاماً في صناعة المراتب الطبية وتفصيل أرقى الستائر والمفروشات الفندقية والمنزلية.";
+  const subTagline = footerContent?.subTagline || "راحة ملكية تستحقها في كل تفصيلة";
+  const guarantees =
+    footerContent?.guarantees && footerContent.guarantees.length > 0
+      ? footerContent.guarantees
+      : DEFAULT_GUARANTEES;
+
+  const phoneDisplay = contactContent?.phoneDisplay || PHONE_DISPLAY;
+  const storeHours = contactContent?.storeHours || STORE_HOURS;
+  const location =
+    contactContent?.location || "معارضنا في خدمة عملائنا بأرقى المواقع ونوفر الشحن لكافة المحافظات";
+
   return (
     <footer className="bg-[#05070a] border-t border-[#d4af37]/20 pt-16 pb-12 text-zinc-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,11 +50,11 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-xs leading-relaxed text-zinc-400">
-              عنوان الفخامة والجودة العالية لأكثر من 20 عاماً في صناعة المراتب الطبية وتفصيل أرقى الستائر والمفروشات الفندقية والمنزلية.
+              {tagline}
             </p>
             <div className="flex items-center gap-2 text-xs text-[#ffd700]">
               <Sparkles className="w-4 h-4" />
-              <span>راحة ملكية تستحقها في كل تفصيلة</span>
+              <span>{subTagline}</span>
             </div>
           </div>
 
@@ -55,22 +82,12 @@ export default function Footer() {
               ضمانات السلطان
             </h3>
             <ul className="space-y-2.5 text-xs">
-              <li className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#ffd700]" />
-                <span>ضمان استبدال مباشر 10 سنوات</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#ffd700]" />
-                <span>خامات معالجة طبياً ضد عتة الفراش</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#ffd700]" />
-                <span>تجربة نوم مريحة وداعمة للفقرات</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#ffd700]" />
-                <span>فريق فني متخصص لرفع المقاسات والتركيب</span>
-              </li>
+              {guarantees.map((item, idx) => (
+                <li key={idx} className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-[#ffd700]" />
+                  <span>{item}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -82,15 +99,15 @@ export default function Footer() {
             <div className="space-y-3 text-xs">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#ffd700] shrink-0 mt-0.5" />
-                <span>معارضنا في خدمة عملائنا بأرقى المواقع ونوفر الشحن لكافة المحافظات</span>
+                <span>{location}</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Clock className="w-4 h-4 text-[#ffd700] shrink-0" />
-                <span>{STORE_HOURS}</span>
+                <span>{storeHours}</span>
               </div>
               <a href={`tel:${PHONE_TEL}`} className="flex items-center gap-2.5 hover:text-[#ffd700] transition">
                 <Phone className="w-4 h-4 text-[#ffd700] shrink-0" />
-                <span dir="ltr">{PHONE_DISPLAY}</span>
+                <span dir="ltr">{phoneDisplay}</span>
               </a>
             </div>
           </div>

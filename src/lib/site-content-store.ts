@@ -2,43 +2,10 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { prisma } from "./db";
 import { siteContentSchema, type SiteContent } from "@/schemas/site-content";
-import { FAQ_ITEMS } from "@/data/faq";
-import { PHONE_DISPLAY, STORE_HOURS, WHATSAPP_NUMBER } from "@/data/site";
+import { DEFAULT_SITE_CONTENT, DEFAULT_SUITE_SCENES } from "./site-content-defaults";
 
-export const DEFAULT_SITE_CONTENT: SiteContent = {
-  announcement: {
-    badge: "عرض اليوم:",
-    text: "كافر مراتب مجاني + خصم حتى",
-    highlight: "5,100 ج.م",
-    suffix: "على الغرفة المتكاملة",
-    enabled: true,
-  },
-  hero: {
-    badge: "الاسم الأول في عالم الفخامة والراحة الملكية",
-    titleLine1: "السلطان",
-    titleLine2: "للمفروشات والستائر",
-    titleLine3: "وكافر المراتب الطبية",
-    description:
-      "نصنع لك أرقى غرف النوم الملكية بتوليفة استثنائية من المراتب الطبية بنوابض منفصلة، والستائر الفاخرة المفصلة على مقاسك، والمفروشات الفندقية الحريرية.",
-    ctaText: "تواصل واطلب مقاسك الآن",
-    features: [
-      { label: "ضمان استبدال 10 سنوات" },
-      { label: "تفصيل فوري لجميع المقاسات" },
-      { label: "توصيل ومعاينة مجانية" },
-      { label: "كافر هدية مع كل مرتبة" },
-    ],
-  },
-  contact: {
-    phoneDisplay: PHONE_DISPLAY,
-    whatsappNumber: WHATSAPP_NUMBER,
-    storeHours: STORE_HOURS,
-    location: "القاهرة، جمهورية مصر العربية",
-  },
-  faq: FAQ_ITEMS.map((item) => ({
-    question: item.question,
-    answer: item.answer,
-  })),
-};
+// نُعيد التصدير للتوافق مع الاستيرادات القديمة (server-only).
+export { DEFAULT_SITE_CONTENT, DEFAULT_SUITE_SCENES };
 
 const DATA_DIR = path.join(process.cwd(), ".data");
 const CONTENT_FILE = path.join(DATA_DIR, "site-content.json");
@@ -55,7 +22,10 @@ export async function getSiteContent(): Promise<SiteContent> {
         where: { id: "default" },
       });
       if (rec && rec.data) {
-        const parsed = siteContentSchema.safeParse(rec.data);
+        const parsed = siteContentSchema.safeParse({
+          ...DEFAULT_SITE_CONTENT,
+          ...(typeof rec.data === "object" && rec.data !== null ? (rec.data as object) : {}),
+        });
         if (parsed.success) {
           return parsed.data;
         }
@@ -67,7 +37,11 @@ export async function getSiteContent(): Promise<SiteContent> {
 
   try {
     const raw = await readFile(CONTENT_FILE, "utf-8");
-    const parsed = siteContentSchema.safeParse(JSON.parse(raw));
+    const json = JSON.parse(raw);
+    const parsed = siteContentSchema.safeParse({
+      ...DEFAULT_SITE_CONTENT,
+      ...(typeof json === "object" && json !== null ? json : {}),
+    });
     if (parsed.success) {
       return parsed.data;
     }
@@ -90,6 +64,28 @@ export async function saveSiteContent(partial: Partial<SiteContent>): Promise<Si
     hero: {
       ...current.hero,
       ...(partial.hero || {}),
+      scenes: partial.hero?.scenes !== undefined ? partial.hero.scenes : current.hero.scenes,
+      features: partial.hero?.features !== undefined ? partial.hero.features : current.hero.features,
+    },
+    mattress: {
+      ...current.mattress,
+      ...(partial.mattress || {}),
+      layers: partial.mattress?.layers !== undefined ? partial.mattress.layers : current.mattress.layers,
+      specs: partial.mattress?.specs !== undefined ? partial.mattress.specs : current.mattress.specs,
+    },
+    curtains: {
+      ...current.curtains,
+      ...(partial.curtains || {}),
+    },
+    testimonials: {
+      ...current.testimonials,
+      ...(partial.testimonials || {}),
+      items: partial.testimonials?.items !== undefined ? partial.testimonials.items : current.testimonials.items,
+    },
+    footer: {
+      ...current.footer,
+      ...(partial.footer || {}),
+      guarantees: partial.footer?.guarantees !== undefined ? partial.footer.guarantees : current.footer.guarantees,
     },
     contact: {
       ...current.contact,

@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { leadSchema, normalizeEgyptianPhone, buildLeadMessage } from '../src/schemas/lead';
 import { appointmentSchema, FABRIC_IDS } from '../src/schemas/appointment';
+import { siteContentSchema } from '../src/schemas/site-content';
+import { DEFAULT_SITE_CONTENT, DEFAULT_SUITE_SCENES } from '../src/lib/site-content-defaults';
 
 test('normalizeEgyptianPhone removes spaces and dashes', () => {
   assert.equal(normalizeEgyptianPhone('01055280865'), '01055280865');
@@ -108,3 +110,93 @@ test('appointmentSchema rejects invalid fabricId', () => {
 test('appointmentSchema has expected fabrics', () => {
   assert.deepEqual(Array.from(FABRIC_IDS), ['velvet', 'linen', 'chiffon']);
 });
+
+test('siteContentSchema validates new sections and defaults', () => {
+  const parsed = siteContentSchema.parse({});
+  assert.equal(parsed.hero.titleLine1, 'السلطان');
+  assert.equal(parsed.mattress.modelName, 'مرتبة السلطان رويال بوكيت');
+  assert.equal(parsed.curtains.badge, 'تفصيل وتصميم حسب المقاس');
+  assert.equal(parsed.testimonials.ratingAverage, '4.9');
+  assert.equal(parsed.footer.guarantees.length, 4);
+});
+
+test('DEFAULT_SITE_CONTENT ships every CMS section with data', () => {
+  assert.equal(DEFAULT_SITE_CONTENT.hero.scenes.length, 3);
+  assert.equal(DEFAULT_SUITE_SCENES.length, 3);
+  assert.ok(DEFAULT_SITE_CONTENT.mattress.layers.length > 0);
+  assert.ok(DEFAULT_SITE_CONTENT.mattress.specs.length > 0);
+  assert.ok(DEFAULT_SITE_CONTENT.testimonials.items.length > 0);
+  assert.ok(DEFAULT_SITE_CONTENT.faq.length > 0);
+  // يجب أن تطابق القيم الافتراضية النص المرئي في الصفحة الرئيسية
+  assert.equal(DEFAULT_SITE_CONTENT.hero.titleLine2, 'للمفروشات والستائر');
+  assert.equal(DEFAULT_SITE_CONTENT.footer.subTagline, 'راحة ملكية تستحقها في كل تفصيلة');
+});
+
+test('legacy stored site content upgrades cleanly to the new schema', () => {
+  // حمولة قديمة كما كانت محفوظة قبل إضافة أقسام الـ CMS الجديدة.
+  const legacy = {
+    announcement: {
+      badge: 'عرض محفوظ:',
+      text: 'نص محفوظ',
+      highlight: '9,999 ج.م',
+      suffix: 'لقطة محفوظة',
+      enabled: false,
+    },
+    hero: {
+      badge: 'شارة محفوظة',
+      titleLine1: 'سطر محفوظ',
+      titleLine2: 'سطر ذهبي محفوظ',
+      titleLine3: 'سطر ثالث محفوظ',
+      description: 'وصف محفوظ',
+      ctaText: 'زر محفوظ',
+      features: [{ label: 'ميزة محفوظة' }],
+    },
+    contact: {
+      phoneDisplay: '01000000000',
+      whatsappNumber: '201000000000',
+      storeHours: 'ساعات محفوظة',
+      location: 'موقع محفوظ',
+    },
+    faq: [{ question: 'سؤال محفوظ؟', answer: 'إجابة محفوظة' }],
+  };
+
+  const merged = { ...DEFAULT_SITE_CONTENT, ...legacy };
+  const parsed = siteContentSchema.parse(merged);
+
+  // القيم المحفوظة سابقاً تُحترم كما هي.
+  assert.equal(parsed.announcement.highlight, '9,999 ج.م');
+  assert.equal(parsed.hero.titleLine2, 'سطر ذهبي محفوظ');
+  assert.equal(parsed.hero.features.length, 1);
+  assert.equal(parsed.contact.phoneDisplay, '01000000000');
+  assert.equal(parsed.faq.length, 1);
+
+  // الأقسام الجديدة تُملأ من القيم الافتراضية بدون كسر.
+  assert.equal(parsed.mattress.title, DEFAULT_SITE_CONTENT.mattress.title);
+  assert.equal(parsed.curtains.accent, DEFAULT_SITE_CONTENT.curtains.accent);
+  assert.equal(
+    parsed.testimonials.ratingAverage,
+    DEFAULT_SITE_CONTENT.testimonials.ratingAverage
+  );
+  assert.equal(parsed.footer.guarantees.length, 4);
+});
+
+test('siteContentSchema rejects empty hero scene video and empty layers', () => {
+  const badScene = siteContentSchema.safeParse({
+    hero: { scenes: [{ short: 'مشهد', videoSrc: '' }] },
+  });
+  assert.equal(badScene.success, false);
+
+  const badLayer = siteContentSchema.safeParse({
+    mattress: { layers: [{ title: '', desc: 'وصف' }] },
+  });
+  assert.equal(badLayer.success, false);
+
+  const badRating = siteContentSchema.safeParse({
+    testimonials: {
+      items: [{ name: 'عميل', purchase: 'مرتبة', text: 'رائع', rating: 9 }],
+    },
+  });
+  assert.equal(badRating.success, false);
+});
+
+

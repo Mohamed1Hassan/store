@@ -1,6 +1,7 @@
 import { BadgeCheck, MapPin, Quote, Ruler, ShieldCheck, Star, Truck } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import { RATING_SUMMARY, TESTIMONIALS } from "@/data/testimonials";
+import type { SiteContent } from "@/schemas/site-content";
 
 const TRUST_CHIPS = [
   { icon: ShieldCheck, label: "ضمان استبدال 10 سنوات" },
@@ -8,7 +9,27 @@ const TRUST_CHIPS = [
   { icon: Ruler, label: "تفصيل على المقاس" },
 ];
 
-export default function Testimonials() {
+interface Props {
+  testimonialsContent?: SiteContent["testimonials"];
+}
+
+export default function Testimonials({ testimonialsContent }: Props) {
+  const badge = testimonialsContent?.badge || "آراء عملاء المعرض";
+  const title = testimonialsContent?.title || "ثقة";
+  const accent = testimonialsContent?.accent || "نعتز بها";
+  const description =
+    testimonialsContent?.description ||
+    "آراء من عملاء جهّزوا غرف نومهم وصالوناتهم من مفروشات ومراتب وستائر السلطان.";
+
+  const ratingAverage = testimonialsContent?.ratingAverage || RATING_SUMMARY.average;
+  const ratingCount = testimonialsContent?.ratingCount || String(RATING_SUMMARY.count);
+  const ratingLabel = testimonialsContent?.ratingLabel || RATING_SUMMARY.label;
+
+  const items =
+    testimonialsContent?.items && testimonialsContent.items.length > 0
+      ? testimonialsContent.items
+      : TESTIMONIALS;
+
   return (
     <section id="testimonials-section" className="py-20 bg-[#07090e] relative overflow-hidden">
       <div
@@ -19,17 +40,17 @@ export default function Testimonials() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           icon={Quote}
-          badge="آراء عملاء المعرض"
-          title="ثقة"
-          accent="نعتز بها"
-          description="آراء من عملاء جهّزوا غرف نومهم وصالوناتهم من مفروشات ومراتب وستائر السلطان."
+          badge={badge}
+          title={title}
+          accent={accent}
+          description={description}
         />
 
         {/* Rating summary */}
         <div className="mb-12 p-6 md:p-8 rounded-3xl bg-gradient-to-r from-[#141926] via-[#10141f] to-[#141926] border border-[#d4af37]/30 flex flex-col lg:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <span className="text-5xl font-black text-[#ffd700] font-serif">
-              {RATING_SUMMARY.average}
+              {ratingAverage}
             </span>
             <div>
               <div className="flex items-center gap-1 mb-1">
@@ -38,7 +59,7 @@ export default function Testimonials() {
                 ))}
               </div>
               <p className="text-xs text-zinc-400">
-                من {RATING_SUMMARY.count} تقييم · {RATING_SUMMARY.label}
+                من {ratingCount} تقييم · {ratingLabel}
               </p>
             </div>
           </div>
@@ -58,7 +79,7 @@ export default function Testimonials() {
 
         {/* Testimonials grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {TESTIMONIALS.map((item) => (
+          {items.map((item) => (
             <figure
               key={item.id}
               className="flex flex-col p-6 rounded-3xl bg-[#0b0e17] border border-white/5 hover:border-[#d4af37]/40 hover:bg-[#0e121c] transition-all duration-300"
