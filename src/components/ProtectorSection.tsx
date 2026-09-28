@@ -2,14 +2,29 @@ import { BadgeCheck, Check, Droplets, Feather, Phone, Ruler, Sparkles } from "lu
 import SectionHeading from "./SectionHeading";
 import { whatsappLink } from "@/data/site";
 import type { Product } from "@/data/products";
+import type { SiteContent } from "@/schemas/site-content";
 
 /** أيقونة لكل ميزة في نفس ترتيب المميزات داخل الكتالوج */
 const FEATURE_ICONS = [Droplets, Feather, Ruler, Sparkles];
 
-export default function ProtectorSection({ product }: { product?: Product }) {
+interface Props {
+  product?: Product;
+  protectorContent?: SiteContent["protector"];
+}
+
+export default function ProtectorSection({ product, protectorContent }: Props) {
   const protector = product;
 
   if (!protector) return null;
+
+  const badge = protectorContent?.badge || "حماية كاملة لمرتبتك";
+  const title = protectorContent?.title || "كافر وواقي";
+  const accent = protectorContent?.accent || "المراتب ضد السوائل";
+  const giftTitle = protectorContent?.giftTitle || "هدية مجانية مع كل مرتبة";
+  const giftDesc =
+    protectorContent?.giftDesc ||
+    "يتضمن الكافر والواقي مجاناً مع أي مرتبة من مراتب السلطان الطبية.";
+  const ctaText = protectorContent?.ctaText || "اطلب الكافر الآن";
 
   const orderLink = whatsappLink(
     `مرحباً مفروشات السلطان، أود الاستفسار عن ${protector.name} (السعر: ${protector.price})`
@@ -28,9 +43,9 @@ export default function ProtectorSection({ product }: { product?: Product }) {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           icon={Droplets}
-          badge="حماية كاملة لمرتبتك"
-          title="كافر وواقي"
-          accent="المراتب ضد السوائل"
+          badge={badge}
+          title={title}
+          accent={accent}
           description={protector.description}
         />
 
@@ -85,13 +100,13 @@ export default function ProtectorSection({ product }: { product?: Product }) {
               className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#d4af37] via-[#ffd700] to-[#b8860b] text-black font-black text-sm text-center shadow-xl shadow-[#d4af37]/20 hover:scale-[1.02] transition duration-300 flex items-center justify-center gap-2"
             >
               <Phone className="w-4 h-4 fill-current" />
-              <span>اطلب الكافر الآن</span>
+              <span>{ctaText}</span>
             </a>
 
             <div className="mt-5 p-4 rounded-2xl bg-[#d4af37]/10 border border-[#d4af37]/30">
-              <p className="text-xs font-bold text-white mb-1">هدية مجانية مع كل مرتبة</p>
+              <p className="text-xs font-bold text-white mb-1">{giftTitle}</p>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                يتضمن الكافر والواقي مجاناً مع أي مرتبة من مراتب السلطان الطبية.
+                {giftDesc}
               </p>
             </div>
           </div>

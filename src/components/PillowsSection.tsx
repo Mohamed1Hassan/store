@@ -2,16 +2,29 @@ import { BadgeCheck, Check, Feather, Phone, ShieldCheck, Star } from "lucide-rea
 import SectionHeading from "./SectionHeading";
 import { whatsappLink } from "@/data/site";
 import type { Product } from "@/data/products";
+import type { SiteContent } from "@/schemas/site-content";
 
 /** أيقونة لكل ميزة في نفس ترتيب المميزات داخل الكتالوج */
 const FEATURE_ICONS = [Feather, Star, ShieldCheck, BadgeCheck];
 
-const HIGHLIGHTS = ["قطن مصري 100%", "مضادة للبكتيريا", "تفصيل حسب المقاس"];
+interface Props {
+  product?: Product;
+  pillowsContent?: SiteContent["pillows"];
+}
 
-export default function PillowsSection({ product }: { product?: Product }) {
+export default function PillowsSection({ product, pillowsContent }: Props) {
   const pillows = product;
 
   if (!pillows) return null;
+
+  const badge = pillowsContent?.badge || "نوم فندقي 7 نجوم";
+  const title = pillowsContent?.title || "مفروشات ووسائد";
+  const accent = pillowsContent?.accent || "النخبة الفاخرة";
+  const ctaText = pillowsContent?.ctaText || "اطلب طقم الوسائد الآن";
+  const highlights =
+    pillowsContent?.highlights && pillowsContent.highlights.length > 0
+      ? pillowsContent.highlights
+      : ["قطن مصري 100%", "مضادة للبكتيريا", "تفصيل حسب المقاس"];
 
   const orderLink = whatsappLink(
     `مرحباً مفروشات السلطان، أود الاستفسار عن ${pillows.name} (السعر: ${pillows.price})`
@@ -22,9 +35,9 @@ export default function PillowsSection({ product }: { product?: Product }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           icon={Feather}
-          badge="نوم فندقي 7 نجوم"
-          title="مفروشات ووسائد"
-          accent="النخبة الفاخرة"
+          badge={badge}
+          title={title}
+          accent={accent}
           description={pillows.description}
         />
 
@@ -55,7 +68,7 @@ export default function PillowsSection({ product }: { product?: Product }) {
             </div>
 
             <div className="flex flex-wrap gap-2 mb-6">
-              {HIGHLIGHTS.map((highlight) => (
+              {highlights.map((highlight) => (
                 <span
                   key={highlight}
                   className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-zinc-200 bg-white/5 border border-white/10 px-2.5 py-1 rounded-full"
@@ -73,7 +86,7 @@ export default function PillowsSection({ product }: { product?: Product }) {
               className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#d4af37] via-[#ffd700] to-[#b8860b] text-black font-black text-sm text-center shadow-xl shadow-[#d4af37]/20 hover:scale-[1.02] transition duration-300 flex items-center justify-center gap-2"
             >
               <Phone className="w-4 h-4 fill-current" />
-              <span>اطلب طقم الوسائد الآن</span>
+              <span>{ctaText}</span>
             </a>
           </div>
 

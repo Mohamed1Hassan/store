@@ -24,6 +24,14 @@ export const mattressSpecSchema = z.object({
   val: z.string().min(1, "قيمة الخاصية مطلوبة"),
 });
 
+export const curtainFabricSchema = z.object({
+  id: z.string().default("velvet"),
+  title: z.string().min(1, "اسم القماش مطلوب"),
+  desc: z.string().min(1, "وصف القماش مطلوب"),
+  image: z.string().default(""),
+  features: z.array(z.string()).default([]),
+});
+
 export const testimonialItemSchema = z.object({
   id: z.string().default("t-1"),
   name: z.string().min(1, "اسم العميل مطلوب"),
@@ -97,6 +105,12 @@ export const siteContentSchema = z.object({
       modelEyebrow: z.string().default("موديل الأجنحة الملكية"),
       price: z.string().default("9,400 ج.م"),
       oldPrice: z.string().default("12,500 ج.م"),
+      modelImage: z.string().default(""),
+      layersHeading: z.string().default("طبقات المرتبة من الداخل للخارج:"),
+      giftBadge: z.string().default("هدية"),
+      giftTitle: z.string().default("كافر وواقي مرتبة ضد السوائل والمياه مجاناً"),
+      giftDesc: z.string().default("طبقة عازلة بتقنية TPU تنفسية قطنية 100% مع كل مرتبة"),
+      giftCta: z.string().default("اطلب الآن مع الكافر المجاني"),
       layers: z.array(mattressLayerSchema).default([]),
       specs: z.array(mattressSpecSchema).default([]),
     })
@@ -110,6 +124,12 @@ export const siteContentSchema = z.object({
       modelEyebrow: "موديل الأجنحة الملكية",
       price: "9,400 ج.م",
       oldPrice: "12,500 ج.م",
+      modelImage: "",
+      layersHeading: "طبقات المرتبة من الداخل للخارج:",
+      giftBadge: "هدية",
+      giftTitle: "كافر وواقي مرتبة ضد السوائل والمياه مجاناً",
+      giftDesc: "طبقة عازلة بتقنية TPU تنفسية قطنية 100% مع كل مرتبة",
+      giftCta: "اطلب الآن مع الكافر المجاني",
       layers: [],
       specs: [],
     }),
@@ -122,6 +142,10 @@ export const siteContentSchema = z.object({
         "نقدم لكم أرقى الأقمشة العالمية المفصلة خصيصاً على أيدي أمهر فناني الديكور والستائر الكلاسيكية والمودرن."
       ),
       freeInspectionNote: z.string().default("خدمة المعاينة المنزلية ورفع المقاسات مجاناً"),
+      originBadge: z.string().default("خامات أصلية مضمونة"),
+      cardFooter: z.string().default("تفصيل على المقاس لكل نافذة"),
+      selectLabel: z.string().default("اختر القماش"),
+      fabrics: z.array(curtainFabricSchema).default([]),
     })
     .default({
       badge: "تفصيل وتصميم حسب المقاس",
@@ -130,6 +154,10 @@ export const siteContentSchema = z.object({
       description:
         "نقدم لكم أرقى الأقمشة العالمية المفصلة خصيصاً على أيدي أمهر فناني الديكور والستائر الكلاسيكية والمودرن.",
       freeInspectionNote: "خدمة المعاينة المنزلية ورفع المقاسات مجاناً",
+      originBadge: "خامات أصلية مضمونة",
+      cardFooter: "تفصيل على المقاس لكل نافذة",
+      selectLabel: "اختر القماش",
+      fabrics: [],
     }),
   testimonials: z
     .object({
@@ -154,6 +182,42 @@ export const siteContentSchema = z.object({
       ratingCount: "128",
       ratingLabel: "تقييم عملاء المعرض",
       items: [],
+    }),
+  protector: z
+    .object({
+      badge: z.string().default("حماية كاملة لمرتبتك"),
+      title: z.string().default("كافر وواقي"),
+      accent: z.string().default("المراتب ضد السوائل"),
+      giftTitle: z.string().default("هدية مجانية مع كل مرتبة"),
+      giftDesc: z.string().default(
+        "يتضمن الكافر والواقي مجاناً مع أي مرتبة من مراتب السلطان الطبية."
+      ),
+      ctaText: z.string().default("اطلب الكافر الآن"),
+    })
+    .default({
+      badge: "حماية كاملة لمرتبتك",
+      title: "كافر وواقي",
+      accent: "المراتب ضد السوائل",
+      giftTitle: "هدية مجانية مع كل مرتبة",
+      giftDesc: "يتضمن الكافر والواقي مجاناً مع أي مرتبة من مراتب السلطان الطبية.",
+      ctaText: "اطلب الكافر الآن",
+    }),
+  pillows: z
+    .object({
+      badge: z.string().default("نوم فندقي 7 نجوم"),
+      title: z.string().default("مفروشات ووسائد"),
+      accent: z.string().default("النخبة الفاخرة"),
+      ctaText: z.string().default("اطلب طقم الوسائد الآن"),
+      highlights: z
+        .array(z.string())
+        .default(["قطن مصري 100%", "مضادة للبكتيريا", "تفصيل حسب المقاس"]),
+    })
+    .default({
+      badge: "نوم فندقي 7 نجوم",
+      title: "مفروشات ووسائد",
+      accent: "النخبة الفاخرة",
+      ctaText: "اطلب طقم الوسائد الآن",
+      highlights: ["قطن مصري 100%", "مضادة للبكتيريا", "تفصيل حسب المقاس"],
     }),
   footer: z
     .object({
@@ -209,4 +273,5 @@ export type HeroScene = z.infer<typeof heroSceneSchema>;
 export type MattressLayer = z.infer<typeof mattressLayerSchema>;
 export type MattressSpec = z.infer<typeof mattressSpecSchema>;
 export type TestimonialItem = z.infer<typeof testimonialItemSchema>;
+export type CurtainFabricItem = z.infer<typeof curtainFabricSchema>;
 

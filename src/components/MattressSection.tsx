@@ -6,10 +6,6 @@ import { whatsappLink } from "@/data/site";
 import { MATTRESS_LAYERS, MATTRESS_MODEL, MATTRESS_SPECS } from "@/data/mattress";
 import type { SiteContent } from "@/schemas/site-content";
 
-const MATTRESS_ORDER_LINK = whatsappLink(
-  "مرحباً مفروشات السلطان، أود الاستفسار عن مرتبة السلطان رويال بوكيت والكافر المجاني معها"
-);
-
 interface Props {
   mattressContent?: SiteContent["mattress"];
 }
@@ -28,6 +24,18 @@ export default function MattressSection({ mattressContent }: Props) {
   const modelEyebrow = mattressContent?.modelEyebrow || MATTRESS_MODEL.eyebrow;
   const price = mattressContent?.price || MATTRESS_MODEL.price;
   const oldPrice = mattressContent?.oldPrice || MATTRESS_MODEL.oldPrice;
+  const modelImage = mattressContent?.modelImage || "";
+  const layersHeading = mattressContent?.layersHeading || "طبقات المرتبة من الداخل للخارج:";
+  const giftBadge = mattressContent?.giftBadge || "هدية";
+  const giftTitle =
+    mattressContent?.giftTitle || "كافر وواقي مرتبة ضد السوائل والمياه مجاناً";
+  const giftDesc =
+    mattressContent?.giftDesc || "طبقة عازلة بتقنية TPU تنفسية قطنية 100% مع كل مرتبة";
+  const giftCta = mattressContent?.giftCta || "اطلب الآن مع الكافر المجاني";
+
+  const orderLink = whatsappLink(
+    `مرحباً مفروشات السلطان، أود الاستفسار عن ${modelName} والكافر المجاني معها`
+  );
 
   const layers =
     mattressContent?.layers && mattressContent.layers.length > 0
@@ -71,7 +79,7 @@ export default function MattressSection({ mattressContent }: Props) {
           <div className="lg:col-span-5 space-y-3">
             <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
               <Layers className="w-5 h-5 text-[#ffd700]" />
-              طبقات المرتبة من الداخل للخارج:
+              {layersHeading}
             </h3>
 
             {layers.map((layer, idx) => {
@@ -113,6 +121,15 @@ export default function MattressSection({ mattressContent }: Props) {
               <div>
                 <span className="text-xs text-[#c8aa6e] font-semibold block">{modelEyebrow}</span>
                 <h3 className="text-2xl font-black text-white font-serif">{modelName}</h3>
+                {modelImage && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={modelImage}
+                    alt={modelName}
+                    loading="lazy"
+                    className="mt-4 w-full max-h-72 rounded-2xl object-cover border border-white/10"
+                  />
+                )}
               </div>
               <div className="text-right">
                 <span className="text-xs text-zinc-400 block line-through">{oldPrice}</span>
@@ -134,20 +151,20 @@ export default function MattressSection({ mattressContent }: Props) {
             <div className="p-4 rounded-2xl bg-[#d4af37]/10 border border-[#d4af37]/30 flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#d4af37] text-black flex items-center justify-center font-black">
-                  هدية
+                  {giftBadge}
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">كافر وواقي مرتبة ضد السوائل والمياه مجاناً</h4>
-                  <p className="text-xs text-zinc-400">طبقة عازلة بتقنية TPU تنفسية قطنية 100% مع كل مرتبة</p>
+                  <h4 className="text-sm font-bold text-white">{giftTitle}</h4>
+                  <p className="text-xs text-zinc-400">{giftDesc}</p>
                 </div>
               </div>
               <a
-                href={MATTRESS_ORDER_LINK}
+                href={orderLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="whitespace-nowrap px-4 py-2 rounded-xl bg-[#d4af37] hover:bg-[#ffd700] text-black font-bold text-xs transition flex items-center gap-1.5"
               >
-                <span>اطلب الآن مع الكافر المجاني</span>
+                <span>{giftCta}</span>
                 <Phone className="w-4 h-4" />
               </a>
             </div>

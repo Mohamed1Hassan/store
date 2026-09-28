@@ -8,6 +8,7 @@ import type { SiteContent } from "@/schemas/site-content";
 import { FAQ_ITEMS } from "@/data/faq";
 import { PHONE_DISPLAY, STORE_HOURS, WHATSAPP_NUMBER } from "@/data/site";
 import { MATTRESS_LAYERS, MATTRESS_MODEL, MATTRESS_SPECS } from "@/data/mattress";
+import { CURTAIN_FABRICS } from "@/data/curtains";
 import { RATING_SUMMARY, TESTIMONIALS } from "@/data/testimonials";
 
 export const DEFAULT_SUITE_SCENES: SiteContent["hero"]["scenes"] = [
@@ -71,6 +72,12 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     modelEyebrow: MATTRESS_MODEL.eyebrow,
     price: MATTRESS_MODEL.price,
     oldPrice: MATTRESS_MODEL.oldPrice,
+    modelImage: "",
+    layersHeading: "طبقات المرتبة من الداخل للخارج:",
+    giftBadge: "هدية",
+    giftTitle: "كافر وواقي مرتبة ضد السوائل والمياه مجاناً",
+    giftDesc: "طبقة عازلة بتقنية TPU تنفسية قطنية 100% مع كل مرتبة",
+    giftCta: "اطلب الآن مع الكافر المجاني",
     layers: MATTRESS_LAYERS.map((l) => ({
       title: l.title,
       desc: l.desc,
@@ -88,6 +95,16 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     description:
       "نقدم لكم أرقى الأقمشة العالمية المفصلة خصيصاً على أيدي أمهر فناني الديكور والستائر الكلاسيكية والمودرن.",
     freeInspectionNote: "خدمة المعاينة المنزلية ورفع المقاسات مجاناً",
+    originBadge: "خامات أصلية مضمونة",
+    cardFooter: "تفصيل على المقاس لكل نافذة",
+    selectLabel: "اختر القماش",
+    fabrics: CURTAIN_FABRICS.map((f) => ({
+      id: f.id,
+      title: f.title,
+      desc: f.desc,
+      image: f.image,
+      features: f.features,
+    })),
   },
   testimonials: {
     badge: "آراء عملاء المعرض",
@@ -116,6 +133,21 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       "تجربة نوم مريحة وداعمة للفقرات",
       "فريق فني متخصص لرفع المقاسات والتركيب",
     ],
+  },
+  protector: {
+    badge: "حماية كاملة لمرتبتك",
+    title: "كافر وواقي",
+    accent: "المراتب ضد السوائل",
+    giftTitle: "هدية مجانية مع كل مرتبة",
+    giftDesc: "يتضمن الكافر والواقي مجاناً مع أي مرتبة من مراتب السلطان الطبية.",
+    ctaText: "اطلب الكافر الآن",
+  },
+  pillows: {
+    badge: "نوم فندقي 7 نجوم",
+    title: "مفروشات ووسائد",
+    accent: "النخبة الفاخرة",
+    ctaText: "اطلب طقم الوسائد الآن",
+    highlights: ["قطن مصري 100%", "مضادة للبكتيريا", "تفصيل حسب المقاس"],
   },
   contact: {
     phoneDisplay: PHONE_DISPLAY,

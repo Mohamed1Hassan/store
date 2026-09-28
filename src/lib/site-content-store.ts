@@ -76,11 +76,21 @@ export async function saveSiteContent(partial: Partial<SiteContent>): Promise<Si
     curtains: {
       ...current.curtains,
       ...(partial.curtains || {}),
+      fabrics: partial.curtains?.fabrics !== undefined ? partial.curtains.fabrics : current.curtains.fabrics,
     },
     testimonials: {
       ...current.testimonials,
       ...(partial.testimonials || {}),
       items: partial.testimonials?.items !== undefined ? partial.testimonials.items : current.testimonials.items,
+    },
+    protector: {
+      ...current.protector,
+      ...(partial.protector || {}),
+    },
+    pillows: {
+      ...current.pillows,
+      ...(partial.pillows || {}),
+      highlights: partial.pillows?.highlights !== undefined ? partial.pillows.highlights : current.pillows.highlights,
     },
     footer: {
       ...current.footer,

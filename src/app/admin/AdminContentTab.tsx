@@ -11,6 +11,8 @@ import {
   ShieldCheck,
   Phone,
   RefreshCw,
+  Droplets,
+  Feather,
 } from "lucide-react";
 import type { SiteContent } from "@/schemas/site-content";
 import { DEFAULT_SITE_CONTENT } from "@/lib/site-content-defaults";
@@ -20,18 +22,30 @@ import ContentCurtainsTab from "./ContentCurtainsTab";
 import ContentTestimonialsTab from "./ContentTestimonialsTab";
 import ContentFooterTab from "./ContentFooterTab";
 import ContentContactFaqTab from "./ContentContactFaqTab";
+import ContentProtectorTab from "./ContentProtectorTab";
+import ContentPillowsTab from "./ContentPillowsTab";
 
 interface Props {
   initialContent: SiteContent | null;
   onRefresh: () => void;
 }
 
-type SubTabId = "hero" | "mattress" | "curtains" | "testimonials" | "footer" | "contact";
+type SubTabId =
+  | "hero"
+  | "mattress"
+  | "curtains"
+  | "protector"
+  | "pillows"
+  | "testimonials"
+  | "footer"
+  | "contact";
 
 const SUB_TABS: { id: SubTabId; label: string; icon: typeof Megaphone }[] = [
   { id: "hero", label: "البانر والهيرو والفيديوهات", icon: Megaphone },
   { id: "mattress", label: "مراتب السلطان والمواصفات", icon: Layers },
   { id: "curtains", label: "تفصيل الستائر الملكية", icon: Sparkles },
+  { id: "protector", label: "كافر وواقي المراتب", icon: Droplets },
+  { id: "pillows", label: "المفروشات والوسائد", icon: Feather },
   { id: "testimonials", label: "آراء العملاء والتقييمات", icon: MessageSquare },
   { id: "footer", label: "الفوتر والضمانات الملكية", icon: ShieldCheck },
   { id: "contact", label: "التواصل والأسئلة الشائعة", icon: Phone },
@@ -144,6 +158,12 @@ export default function AdminContentTab({ initialContent, onRefresh }: Props) {
       {activeSubTab === "hero" && <ContentHeroTab content={content} onChange={setContent} />}
       {activeSubTab === "mattress" && <ContentMattressTab content={content} onChange={setContent} />}
       {activeSubTab === "curtains" && <ContentCurtainsTab content={content} onChange={setContent} />}
+      {activeSubTab === "protector" && (
+        <ContentProtectorTab content={content} onChange={setContent} />
+      )}
+      {activeSubTab === "pillows" && (
+        <ContentPillowsTab content={content} onChange={setContent} />
+      )}
       {activeSubTab === "testimonials" && (
         <ContentTestimonialsTab content={content} onChange={setContent} />
       )}

@@ -329,7 +329,113 @@ export default function ContentMattressTab({ content, onChange }: Props) {
           ))}
         </div>
       </div>
+
+      {/* 3.5. صورة الموديل وبطاقة الهدية */}
+      <div className="space-y-4 rounded-3xl border border-white/10 bg-[#0b0e17] p-6">
+        <h3 className="border-b border-white/5 pb-3 text-sm font-bold text-white">
+          صورة الموديل وبطاقة الهدية المجانية
+        </h3>
+
+        <div>
+          <label className="mb-1 block text-[11px] font-bold text-zinc-400">
+            رابط صورة المرتبة (يُعرض داخل كارت الموديل)
+          </label>
+          <input
+            type="text"
+            value={mattress.modelImage || ""}
+            onChange={(e) =>
+              onChange((prev) => ({
+                ...prev,
+                mattress: { ...prev.mattress, modelImage: e.target.value },
+              }))
+            }
+            dir="ltr"
+            placeholder="https://... (اتركه فارغاً لإخفاء الصورة)"
+            className="w-full rounded-xl border border-white/10 bg-[#07090e] px-3 py-2 text-xs text-zinc-200 outline-none focus:border-[#d4af37]"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-[11px] font-bold text-zinc-400">
+            عنوان قائمة الطبقات
+          </label>
+          <input
+            type="text"
+            value={mattress.layersHeading}
+            onChange={(e) =>
+              onChange((prev) => ({
+                ...prev,
+                mattress: { ...prev.mattress, layersHeading: e.target.value },
+              }))
+            }
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-[#d4af37]"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+          <div>
+            <label className="mb-1 block text-[11px] font-bold text-zinc-400">شارة الهدية</label>
+            <input
+              type="text"
+              value={mattress.giftBadge}
+              onChange={(e) =>
+                onChange((prev) => ({
+                  ...prev,
+                  mattress: { ...prev.mattress, giftBadge: e.target.value },
+                }))
+              }
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-[#ffd700] outline-none focus:border-[#d4af37]"
+            />
+          </div>
+          <div className="md:col-span-3">
+            <label className="mb-1 block text-[11px] font-bold text-zinc-400">عنوان بطاقة الهدية</label>
+            <input
+              type="text"
+              value={mattress.giftTitle}
+              onChange={(e) =>
+                onChange((prev) => ({
+                  ...prev,
+                  mattress: { ...prev.mattress, giftTitle: e.target.value },
+                }))
+              }
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-[#d4af37]"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-[11px] font-bold text-zinc-400">وصف بطاقة الهدية</label>
+            <input
+              type="text"
+              value={mattress.giftDesc}
+              onChange={(e) =>
+                onChange((prev) => ({
+                  ...prev,
+                  mattress: { ...prev.mattress, giftDesc: e.target.value },
+                }))
+              }
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-300 outline-none focus:border-[#d4af37]"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-[11px] font-bold text-zinc-400">نص زر بطاقة الهدية</label>
+            <input
+              type="text"
+              value={mattress.giftCta}
+              onChange={(e) =>
+                onChange((prev) => ({
+                  ...prev,
+                  mattress: { ...prev.mattress, giftCta: e.target.value },
+                }))
+              }
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-[#d4af37]"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
+
 

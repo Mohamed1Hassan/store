@@ -4,6 +4,7 @@ import { leadSchema, normalizeEgyptianPhone, buildLeadMessage } from '../src/sch
 import { appointmentSchema, FABRIC_IDS } from '../src/schemas/appointment';
 import { siteContentSchema } from '../src/schemas/site-content';
 import { DEFAULT_SITE_CONTENT, DEFAULT_SUITE_SCENES } from '../src/lib/site-content-defaults';
+import { CURTAIN_FABRICS } from '../src/data/curtains';
 
 test('normalizeEgyptianPhone removes spaces and dashes', () => {
   assert.equal(normalizeEgyptianPhone('01055280865'), '01055280865');
@@ -127,6 +128,15 @@ test('DEFAULT_SITE_CONTENT ships every CMS section with data', () => {
   assert.ok(DEFAULT_SITE_CONTENT.mattress.specs.length > 0);
   assert.ok(DEFAULT_SITE_CONTENT.testimonials.items.length > 0);
   assert.ok(DEFAULT_SITE_CONTENT.faq.length > 0);
+  // الأقسام الجديدة: الحماية والوسائد والأقمشة.
+  assert.equal(DEFAULT_SITE_CONTENT.protector.title, 'كافر وواقي');
+  assert.equal(DEFAULT_SITE_CONTENT.protector.ctaText, 'اطلب الكافر الآن');
+  assert.equal(DEFAULT_SITE_CONTENT.pillows.accent, 'النخبة الفاخرة');
+  assert.equal(DEFAULT_SITE_CONTENT.pillows.highlights.length, 3);
+  assert.equal(DEFAULT_SITE_CONTENT.curtains.fabrics.length, CURTAIN_FABRICS.length);
+  assert.ok(DEFAULT_SITE_CONTENT.curtains.fabrics.every((f) => f.title && f.image));
+  // صورة الموديل اختيارية وتُخفى افتراضياً للحفاظ على الشكل الحالي.
+  assert.equal(DEFAULT_SITE_CONTENT.mattress.modelImage, '');
   // يجب أن تطابق القيم الافتراضية النص المرئي في الصفحة الرئيسية
   assert.equal(DEFAULT_SITE_CONTENT.hero.titleLine2, 'للمفروشات والستائر');
   assert.equal(DEFAULT_SITE_CONTENT.footer.subTagline, 'راحة ملكية تستحقها في كل تفصيلة');
@@ -172,7 +182,11 @@ test('legacy stored site content upgrades cleanly to the new schema', () => {
 
   // الأقسام الجديدة تُملأ من القيم الافتراضية بدون كسر.
   assert.equal(parsed.mattress.title, DEFAULT_SITE_CONTENT.mattress.title);
+  assert.equal(parsed.mattress.giftTitle, DEFAULT_SITE_CONTENT.mattress.giftTitle);
   assert.equal(parsed.curtains.accent, DEFAULT_SITE_CONTENT.curtains.accent);
+  assert.equal(parsed.curtains.fabrics.length, DEFAULT_SITE_CONTENT.curtains.fabrics.length);
+  assert.equal(parsed.protector.title, DEFAULT_SITE_CONTENT.protector.title);
+  assert.equal(parsed.pillows.ctaText, DEFAULT_SITE_CONTENT.pillows.ctaText);
   assert.equal(
     parsed.testimonials.ratingAverage,
     DEFAULT_SITE_CONTENT.testimonials.ratingAverage

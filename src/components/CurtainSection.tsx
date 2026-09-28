@@ -31,7 +31,21 @@ export default function CurtainSection({ products = [], curtainsContent }: Props
     curtainsContent?.description ||
     "نقدم لكم أرقى الأقمشة العالمية المفصلة خصيصاً على أيدي أمهر فناني الديكور والستائر الكلاسيكية والمودرن.";
   const freeInspectionNote =
-    curtainsContent?.freeInspectionNote || "خدمة المعاينة المنزلية ورفع المقاسات مجانية بالكامل داخل القاهرة والجيزة";
+    curtainsContent?.freeInspectionNote || "خدمة المعاينة المنزلية ورفع المقاسات مجاناً";
+  const originBadge = curtainsContent?.originBadge || "خامات أصلية مضمونة";
+  const cardFooter = curtainsContent?.cardFooter || "تفصيل على المقاس لكل نافذة";
+  const selectLabel = curtainsContent?.selectLabel || "اختر القماش";
+
+  const baseFabrics =
+    curtainsContent?.fabrics && curtainsContent.fabrics.length > 0
+      ? curtainsContent.fabrics.map((f) => ({
+          id: f.id,
+          title: f.title,
+          desc: f.desc,
+          image: f.image || "",
+          features: f.features,
+        }))
+      : CURTAIN_FABRICS;
 
   // خريطة لربط نوع القماش بمنتج الستارة المقابل له في الكتالوج المحدث من الأدمن
   const fabricToSlugMap: Record<string, string> = {
@@ -41,7 +55,7 @@ export default function CurtainSection({ products = [], curtainsContent }: Props
   };
 
   // دمج بيانات وصور الأقمشة مع أحدث المنتجات من لوحة الأدمن إن وُجدت
-  const dynamicFabrics = CURTAIN_FABRICS.map((fabric) => {
+  const dynamicFabrics = baseFabrics.map((fabric) => {
     const matchedSlug = fabricToSlugMap[fabric.id];
     const matchedProduct = products.find(
       (p) => p.id === matchedSlug || p.id === fabric.id
@@ -154,7 +168,7 @@ export default function CurtainSection({ products = [], curtainsContent }: Props
                     <div className="absolute inset-0 bg-gradient-to-t from-[#07090e]/80 via-transparent to-transparent" />
                     <div className="absolute bottom-2 right-3 left-3 flex items-center justify-between">
                       <span className="text-[10px] font-bold text-black bg-[#ffd700] px-2.5 py-0.5 rounded-full shadow">
-                        خامات أصلية مضمونة
+                        {originBadge}
                       </span>
                     </div>
                   </div>
@@ -174,10 +188,10 @@ export default function CurtainSection({ products = [], curtainsContent }: Props
 
                 <div className="pt-4 border-t border-white/10 flex items-center justify-between">
                   <span className="text-xs text-[#ffd700] font-bold">
-                    تفصيل على المقاس لكل نافذة
+                    {cardFooter}
                   </span>
                   <span className="text-xs px-2.5 py-1 rounded-full bg-white/5 text-zinc-300 group-hover:bg-[#d4af37] group-hover:text-black transition font-bold">
-                    اختر القماش
+                    {selectLabel}
                   </span>
                 </div>
               </button>

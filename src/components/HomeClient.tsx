@@ -176,10 +176,16 @@ export default function HomeClient({ products, siteContent }: Props) {
       </div>
 
       {/* MATTRESS PROTECTOR SECTION (كافر المراتب) */}
-      <ProtectorSection product={products.find((p) => p.id === "medical-mattress-protector")} />
+      <ProtectorSection
+        product={products.find((p) => p.id === "medical-mattress-protector")}
+        protectorContent={siteContent?.protector}
+      />
 
       {/* PILLOWS & BEDDING SECTION */}
-      <PillowsSection product={products.find((p) => p.id === "hotel-pillow-suite")} />
+      <PillowsSection
+        product={products.find((p) => p.id === "hotel-pillow-suite")}
+        pillowsContent={siteContent?.pillows}
+      />
 
       {/* FULL PRODUCTS CATALOG */}
       <ProductsGrid products={products} />
