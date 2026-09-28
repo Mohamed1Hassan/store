@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Plus, Trash2, Edit2, Check, X, Search, LayoutGrid } from "lucide-react";
 import type { StoredProduct } from "@/lib/products-store";
 import AdminNewProductForm from "./AdminNewProductForm";
+import AdminImageField from "./AdminImageField";
 
 interface Props {
   products: StoredProduct[];
@@ -249,10 +250,12 @@ export default function AdminProductsTab({ products, onRefresh }: Props) {
                       <input type="text" value={editSavingLabel} onChange={(e) => setEditSavingLabel(e.target.value)} className="w-full rounded-xl border border-white/20 bg-black/40 px-3 py-1.5 text-xs text-white" />
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-[10px] text-zinc-400 mb-1">رابط الصورة (Image URL)</label>
-                    <input type="text" value={editImage} onChange={(e) => setEditImage(e.target.value)} placeholder="https://..." dir="ltr" className="w-full rounded-xl border border-white/20 bg-black/40 px-3 py-1.5 text-xs text-white" />
-                  </div>
+                  <AdminImageField
+                    label="صورة المنتج"
+                    value={editImage}
+                    placeholder="https://... أو ارفع صورة من جهازك"
+                    onChange={setEditImage}
+                  />
                   <div>
                     <label className="block text-[10px] text-zinc-400 mb-1">الوصف المختصر</label>
                     <textarea rows={2} value={editDescription} onChange={(e) => setEditDescription(e.target.value)} className="w-full rounded-xl border border-white/20 bg-black/40 px-3 py-1.5 text-xs text-white resize-none" />

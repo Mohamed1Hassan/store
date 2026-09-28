@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Trash2, Film } from "lucide-react";
 import type { SiteContent } from "@/schemas/site-content";
+import AdminImageField from "./AdminImageField";
 
 interface Props {
   content: SiteContent;
@@ -401,16 +402,12 @@ export default function ContentHeroTab({ content, onChange }: Props) {
                       className="w-full rounded-xl border border-white/10 bg-[#07090e] px-3 py-2 text-xs text-zinc-200 outline-none focus:border-[#d4af37]"
                     />
                   </div>
-                  <div>
-                    <label className="mb-1 block text-[11px] font-bold text-zinc-400">رابط صورة البوستر</label>
-                    <input
-                      type="text"
-                      value={currentScene.poster}
-                      onChange={(e) => handleSceneChange(safeIndex, "poster", e.target.value)}
-                      dir="ltr"
-                      className="w-full rounded-xl border border-white/10 bg-[#07090e] px-3 py-2 text-xs text-zinc-200 outline-none focus:border-[#d4af37]"
-                    />
-                  </div>
+                  <AdminImageField
+                    label="صورة البوستر (Poster)"
+                    value={currentScene.poster}
+                    placeholder="https://... أو ارفع صورة من جهازك"
+                    onChange={(url) => handleSceneChange(safeIndex, "poster", url)}
+                  />
                 </div>
 
                 <div>

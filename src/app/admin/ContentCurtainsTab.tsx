@@ -2,6 +2,7 @@
 
 import { Plus, Trash2 } from "lucide-react";
 import type { SiteContent } from "@/schemas/site-content";
+import AdminImageField from "./AdminImageField";
 
 interface Props {
   content: SiteContent;
@@ -268,17 +269,12 @@ export default function ContentCurtainsTab({ content, onChange }: Props) {
                     className="w-full rounded-xl border border-white/10 bg-[#07090e] px-3 py-2 text-xs font-bold text-white outline-none focus:border-[#d4af37]"
                   />
                 </div>
-                <div>
-                  <label className="mb-1 block text-[10px] font-bold text-zinc-400">رابط صورة القماش</label>
-                  <input
-                    type="text"
-                    value={fabric.image}
-                    onChange={(e) => handleFabricChange(idx, "image", e.target.value)}
-                    dir="ltr"
-                    placeholder="https://... (فارغ = صورة الكتالوج)"
-                    className="w-full rounded-xl border border-white/10 bg-[#07090e] px-3 py-2 text-xs text-zinc-200 outline-none focus:border-[#d4af37]"
-                  />
-                </div>
+                <AdminImageField
+                  label="صورة القماش (فارغ = صورة الكتالوج المرتبطة)"
+                  value={fabric.image}
+                  placeholder="https://... أو ارفع صورة من جهازك"
+                  onChange={(url) => handleFabricChange(idx, "image", url)}
+                />
               </div>
 
               <div>

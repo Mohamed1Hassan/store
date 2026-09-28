@@ -2,6 +2,7 @@
 
 import { Plus, Trash2, Layers, CheckCircle } from "lucide-react";
 import type { SiteContent } from "@/schemas/site-content";
+import AdminImageField from "./AdminImageField";
 
 interface Props {
   content: SiteContent;
@@ -336,24 +337,17 @@ export default function ContentMattressTab({ content, onChange }: Props) {
           صورة الموديل وبطاقة الهدية المجانية
         </h3>
 
-        <div>
-          <label className="mb-1 block text-[11px] font-bold text-zinc-400">
-            رابط صورة المرتبة (يُعرض داخل كارت الموديل)
-          </label>
-          <input
-            type="text"
-            value={mattress.modelImage || ""}
-            onChange={(e) =>
-              onChange((prev) => ({
-                ...prev,
-                mattress: { ...prev.mattress, modelImage: e.target.value },
-              }))
-            }
-            dir="ltr"
-            placeholder="https://... (اتركه فارغاً لإخفاء الصورة)"
-            className="w-full rounded-xl border border-white/10 bg-[#07090e] px-3 py-2 text-xs text-zinc-200 outline-none focus:border-[#d4af37]"
-          />
-        </div>
+        <AdminImageField
+          label="رابط صورة المرتبة (يُعرض داخل كارت الموديل — فارغ = مخفي)"
+          value={mattress.modelImage || ""}
+          placeholder="https://... أو ارفع صورة من جهازك"
+          onChange={(url) =>
+            onChange((prev) => ({
+              ...prev,
+              mattress: { ...prev.mattress, modelImage: url },
+            }))
+          }
+        />
 
         <div>
           <label className="mb-1 block text-[11px] font-bold text-zinc-400">

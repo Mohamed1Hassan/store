@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import AdminImageField from "./AdminImageField";
 
 interface Props {
   onCreated: () => void;
@@ -73,7 +74,7 @@ export default function AdminNewProductForm({ onCreated, onCancel }: Props) {
         <input type="text" placeholder="السعر القديم (اختياري - مثال: 2,400 ج.م)" value={originalPrice} onChange={(e) => setOriginalPrice(e.target.value)} className="rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white" />
         <input type="text" placeholder="قيمة التوفير (اختياري - مثال: 550 ج.م)" value={savingLabel} onChange={(e) => setSavingLabel(e.target.value)} className="rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white" />
       </div>
-      <input type="text" placeholder="رابط الصورة (Image URL)" value={image} onChange={(e) => setImage(e.target.value)} dir="ltr" className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white" />
+      <AdminImageField label="صورة المنتج" value={image} onChange={setImage} />
       <textarea rows={2} required placeholder="الوصف المختصر..." value={description} onChange={(e) => setDescription(e.target.value)} className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white resize-none" />
       <textarea rows={2} placeholder="المميزات والخامات (ميزة في كل سطر)" value={features} onChange={(e) => setFeatures(e.target.value)} className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white resize-none" />
       <button type="submit" disabled={saving} className="px-6 py-2.5 rounded-xl bg-[#d4af37] text-black font-extrabold text-xs">
