@@ -1,13 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CalendarCheck, Crown, LogOut, Phone, RefreshCw, Search, Boxes, LayoutTemplate } from "lucide-react";
-import type { LeadStatus, StoredLead } from "@/lib/leads-store";
+import { CalendarCheck, Crown, LogOut, Phone, RefreshCw, Search, Boxes, LayoutTemplate, CreditCard, FileImage } from "lucide-react";
+import type { LeadStatus, PaymentStatus, StoredLead } from "@/lib/leads-store";
 import type { AppointmentStatus, StoredAppointment } from "@/lib/appointments-store";
 import type { StoredProduct } from "@/lib/products-store";
 import type { SiteContent } from "@/schemas/site-content";
 import AdminProductsTab from "./AdminProductsTab";
 import AdminContentTab from "./AdminContentTab";
+import AdminPaymentTab from "./AdminPaymentTab";
+
 
 const STATUSES: { id: LeadStatus | "ALL"; label: string }[] = [
   { id: "ALL", label: "الكل" },
@@ -43,7 +45,7 @@ const APPOINTMENT_STYLE: Record<AppointmentStatus, string> = {
   CANCELLED: "bg-red-500/15 text-red-300 border-red-500/40",
 };
 
-type TabId = "leads" | "appointments" | "products" | "content";
+type TabId = "leads" | "appointments" | "products" | "content" | "payment";
 
 interface LeadsResponse {
   items: StoredLead[];
@@ -75,7 +77,7 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
     setLoading(true);
     setError(null);
     try {
-      if (tab === "content") {
+      if (tab === "content" || tab === "payment") {
         const res = await fetch("/api/admin/site-content");
         if (res.status === 401) {
           window.location.reload();
@@ -217,6 +219,23 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
     }
   };
 
+  const handlePaymentStatusChange = async (id: string, next: "PAID" | "REFUNDED") => {
+    setUpdatingId(id);
+    try {
+      const res = await fetch(`/api/leads/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentStatus: next }),
+      });
+      if (!res.ok) throw new Error();
+      setLeads((prev) => prev.map((lead) => (lead.id === id ? { ...lead, paymentStatus: next } : lead)));
+    } catch {
+      setError("تعذر تحديث حالة الدفع. حاول مجدداً.");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   const handleAppointmentStatus = async (id: string, next: AppointmentStatus) => {
     setUpdatingId(id);
     try {
@@ -280,9 +299,14 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
           className={`flex flex-1 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-black transition ${tab === "content" ? "bg-gradient-to-r from-[#d4af37] to-[#aa7c11] text-black" : "text-zinc-300 hover:text-[#ffd700]"}`}>
           <LayoutTemplate className="h-4 w-4" />محتوى الموقع
         </button>
+        <button type="button" role="tab" aria-selected={tab === "payment"} onClick={() => setTab("payment")}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-black transition ${tab === "payment" ? "bg-gradient-to-r from-[#d4af37] to-[#aa7c11] text-black" : "text-zinc-300 hover:text-[#ffd700]"}`}>
+          <CreditCard className="h-4 w-4" />الدفع
+        </button>
       </div>
 
-      {tab !== "products" && tab !== "content" && (
+      {tab !== "products" && tab !== "content" && tab !== "payment" && (
+
         <div className="flex flex-col gap-3 rounded-3xl border border-white/10 bg-[#0b0e17] p-5 lg:flex-row lg:items-center">
           <div className="flex flex-wrap gap-2">
             {tab === "leads"
@@ -322,8 +346,12 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
             ? "جاري تحميل الحجوزات..."
             : tab === "products"
             ? "جاري تحميل المنتجات..."
+            : tab === "payment"
+            ? "جاري تحميل إعدادات الدفع..."
             : "جاري تحميل محتوى الموقع..."}
         </p>
+      ) : tab === "payment" ? (
+        <AdminPaymentTab initialContent={siteContent} onRefresh={() => void fetchLeads()} />
       ) : tab === "content" ? (
         <AdminContentTab initialContent={siteContent} onRefresh={() => void fetchLeads()} />
       ) : tab === "products" ? (
@@ -345,13 +373,38 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
                       <Phone className="h-3.5 w-3.5" />{lead.phone}
                     </a>
                   </div>
-                  <span className={`rounded-full border px-2.5 py-1 text-[10px] font-black ${STATUS_STYLE[lead.status]}`}>
-                    {STATUSES.find((s) => s.id === lead.status)?.label ?? lead.status}
-                  </span>
+                  <div className="flex flex-col items-end gap-1.5">
+                    <span className={`rounded-full border px-2.5 py-1 text-[10px] font-black ${STATUS_STYLE[lead.status]}`}>
+                      {STATUSES.find((s) => s.id === lead.status)?.label ?? lead.status}
+                    </span>
+                    {lead.paymentStatus && lead.paymentStatus !== "UNPAID" && (
+                      <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold ${
+                        lead.paymentStatus === "PAID" ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/40" :
+                        lead.paymentStatus === "REFUNDED" ? "bg-red-500/15 text-red-300 border-red-500/40" :
+                        "animate-pulse bg-[#d4af37]/15 text-[#ffd700] border-[#d4af37]/40"
+                      }`}>
+                        {lead.paymentStatus === "PAID" ? "تم الدفع" : lead.paymentStatus === "REFUNDED" ? "مرفوض" : "قيد المراجعة"}
+                      </span>
+                    )}
+                    {lead.paymentStatus === "PAID" && (
+                      <a href={`https://wa.me/2${lead.phone}?text=${encodeURIComponent(`مرحباً ${lead.name}، تم تأكيد استلام مبلغ طلبك بنجاح. سنبدأ بالتجهيز فوراً.`)}`} target="_blank" rel="noopener noreferrer" className="rounded-full bg-green-500/20 px-2 py-0.5 text-[9px] font-bold text-green-400 hover:bg-green-500/30">
+                        مراسلة العميل
+                      </a>
+                    )}
+                  </div>
                 </div>
                 <p className="mb-1 text-xs text-zinc-300"><span className="font-bold text-zinc-500">المنتج: </span>{lead.product}</p>
                 {lead.size && <p className="mb-1 text-xs text-zinc-400"><span className="font-bold text-zinc-500">المقاس: </span>{lead.size}</p>}
                 {lead.notes && <p className="mb-1 text-xs leading-relaxed text-zinc-400">{lead.notes}</p>}
+                {lead.amount && <p className="mb-1 text-xs text-zinc-300"><span className="font-bold text-zinc-500">الإجمالي: </span><span dir="ltr">{lead.amount} EGP</span></p>}
+                {lead.governorate && <p className="mb-1 text-xs text-zinc-400"><span className="font-bold text-zinc-500">العنوان: </span>{lead.governorate}، {lead.city} - {lead.address}</p>}
+                {lead.receiptUrl && (
+                  <div className="mb-2 mt-2">
+                    <a href={lead.receiptUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/40 px-3 py-1.5 text-xs text-[#ffd700] hover:bg-white/5">
+                      <FileImage className="h-4 w-4" /> عرض الإيصال
+                    </a>
+                  </div>
+                )}
                 <p className="mb-4 text-[10px] text-zinc-600">{new Date(lead.createdAt).toLocaleString("ar-EG")} · {lead.source}</p>
                 <label className="flex items-center gap-2">
                   <span className="text-[11px] font-bold text-zinc-400">الحالة:</span>
@@ -360,6 +413,12 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
                     {STATUSES.filter((s) => s.id !== "ALL").map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
                   </select>
                 </label>
+                {lead.paymentStatus === "PENDING_REVIEW" && (
+                  <div className="mt-3 flex gap-2">
+                    <button type="button" disabled={updatingId === lead.id} onClick={() => void handlePaymentStatusChange(lead.id, "PAID")} className="flex-1 rounded-xl bg-emerald-500/20 py-2 text-[11px] font-bold text-emerald-400 hover:bg-emerald-500/30">تأكيد استلام المبلغ</button>
+                    <button type="button" disabled={updatingId === lead.id} onClick={() => void handlePaymentStatusChange(lead.id, "REFUNDED")} className="flex-1 rounded-xl bg-red-500/20 py-2 text-[11px] font-bold text-red-400 hover:bg-red-500/30">المبلغ لم يصل</button>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

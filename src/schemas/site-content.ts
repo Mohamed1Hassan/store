@@ -270,6 +270,27 @@ export const siteContentSchema = z.object({
       })
     )
     .default([]),
+  payment: z
+    .object({
+      enabled: z.boolean().default(false),
+      methods: z
+        .array(
+          z.object({
+            id: z.string().default("bank"),
+            label: z.string().default(""),
+            enabled: z.boolean().default(false),
+            accountHolder: z.string().default(""),
+            bankName: z.string().default(""),
+            accountNumber: z.string().max(34, "رقم الحساب طويل جداً").default(""),
+            extra: z.string().default(""),
+            instructions: z.string().default(""),
+          })
+        )
+        .default([]),
+      codLabel: z.string().default("الدفع عند الاستلام"),
+      requireReceipt: z.boolean().default(true),
+    })
+    .default({ enabled: false, methods: [], codLabel: "الدفع عند الاستلام", requireReceipt: true }),
 });
 
 export type SiteContent = z.infer<typeof siteContentSchema>;
@@ -278,4 +299,5 @@ export type MattressLayer = z.infer<typeof mattressLayerSchema>;
 export type MattressSpec = z.infer<typeof mattressSpecSchema>;
 export type TestimonialItem = z.infer<typeof testimonialItemSchema>;
 export type CurtainFabricItem = z.infer<typeof curtainFabricSchema>;
+export type PaymentMethod = SiteContent["payment"]["methods"][number];
 

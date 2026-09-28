@@ -13,6 +13,9 @@ export interface TrackResult {
   city?: string;
   fabricId?: string;
   createdAt: string;
+  paymentStatus?: string;
+  amount?: number;
+  receiptUrl?: string;
 }
 
 const ORDER_STATUS_MAP: Record<string, { label: string; desc: string; step: number; color: string }> = {
@@ -75,6 +78,19 @@ export default function OrderTrackResultCard({ result }: { result: TrackResult }
         <div className="flex justify-between"><span className="text-zinc-400">الحالة:</span><span className={`font-bold ${current.color}`}>{current.label}</span></div>
         <div className="flex justify-between"><span className="text-zinc-400">التفاصيل:</span><span className="text-zinc-200">{current.desc}</span></div>
         {result.product && <div className="flex justify-between"><span className="text-zinc-400">المنتج:</span><span className="text-zinc-200">{result.product}</span></div>}
+        {result.amount && <div className="flex justify-between"><span className="text-zinc-400">الإجمالي:</span><span className="text-zinc-200 font-mono" dir="ltr">{result.amount} EGP</span></div>}
+        {result.paymentStatus && result.paymentStatus !== "UNPAID" && (
+          <div className="flex justify-between border-t border-white/5 pt-2 mt-2">
+            <span className="text-zinc-400">حالة الدفع:</span>
+            <span className={`font-bold ${
+              result.paymentStatus === "PAID" ? "text-emerald-400" :
+              result.paymentStatus === "REFUNDED" ? "text-red-400" :
+              "text-amber-400"
+            }`}>
+              {result.paymentStatus === "PAID" ? "تم تأكيد الدفع" : result.paymentStatus === "REFUNDED" ? "لم يتم تأكيد المبلغ" : "قيد المراجعة"}
+            </span>
+          </div>
+        )}
         {result.city && <div className="flex justify-between"><span className="text-zinc-400">المدينة:</span><span className="text-zinc-200">{result.city}</span></div>}
         <div className="flex justify-between"><span className="text-zinc-400">تاريخ التسجيل:</span><span className="text-zinc-500">{new Date(result.createdAt).toLocaleString("ar-EG")}</span></div>
       </div>

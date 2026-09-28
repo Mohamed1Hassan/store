@@ -6,10 +6,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isAdminRequest } from "@/lib/admin-auth";
-import { getLeadById, updateLeadStatus, type LeadStatus } from "@/lib/leads-store";
+import { getLeadById, updateLeadStatus, type LeadStatus, type PaymentStatus } from "@/lib/leads-store";
 
 const bodySchema = z.object({
-  status: z.enum(["NEW", "CONTACTED", "CONFIRMED", "DELIVERED", "CANCELLED"]),
+  status: z.enum(["NEW", "CONTACTED", "CONFIRMED", "DELIVERED", "CANCELLED"]).optional(),
+  paymentStatus: z.enum(["UNPAID", "PENDING_REVIEW", "PAID", "REFUNDED"]).optional(),
 });
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
@@ -34,7 +35,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     return NextResponse.json({ error: "الحالة المطلوبة غير صالحة." }, { status: 400 });
   }
 
-  const updated = await updateLeadStatus(id, parsed.data.status as LeadStatus);
+  const updated = await updateLeadStatus(id, parsed.data.status as LeadStatus | undefined, parsed.data.paymentStatus as PaymentStatus | undefined);
   if (!updated) {
     return NextResponse.json({ error: "الطلب غير موجود." }, { status: 404 });
   }

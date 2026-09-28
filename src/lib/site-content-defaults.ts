@@ -161,4 +161,10 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     question: item.question,
     answer: item.answer,
   })),
+  payment: {
+    enabled: false,
+    methods: [],
+    codLabel: "الدفع عند الاستلام",
+    requireReceipt: true,
+  },
 };

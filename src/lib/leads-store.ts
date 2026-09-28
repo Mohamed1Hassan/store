@@ -9,14 +9,29 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { LeadInput } from "@/schemas/lead";
 import { prisma } from "./db";
-import type { LeadStatus as PrismaLeadStatus } from "@prisma/client";
+import type { LeadStatus as PrismaLeadStatus, PaymentStatus as PrismaPaymentStatus } from "@prisma/client";
 
 export type LeadStatus = "NEW" | "CONTACTED" | "CONFIRMED" | "DELIVERED" | "CANCELLED";
+export type PaymentStatus = "UNPAID" | "PENDING_REVIEW" | "PAID" | "REFUNDED";
 
-export interface StoredLead extends Omit<LeadInput, "company"> {
+export interface StoredLead extends Omit<LeadInput, "company" | "items" | "paymentMethod" | "receiptUrl" | "governorate" | "city" | "address"> {
   id: string;
   trackingCode?: string;
   status: LeadStatus;
+  /** الإجمالي بالجنيه — محسوب في السيرفر (يغيب للطلبات بدون سلة) */
+  amount?: number;
+  /** أسطر السلة — تُرسل بدون أسعار والمبلغ يُحسب في السيرفر */
+  items?: LeadInput["items"];
+  /** "cod" افتراضياً أو معرّف طريقة التحويل المفعّلة عند الأدمن */
+  paymentMethod: string;
+  /** حالة التحصيل — UNPAID افتراضياً، PENDING_REVIEW عند تحويل مع إيصال */
+  paymentStatus: PaymentStatus;
+  /** لحظة تأكيد استلام المبلغ (عند PAID) */
+  paidAt?: string;
+  receiptUrl?: string;
+  governorate?: string;
+  city?: string;
+  address?: string;
   createdAt: string;
 }
 
@@ -47,10 +62,61 @@ async function writeAll(leads: StoredLead[]): Promise<void> {
   await writeFile(LEADS_FILE, JSON.stringify(leads, null, 2), "utf-8");
 }
 
-export async function saveLead(input: LeadInput): Promise<StoredLead> {
+function mapPrismaLead(rec: {
+  id: string;
+  trackingCode: string | null;
+  name: string;
+  phone: string;
+  product: string;
+  size: string | null;
+  notes: string | null;
+  source: string | null;
+  status: PrismaLeadStatus;
+  amount: number | null;
+  items: unknown;
+  paymentMethod: string | null;
+  paymentStatus: PrismaPaymentStatus;
+  paidAt: Date | null;
+  receiptUrl: string | null;
+  governorate: string | null;
+  city: string | null;
+  address: string | null;
+  createdAt: Date;
+}): StoredLead {
+  return {
+    id: rec.id,
+    trackingCode: rec.trackingCode ?? undefined,
+    name: rec.name,
+    phone: rec.phone,
+    product: rec.product,
+    size: rec.size ?? "",
+    notes: rec.notes ?? "",
+    source: rec.source ?? "order-form",
+    status: rec.status as LeadStatus,
+    amount: rec.amount ?? undefined,
+    items: rec.items as LeadInput["items"] | undefined,
+    paymentMethod: rec.paymentMethod ?? "cod",
+    paymentStatus: (rec.paymentStatus as PaymentStatus) ?? "UNPAID",
+    paidAt: rec.paidAt?.toISOString() ?? undefined,
+    receiptUrl: rec.receiptUrl ?? undefined,
+    governorate: rec.governorate ?? undefined,
+    city: rec.city ?? undefined,
+    address: rec.address ?? undefined,
+    createdAt: rec.createdAt.toISOString(),
+  };
+}
+
+/**
+ * يحفظ طلب جديد.
+ * @param input بيانات العميل المُتحقق منها بـ zod
+ * @param amount الإجمالي المحسوب في السيرفر من أسعار القاعدة (P0.2) — لا يُقبل أبداً من العميل
+ */
+export async function saveLead(input: LeadInput, amount?: number): Promise<StoredLead> {
   const { company: _honeypot, ...rest } = input;
   void _honeypot;
   const trackingCode = generateTrackingCode();
+  const autoPaymentStatus: PrismaPaymentStatus =
+    rest.receiptUrl && rest.paymentMethod !== "cod" ? "PENDING_REVIEW" : "UNPAID";
 
   if (prisma) {
     try {
@@ -64,21 +130,17 @@ export async function saveLead(input: LeadInput): Promise<StoredLead> {
           notes: rest.notes || null,
           source: rest.source || null,
           status: "NEW",
+          amount: amount ?? null,
+          items: rest.items && rest.items.length > 0 ? rest.items : undefined,
+          paymentMethod: rest.paymentMethod || "cod",
+          paymentStatus: autoPaymentStatus,
+          receiptUrl: rest.receiptUrl || null,
+          governorate: rest.governorate || null,
+          city: rest.city || null,
+          address: rest.address || null,
         },
       });
-
-      return {
-        id: record.id,
-        trackingCode: record.trackingCode ?? trackingCode,
-        name: record.name,
-        phone: record.phone,
-        product: record.product,
-        size: record.size ?? "",
-        notes: record.notes ?? "",
-        source: record.source ?? "order-form",
-        status: record.status as LeadStatus,
-        createdAt: record.createdAt.toISOString(),
-      };
+      return mapPrismaLead(record);
     } catch (err) {
       console.warn("[leads-store] Prisma failed, fallback:", err);
     }
@@ -89,6 +151,9 @@ export async function saveLead(input: LeadInput): Promise<StoredLead> {
     id: randomUUID(),
     trackingCode,
     status: "NEW",
+    amount,
+    paymentMethod: rest.paymentMethod || "cod",
+    paymentStatus: rest.receiptUrl && rest.paymentMethod !== "cod" ? "PENDING_REVIEW" : "UNPAID",
     createdAt: new Date().toISOString(),
   };
   const leads = await readAll();
@@ -106,18 +171,7 @@ export async function listLeads(limit = 50): Promise<StoredLead[]> {
         take: safeLimit,
         orderBy: { createdAt: "desc" },
       });
-      return items.map((rec) => ({
-        id: rec.id,
-        trackingCode: rec.trackingCode ?? undefined,
-        name: rec.name,
-        phone: rec.phone,
-        product: rec.product,
-        size: rec.size ?? "",
-        notes: rec.notes ?? "",
-        source: rec.source ?? "order-form",
-        status: rec.status as LeadStatus,
-        createdAt: rec.createdAt.toISOString(),
-      }));
+      return items.map(mapPrismaLead);
     } catch (err) {
       console.warn("[leads-store] Prisma findMany fallback:", err);
     }
@@ -131,20 +185,7 @@ export async function getLeadById(id: string): Promise<StoredLead | null> {
   if (prisma) {
     try {
       const rec = await prisma.lead.findUnique({ where: { id } });
-      if (rec) {
-        return {
-          id: rec.id,
-          trackingCode: rec.trackingCode ?? undefined,
-          name: rec.name,
-          phone: rec.phone,
-          product: rec.product,
-          size: rec.size ?? "",
-          notes: rec.notes ?? "",
-          source: rec.source ?? "order-form",
-          status: rec.status as LeadStatus,
-          createdAt: rec.createdAt.toISOString(),
-        };
-      }
+      if (rec) return mapPrismaLead(rec);
     } catch (err) {
       console.warn("[leads-store] Prisma findUnique fallback:", err);
     }
@@ -159,20 +200,7 @@ export async function getLeadByTrackingCode(code: string): Promise<StoredLead | 
   if (prisma) {
     try {
       const rec = await prisma.lead.findUnique({ where: { trackingCode: needle } });
-      if (rec) {
-        return {
-          id: rec.id,
-          trackingCode: rec.trackingCode ?? undefined,
-          name: rec.name,
-          phone: rec.phone,
-          product: rec.product,
-          size: rec.size ?? "",
-          notes: rec.notes ?? "",
-          source: rec.source ?? "order-form",
-          status: rec.status as LeadStatus,
-          createdAt: rec.createdAt.toISOString(),
-        };
-      }
+      if (rec) return mapPrismaLead(rec);
     } catch (err) {
       console.warn("[leads-store] tracking fallback:", err);
     }
@@ -182,25 +210,24 @@ export async function getLeadByTrackingCode(code: string): Promise<StoredLead | 
   return leads.find((lead) => lead.trackingCode?.toUpperCase() === needle) ?? null;
 }
 
-export async function updateLeadStatus(id: string, status: LeadStatus): Promise<StoredLead | null> {
+export async function updateLeadStatus(
+  id: string,
+  status?: LeadStatus,
+  paymentStatus?: PaymentStatus
+): Promise<StoredLead | null> {
   if (prisma) {
     try {
       const rec = await prisma.lead.update({
         where: { id },
-        data: { status: status as PrismaLeadStatus },
+        data: {
+          ...(status && { status: status as PrismaLeadStatus }),
+          ...(paymentStatus && {
+            paymentStatus: paymentStatus as PrismaPaymentStatus,
+            paidAt: paymentStatus === "PAID" ? new Date() : undefined,
+          }),
+        },
       });
-      return {
-        id: rec.id,
-        trackingCode: rec.trackingCode ?? undefined,
-        name: rec.name,
-        phone: rec.phone,
-        product: rec.product,
-        size: rec.size ?? "",
-        notes: rec.notes ?? "",
-        source: rec.source ?? "order-form",
-        status: rec.status as LeadStatus,
-        createdAt: rec.createdAt.toISOString(),
-      };
+      return mapPrismaLead(rec);
     } catch (err) {
       console.warn("[leads-store] Prisma update fallback:", err);
     }
@@ -211,7 +238,14 @@ export async function updateLeadStatus(id: string, status: LeadStatus): Promise<
   if (index === -1) return null;
   const current = leads[index];
   if (!current) return null;
-  const updated: StoredLead = { ...current, status };
+  const updated: StoredLead = {
+    ...current,
+    ...(status && { status }),
+    ...(paymentStatus && {
+      paymentStatus,
+      paidAt: paymentStatus === "PAID" ? new Date().toISOString() : undefined,
+    }),
+  };
   leads[index] = updated;
   await writeAll(leads);
   return updated;
