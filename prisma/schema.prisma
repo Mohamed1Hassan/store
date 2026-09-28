@@ -1,128 +1,128 @@
-﻿// Prisma Schema for Al-Sultan Luxury Store\r
-// Supports PostgreSQL (Supabase / Neon) with fallbacks\r
-\r
-generator client {\r
-  provider = "prisma-client-js"\r
-}\r
-\r
-datasource db {\r
-  provider = "postgresql"\r
-  url      = env("DATABASE_URL")\r
-}\r
-\r
-enum LeadStatus {\r
-  NEW\r
-  CONTACTED\r
-  CONFIRMED\r
-  DELIVERED\r
-  CANCELLED\r
-}\r
-\r
-enum AppointmentStatus {\r
-  NEW\r
-  CONTACTED\r
-  SCHEDULED\r
-  DONE\r
-  CANCELLED\r
-}\r
-\r
-enum PaymentStatus {\r
-  UNPAID\r
-  PENDING_REVIEW\r
-  PAID\r
-  REFUNDED\r
-}\r
-\r
-model Product {\r
-  id            String   @id @default(cuid())\r
-  slug          String   @unique\r
-  name          String\r
-  category      String\r
-  tag           String\r
-  price         String\r
-  priceValue    Float\r
-  originalPrice String?\r
-  savingLabel   String?\r
-  description   String\r
-  features      String[] // Array of strings in Postgres\r
-  image         String?\r
-  available     Boolean  @default(true)\r
-  displayOrder  Int      @default(0)\r
-  createdAt     DateTime @default(now())\r
-  updatedAt     DateTime @updatedAt\r
-\r
-  @@index([category])\r
-  @@index([available])\r
-}\r
-\r
-model Lead {\r
-  id          String     @id @default(uuid())\r
-  trackingCode String?   @unique\r
-  name        String\r
-  phone       String\r
-  product     String\r
-  size        String?\r
-  notes       String?\r
-  source      String?\r
-  status      LeadStatus @default(NEW)\r
-  /** الإجمالي بالجنيه — يحسبه السيرفر من أسعار القاعدة (لا يُقبل من العميل) */\r
-  amount      Float?\r
-  /** أسطر السلة [{slug, quantity, size}] — يُرسلها العميل بدون أسعار */\r
-  items       Json?\r
-  // ── P2: الدفع والشحن ──\r
-  /** "cod" أو معرّف طريقة التحويل المفعّلة عند الأدمن */\r
-  paymentMethod String?\r
-  paymentStatus PaymentStatus @default(UNPAID)\r
-  paidAt        DateTime?\r
-  /** رابط صورة إيصال التحويل (public/uploads/receipts أو Cloudinary) */\r
-  receiptUrl  String?\r
-  governorate String?\r
-  city        String?\r
-  address     String?\r
-  createdAt   DateTime   @default(now())\r
-  updatedAt   DateTime   @updatedAt\r
-\r
-  @@index([status])\r
-  @@index([phone])\r
-}\r
-\r
-model Appointment {\r
-  id           String            @id @default(uuid())\r
-  trackingCode String?           @unique\r
-  name         String\r
-  phone        String\r
-  city         String?\r
-  fabricId     String?\r
-  notes        String?\r
-  source       String?\r
-  status       AppointmentStatus @default(NEW)\r
-  createdAt    DateTime          @default(now())\r
-  updatedAt    DateTime          @updatedAt\r
-\r
-  @@index([status])\r
-  @@index([phone])\r
-}\r
-\r
-model EventLog {\r
-  id        String   @id @default(uuid())\r
-  type      String\r
-  source    String?\r
-  payload   Json?\r
-  ip        String?\r
-  createdAt DateTime @default(now())\r
-\r
-  @@index([type])\r
-  @@index([createdAt])\r
-}\r
-\r
-model SiteContent {\r
-  id        String   @id @default("default")\r
-  data      Json\r
-  updatedAt DateTime @updatedAt\r
-}\r
-\r
-model DeletedProduct {\r
-  slug      String   @id\r
-  deletedAt DateTime @default(now())\r
-}\r
-\r
+﻿// Prisma Schema for Al-Sultan Luxury Store
+// Supports PostgreSQL (Supabase / Neon) with fallbacks
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  CONFIRMED
+  DELIVERED
+  CANCELLED
+}
+
+enum AppointmentStatus {
+  NEW
+  CONTACTED
+  SCHEDULED
+  DONE
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PENDING_REVIEW
+  PAID
+  REFUNDED
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  category      String
+  tag           String
+  price         String
+  priceValue    Float
+  originalPrice String?
+  savingLabel   String?
+  description   String
+  features      String[] // Array of strings in Postgres
+  image         String?
+  available     Boolean  @default(true)
+  displayOrder  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([category])
+  @@index([available])
+}
+
+model Lead {
+  id          String     @id @default(uuid())
+  trackingCode String?   @unique
+  name        String
+  phone       String
+  product     String
+  size        String?
+  notes       String?
+  source      String?
+  status      LeadStatus @default(NEW)
+  /** الإجمالي بالجنيه — يحسبه السيرفر من أسعار القاعدة (لا يُقبل من العميل) */
+  amount      Float?
+  /** أسطر السلة [{slug, quantity, size}] — يُرسلها العميل بدون أسعار */
+  items       Json?
+  // ── P2: الدفع والشحن ──
+  /** "cod" أو معرّف طريقة التحويل المفعّلة عند الأدمن */
+  paymentMethod String?
+  paymentStatus PaymentStatus @default(UNPAID)
+  paidAt        DateTime?
+  /** رابط صورة إيصال التحويل (public/uploads/receipts أو Cloudinary) */
+  receiptUrl  String?
+  governorate String?
+  city        String?
+  address     String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([status])
+  @@index([phone])
+}
+
+model Appointment {
+  id           String            @id @default(uuid())
+  trackingCode String?           @unique
+  name         String
+  phone        String
+  city         String?
+  fabricId     String?
+  notes        String?
+  source       String?
+  status       AppointmentStatus @default(NEW)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([status])
+  @@index([phone])
+}
+
+model EventLog {
+  id        String   @id @default(uuid())
+  type      String
+  source    String?
+  payload   Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+}
+
+model SiteContent {
+  id        String   @id @default("default")
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
+model DeletedProduct {
+  slug      String   @id
+  deletedAt DateTime @default(now())
+}
+
