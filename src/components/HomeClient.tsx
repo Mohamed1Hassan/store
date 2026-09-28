@@ -156,7 +156,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
 
       {/* CURTAIN FABRIC & BESPOKE TAILORING SECTION */}
       <div id="curtains-section">
-        <CurtainSection />
+        <CurtainSection products={products} />
       </div>
 
       {/* MATTRESS PROTECTOR SECTION (كافر المراتب) */}

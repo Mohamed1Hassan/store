@@ -37,15 +37,15 @@ export default function Footer() {
               أقسام المعرض
             </h3>
             <ul className="space-y-2.5 text-xs">
-              <li><a href="#mattress-section" className="hover:text-[#ffd700] transition">مراتب طبية بوكيت سوست منفصلة</a></li>
-              <li><a href="#curtains-section" className="hover:text-[#ffd700] transition">ستائر بلاك أوت وقطيفة وشيفون</a></li>
-              <li><a href="#products-section" className="hover:text-[#ffd700] transition">تشكيلة المنتجات الكاملة والأسعار</a></li>
+              <li><a href="/products" className="text-[#ffd700] font-bold hover:underline transition">⭐ متجر المنتجات والكتالوج الكامل (/products)</a></li>
+              <li><a href="/#mattress-section" className="hover:text-[#ffd700] transition">مراتب طبية بوكيت سوست منفصلة</a></li>
+              <li><a href="/#curtains-section" className="hover:text-[#ffd700] transition">ستائر بلاك أوت وقطيفة وشيفون</a></li>
               <li><a href="/orders/track" className="hover:text-[#ffd700] text-[#ffd700]/90 font-bold transition">متابعة حالة الطلب والمعاينة (Tracking)</a></li>
-              <li><a href="#pillows-section" className="hover:text-[#ffd700] transition">مفروشات وألحفة سرير تركي</a></li>
-              <li><a href="#protector-section" className="hover:text-[#ffd700] transition">كافر وواقي المراتب ضد السوائل</a></li>
-              <li><a href="#order-section" className="hover:text-[#ffd700] transition">اطلب الآن من المعرض</a></li>
-              <li><a href="#testimonials-section" className="hover:text-[#ffd700] transition">آراء العملاء وتقييماتهم</a></li>
-              <li><a href="#faq-section" className="hover:text-[#ffd700] transition">الأسئلة الشائعة</a></li>
+              <li><a href="/#pillows-section" className="hover:text-[#ffd700] transition">مفروشات وألحفة سرير تركي</a></li>
+              <li><a href="/#protector-section" className="hover:text-[#ffd700] transition">كافر وواقي المراتب ضد السوائل</a></li>
+              <li><a href="/#order-section" className="hover:text-[#ffd700] transition">اطلب الآن من المعرض</a></li>
+              <li><a href="/#testimonials-section" className="hover:text-[#ffd700] transition">آراء العملاء وتقييماتهم</a></li>
+              <li><a href="/#faq-section" className="hover:text-[#ffd700] transition">الأسئلة الشائعة</a></li>
             </ul>
           </div>
 

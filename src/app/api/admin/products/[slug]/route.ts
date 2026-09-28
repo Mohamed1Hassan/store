@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { isAdminRequest } from "@/lib/admin-auth";
 import { deleteProduct, getProductBySlug, updateProduct } from "@/lib/products-store";
 import { productSchema } from "@/schemas/product";
@@ -48,6 +49,18 @@ export async function PATCH(
       return NextResponse.json({ error: "تعذر العثور على المنتج لتحديثه." }, { status: 404 });
     }
 
+    // تفعيل التحديث الفوري للكاش للصفحة الرئيسية والمتجر وصفحة المنتج
+    try {
+      revalidatePath("/");
+      revalidatePath("/products");
+      revalidatePath(`/products/${slug}`);
+      if (updated.slug && updated.slug !== slug) {
+        revalidatePath(`/products/${updated.slug}`);
+      }
+    } catch (e) {
+      console.warn("[admin-products] revalidatePath warning:", e);
+    }
+
     return NextResponse.json({ item: updated });
   } catch (err) {
     console.error("[admin-products] PATCH error:", err);
@@ -75,6 +88,16 @@ export async function DELETE(
     if (!ok) {
       return NextResponse.json({ error: "تعذر العثور على المنتج لحذفه." }, { status: 404 });
     }
+
+    // مسح الكاش فوراً بعد الحذف
+    try {
+      revalidatePath("/");
+      revalidatePath("/products");
+      revalidatePath(`/products/${slug}`);
+    } catch (e) {
+      console.warn("[admin-products] revalidatePath warning:", e);
+    }
+
     return NextResponse.json({ ok: true, message: "تم حذف المنتج بنجاح." });
   } catch (err) {
     console.error("[admin-products] DELETE error:", err);
@@ -87,3 +110,4 @@ export async function DELETE(
     );
   }
 }
+

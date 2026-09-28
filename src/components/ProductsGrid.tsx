@@ -50,14 +50,14 @@ export default function ProductsGrid({ products }: { products: Product[] }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           icon={Boxes}
-          badge="كل ما يقدمه السلطان"
-          title="تشكيلة"
-          accent="المنتجات الكاملة"
-          description="أسعار واضحة وتفصيل على المقاس لكل المنتجات: مراتب طبية، ستائر فاخرة، كافر مراتب، ومفروشات فندقية."
+          badge="مختارات من معرضنا"
+          title="أبرز روائع"
+          accent="السلطان الفاخرة"
+          description="تشكيلة منتقاة من أفضل المراتب الطبية والستائر الملكية والمفروشات. تصفح المتجر بالكامل للاطلاع على جميع المقاسات والأسعار."
         />
 
         <div className="flex overflow-x-auto snap-x snap-mandatory gap-5 pb-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          {products.map((product) => (
+          {products.slice(0, 4).map((product) => (
             <article
               key={product.id}
               className="min-w-[85vw] sm:min-w-[60vw] md:min-w-0 snap-center flex flex-col p-6 rounded-3xl bg-[#0b0e17] border border-white/5 hover:border-[#d4af37]/40 hover:bg-[#0e121c] hover:shadow-2xl hover:shadow-[#d4af37]/10 transition-all duration-300 relative overflow-hidden"
@@ -149,6 +149,20 @@ export default function ProductsGrid({ products }: { products: Product[] }) {
               </div>
             </article>
           ))}
+        </div>
+
+        {/* CTA to Full Products Page */}
+        <div className="mt-12 text-center">
+          <Link
+            href="/products"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-[#d4af37] via-[#ffd700] to-[#b8860b] text-[#07090e] font-black text-sm md:text-base shadow-xl shadow-[#d4af37]/20 hover:scale-[1.03] hover:shadow-[#d4af37]/40 active:scale-[0.98] transition-all"
+          >
+            <span>تصفح كتالوج المتجر بالكامل ({products.length} منتجات)</span>
+            <ArrowUpRight className="w-5 h-5 text-black" />
+          </Link>
+          <p className="text-zinc-400 text-xs mt-3">
+            تصفية وبحث متقدم، ترتيب حسب الأسعار، وسلة مشتريات فورية
+          </p>
         </div>
       </div>
     </section>

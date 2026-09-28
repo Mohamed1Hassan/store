@@ -7,8 +7,9 @@ import { whatsappLink } from "@/data/site";
 import { CURTAIN_FABRICS, DEFAULT_FABRIC_ID } from "@/data/curtains";
 import { buildAppointmentMessage, EGYPTIAN_CITIES } from "@/schemas/appointment";
 import { trackEvent } from "@/lib/analytics";
+import type { Product } from "@/data/products";
 
-export default function CurtainSection() {
+export default function CurtainSection({ products = [] }: { products?: Product[] }) {
   const [selectedFabric, setSelectedFabric] = useState(DEFAULT_FABRIC_ID);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -17,8 +18,31 @@ export default function CurtainSection() {
   const [sending, setSending] = useState(false);
   const [booked, setBooked] = useState(false);
 
+  // خريطة لربط نوع القماش بمنتج الستارة المقابل له في الكتالوج المحدث من الأدمن
+  const fabricToSlugMap: Record<string, string> = {
+    velvet: "royal-curtains",
+    linen: "natural-linen-curtains",
+    chiffon: "chiffon-curtains",
+  };
+
+  // دمج بيانات وصور الأقمشة مع أحدث المنتجات من لوحة الأدمن إن وُجدت
+  const dynamicFabrics = CURTAIN_FABRICS.map((fabric) => {
+    const matchedSlug = fabricToSlugMap[fabric.id];
+    const matchedProduct = products.find(
+      (p) => p.id === matchedSlug || p.id === fabric.id
+    );
+
+    return {
+      ...fabric,
+      title: matchedProduct?.name || fabric.title,
+      desc: matchedProduct?.description || fabric.desc,
+      image: matchedProduct?.image || fabric.image,
+      features: matchedProduct?.features?.length ? matchedProduct.features : fabric.features,
+    };
+  });
+
   const selectedFabricTitle =
-    CURTAIN_FABRICS.find((fabric) => fabric.id === selectedFabric)?.title ?? "";
+    dynamicFabrics.find((fabric) => fabric.id === selectedFabric)?.title ?? "";
 
   const handleBooking = async (event: FormEvent) => {
     event.preventDefault();
@@ -90,7 +114,7 @@ export default function CurtainSection() {
 
         {/* Fabrics 3 Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {CURTAIN_FABRICS.map((item) => {
+          {dynamicFabrics.map((item) => {
             const isSelected = selectedFabric === item.id;
             return (
               <button

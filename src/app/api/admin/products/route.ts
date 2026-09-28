@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { isAdminRequest } from "@/lib/admin-auth";
 import { listProducts, saveProduct } from "@/lib/products-store";
 import { productSchema } from "@/schemas/product";
@@ -30,6 +31,16 @@ export async function POST(request: NextRequest) {
     }
 
     const saved = await saveProduct(parsed.data);
+
+    // تفعيل التحديث اللحظي للكاش للصفحة الرئيسية والمتجر
+    try {
+      revalidatePath("/");
+      revalidatePath("/products");
+      revalidatePath(`/products/${saved.slug || saved.id}`);
+    } catch (e) {
+      console.warn("[admin-products] revalidatePath warning:", e);
+    }
+
     return NextResponse.json({ item: saved }, { status: 201 });
   } catch (err) {
     console.error("[admin-products] error saving product:", err);
@@ -42,3 +53,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+

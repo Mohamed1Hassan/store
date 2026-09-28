@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Crown, Phone, Menu, X, ShoppingBag } from "lucide-react";
+import Link from "next/link";
+import { Crown, Phone, Menu, X, ShoppingBag, Store } from "lucide-react";
 import { PRODUCTS_INQUIRY_MESSAGE, whatsappLink } from "@/data/site";
 import type { CategoryId } from "@/data/products";
 import { useCartStore } from "@/lib/cart-store";
@@ -17,8 +18,8 @@ export default function Navbar({ onSelectCategory, activeCategory }: NavbarProps
   const openCart = useCartStore((s) => s.openCart);
   const totalCartCount = useCartStore((s) => s.getTotalCount());
 
-  const navItems: { id: CategoryId; label: string }[] = [
-    { id: "room", label: "الرئيسية الملكية" },
+  const navItems: { id: CategoryId; label: string; href?: string }[] = [
+    { id: "room", label: "الرئيسية الملكية", href: "/" },
     { id: "mattress", label: "المراتب الطبية" },
     { id: "curtains", label: "الستائر الفاخرة" },
     { id: "pillows", label: "المفروشات والوسائد" },
@@ -64,6 +65,13 @@ export default function Navbar({ onSelectCategory, activeCategory }: NavbarProps
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center gap-1 bg-[#10141f]/80 p-1.5 rounded-full border border-[#d4af37]/30 shadow-inner">
+            <Link
+              href="/products"
+              className="px-4 py-2 rounded-full text-sm font-bold text-[#ffd700] hover:bg-[#d4af37]/20 flex items-center gap-1.5 transition-all duration-300"
+            >
+              <Store className="w-3.5 h-3.5" />
+              <span>المتجر والأسعار</span>
+            </Link>
             {navItems.map((item) => {
               const isActive = activeCategory === item.id;
               return (
@@ -132,6 +140,14 @@ export default function Navbar({ onSelectCategory, activeCategory }: NavbarProps
       {mobileMenuOpen && (
         <div id="mobile-nav-drawer" className="md:hidden bg-[#0a0d16]/98 border-b border-[#d4af37]/30 px-6 py-6 animate-fade-in">
           <div className="flex flex-col gap-3">
+            <Link
+              href="/products"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-right py-3 px-4 rounded-xl text-base font-bold bg-[#d4af37]/15 border border-[#d4af37]/30 text-[#ffd700] flex items-center gap-2 transition"
+            >
+              <Store className="w-4 h-4" />
+              <span>تصفح كل المنتجات والأسعار (/products)</span>
+            </Link>
             {navItems.map((item) => (
               <button
                 key={item.id}
