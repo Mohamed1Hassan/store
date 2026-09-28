@@ -1,4 +1,4 @@
-// Prisma Schema for Al-Sultan Luxury Store\r
+﻿// Prisma Schema for Al-Sultan Luxury Store\r
 // Supports PostgreSQL (Supabase / Neon) with fallbacks\r
 \r
 generator client {\r
