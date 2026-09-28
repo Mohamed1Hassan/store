@@ -70,7 +70,7 @@ export default function Navbar({ onSelectCategory, activeCategory }: NavbarProps
               className="px-4 py-2 rounded-full text-sm font-bold text-[#ffd700] hover:bg-[#d4af37]/20 flex items-center gap-1.5 transition-all duration-300"
             >
               <Store className="w-3.5 h-3.5" />
-              <span>المتجر والأسعار</span>
+              <span>المتجر</span>
             </Link>
             {navItems.map((item) => {
               const isActive = activeCategory === item.id;
