@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import HomeClient from "@/components/HomeClient";
 import { SITE_NAME, SITE_URL } from "@/data/site";
 import { listProducts } from "@/lib/products-store";
+import { getSiteContent } from "@/lib/site-content-store";
 import type { Product } from "@/data/products";
 
 // الصفحة تُبنى مسبقاً على Vercel؛ نُبقيها ديناميكية لتقرأ أحدث المنتجات من القاعدة.
@@ -20,9 +21,10 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  // مصدر البيانات الموحّد: قاعدة البيانات (مع دمج الكتالوج كاحتياط في listProducts).
-  // وبهذا أي تعديل من لوحة الإدارة ينعكس فوراً على الصفحة الرئيسية.
-  const stored = await listProducts();
+  const [stored, siteContent] = await Promise.all([
+    listProducts(),
+    getSiteContent(),
+  ]);
 
   // نصغّر الحقول المُرسلة للعميل: نحتاج فقط ما تعرضه مكونات الصفحة.
   const products: Product[] = stored.map((p) => ({
@@ -39,5 +41,5 @@ export default async function HomePage() {
     image: p.image,
   }));
 
-  return <HomeClient products={products} />;
+  return <HomeClient products={products} siteContent={siteContent} />;
 }

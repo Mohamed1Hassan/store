@@ -31,6 +31,7 @@ const AnalyticsListener = dynamic(() => import("@/components/AnalyticsListener")
 
 import { DEFAULT_ORDER_MESSAGE, whatsappLink } from "@/data/site";
 import type { CategoryId } from "@/data/products";
+import type { SiteContent } from "@/schemas/site-content";
 
 const HERO_FEATURES = [
   { icon: ShieldCheck, label: "ضمان استبدال 10 سنوات", iconClass: "text-[#ffd700]" },
@@ -41,8 +42,22 @@ const HERO_FEATURES = [
 
 const WHATSAPP_LINK = whatsappLink(DEFAULT_ORDER_MESSAGE);
 
-export default function HomeClient({ products }: { products: Product[] }) {
+interface Props {
+  products: Product[];
+  siteContent?: SiteContent | null;
+}
+
+export default function HomeClient({ products, siteContent }: Props) {
   const [activeCategory, setActiveCategory] = useState<CategoryId>("room");
+
+  const heroFeatures =
+    siteContent?.hero?.features && siteContent.hero.features.length > 0
+      ? siteContent.hero.features.map((f, i) => ({
+          icon: HERO_FEATURES[i % HERO_FEATURES.length]?.icon || ShieldCheck,
+          label: f.label,
+          iconClass: "text-[#ffd700]",
+        }))
+      : HERO_FEATURES;
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -68,7 +83,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
     <main className="relative min-h-screen overflow-x-clip bg-[#07090e] text-[#f4efe6]">
       <AnalyticsListener />
       <div className="sticky top-0 z-50">
-        <PromoCountdownBar />
+        <PromoCountdownBar announcement={siteContent?.announcement} />
         <Navbar onSelectCategory={handleSelectCategory} activeCategory={activeCategory} />
       </div>
 
@@ -83,23 +98,24 @@ export default function HomeClient({ products }: { products: Product[] }) {
 
             <div className="inline-flex items-center gap-2 rounded-full border border-[#d4af37]/40 bg-[#0b0f18]/55 px-4 py-1.5 text-xs font-bold text-[#ffd700] backdrop-blur-md">
               <Crown className="h-4 w-4 text-[#ffd700]" />
-              <span>الاسم الأول في عالم الفخامة والراحة الملكية</span>
+              <span>{siteContent?.hero?.badge || "الاسم الأول في عالم الفخامة والراحة الملكية"}</span>
             </div>
 
             <h1 className="font-serif text-4xl font-black leading-[1.15] tracking-tight drop-shadow-[0_6px_28px_rgba(0,0,0,0.7)] sm:text-5xl lg:text-6xl">
-              السلطان <br />
-              <span className="gold-gradient-text">للمفروشات والستائر</span> <br />
+              {siteContent?.hero?.titleLine1 || "السلطان"} <br />
+              <span className="gold-gradient-text">{siteContent?.hero?.titleLine2 || "للمفروشات والستائر"}</span> <br />
               <span className="font-sans text-2xl font-bold text-zinc-200 sm:text-3xl">
-                وكافر المراتب الطبية
+                {siteContent?.hero?.titleLine3 || "وكافر المراتب الطبية"}
               </span>
             </h1>
 
             <p className="max-w-xl text-sm leading-relaxed text-zinc-200 drop-shadow-[0_2px_14px_rgba(0,0,0,0.75)] sm:text-base">
-              نصنع لك أرقى غرف النوم الملكية بتوليفة استثنائية من المراتب الطبية بنوابض منفصلة، والستائر الفاخرة المفصلة على مقاسك، والمفروشات الفندقية الحريرية.
+              {siteContent?.hero?.description ||
+                "نصنع لك أرقى غرف النوم الملكية بتوليفة استثنائية من المراتب الطبية بنوابض منفصلة، والستائر الفاخرة المفصلة على مقاسك، والمفروشات الفندقية الحريرية."}
             </p>
 
             <div className="grid w-full max-w-lg grid-cols-1 gap-2.5 pt-1 sm:grid-cols-2">
-              {HERO_FEATURES.map(({ icon: Icon, label, iconClass }) => (
+              {heroFeatures.map(({ icon: Icon, label, iconClass }) => (
                 <div
                   key={label}
                   className="flex items-center gap-2.5 rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-md transition duration-300 hover:border-[#d4af37]/40 hover:bg-white/10"
@@ -119,7 +135,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
                 className="flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[#d4af37] via-[#ffd700] to-[#b8860b] px-7 py-3.5 text-sm font-black text-[#07090e] shadow-xl shadow-black/40 transition-all hover:scale-[1.03] hover:shadow-[#d4af37]/40 active:scale-[0.98]"
               >
                 <Phone className="h-4 w-4 fill-current" />
-                <span>تواصل واطلب مقاسك الآن</span>
+                <span>{siteContent?.hero?.ctaText || "تواصل واطلب مقاسك الآن"}</span>
               </a>
 
               <button
@@ -172,7 +188,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
       <Testimonials />
 
       {/* FAQ */}
-      <FaqSection />
+      <FaqSection faq={siteContent?.faq} />
 
       {/* ORDER FORM */}
       <OrderForm products={products} />

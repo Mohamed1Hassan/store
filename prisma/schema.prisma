@@ -93,3 +93,15 @@ model EventLog {
   @@index([type])
   @@index([createdAt])
 }
+
+model SiteContent {
+  id        String   @id @default("default")
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
+model DeletedProduct {
+  slug      String   @id
+  deletedAt DateTime @default(now())
+}
+

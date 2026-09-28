@@ -1,11 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CalendarCheck, Crown, LogOut, Phone, RefreshCw, Search, Boxes } from "lucide-react";
+import { CalendarCheck, Crown, LogOut, Phone, RefreshCw, Search, Boxes, LayoutTemplate } from "lucide-react";
 import type { LeadStatus, StoredLead } from "@/lib/leads-store";
 import type { AppointmentStatus, StoredAppointment } from "@/lib/appointments-store";
 import type { StoredProduct } from "@/lib/products-store";
+import type { SiteContent } from "@/schemas/site-content";
 import AdminProductsTab from "./AdminProductsTab";
+import AdminContentTab from "./AdminContentTab";
 
 const STATUSES: { id: LeadStatus | "ALL"; label: string }[] = [
   { id: "ALL", label: "الكل" },
@@ -41,7 +43,7 @@ const APPOINTMENT_STYLE: Record<AppointmentStatus, string> = {
   CANCELLED: "bg-red-500/15 text-red-300 border-red-500/40",
 };
 
-type TabId = "leads" | "appointments" | "products";
+type TabId = "leads" | "appointments" | "products" | "content";
 
 interface LeadsResponse {
   items: StoredLead[];
@@ -58,6 +60,7 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
   const [leads, setLeads] = useState<StoredLead[]>([]);
   const [appointments, setAppointments] = useState<StoredAppointment[]>([]);
   const [products, setProducts] = useState<StoredProduct[]>([]);
+  const [siteContent, setSiteContent] = useState<SiteContent | null>(null);
   const [total, setTotal] = useState(0);
   const [appointmentsTotal, setAppointmentsTotal] = useState(0);
   const [productsTotal, setProductsTotal] = useState(0);
@@ -72,6 +75,18 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
     setLoading(true);
     setError(null);
     try {
+      if (tab === "content") {
+        const res = await fetch("/api/admin/site-content");
+        if (res.status === 401) {
+          window.location.reload();
+          return;
+        }
+        if (!res.ok) throw new Error("load-failed");
+        const data = (await res.json()) as { content: SiteContent };
+        setSiteContent(data.content);
+        return;
+      }
+
       if (tab === "products") {
         const res = await fetch("/api/admin/products");
         if (res.status === 401) {
@@ -119,6 +134,20 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
       setLoading(true);
       setError(null);
       try {
+        if (tab === "content") {
+          const res = await fetch("/api/admin/site-content");
+          if (res.status === 401) {
+            window.location.reload();
+            return;
+          }
+          if (!res.ok) throw new Error("load-failed");
+          const data = (await res.json()) as { content: SiteContent };
+          if (!cancelled) {
+            setSiteContent(data.content);
+          }
+          return;
+        }
+
         if (tab === "products") {
           const res = await fetch("/api/admin/products");
           if (res.status === 401) {
@@ -247,9 +276,13 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
           className={`flex flex-1 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-black transition ${tab === "products" ? "bg-gradient-to-r from-[#d4af37] to-[#aa7c11] text-black" : "text-zinc-300 hover:text-[#ffd700]"}`}>
           <Boxes className="h-4 w-4" />المنتجات ({productsTotal})
         </button>
+        <button type="button" role="tab" aria-selected={tab === "content"} onClick={() => setTab("content")}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-black transition ${tab === "content" ? "bg-gradient-to-r from-[#d4af37] to-[#aa7c11] text-black" : "text-zinc-300 hover:text-[#ffd700]"}`}>
+          <LayoutTemplate className="h-4 w-4" />محتوى الموقع
+        </button>
       </div>
 
-      {tab !== "products" && (
+      {tab !== "products" && tab !== "content" && (
         <div className="flex flex-col gap-3 rounded-3xl border border-white/10 bg-[#0b0e17] p-5 lg:flex-row lg:items-center">
           <div className="flex flex-wrap gap-2">
             {tab === "leads"
@@ -283,8 +316,16 @@ export default function AdminDashboard({ adminEmail }: { adminEmail: string }) {
 
       {loading ? (
         <p className="py-10 text-center text-sm text-zinc-400">
-          {tab === "leads" ? "جاري تحميل الطلبات..." : tab === "appointments" ? "جاري تحميل الحجوزات..." : "جاري تحميل المنتجات..."}
+          {tab === "leads"
+            ? "جاري تحميل الطلبات..."
+            : tab === "appointments"
+            ? "جاري تحميل الحجوزات..."
+            : tab === "products"
+            ? "جاري تحميل المنتجات..."
+            : "جاري تحميل محتوى الموقع..."}
         </p>
+      ) : tab === "content" ? (
+        <AdminContentTab initialContent={siteContent} onRefresh={() => void fetchLeads()} />
       ) : tab === "products" ? (
         <AdminProductsTab products={products} onRefresh={() => void fetchLeads()} />
       ) : tab === "leads" ? (

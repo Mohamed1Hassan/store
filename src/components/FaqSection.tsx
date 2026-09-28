@@ -2,27 +2,33 @@ import { ChevronDown, Headphones, MessagesSquare, Phone } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import { FAQ_ITEMS } from "@/data/faq";
 import { whatsappLink } from "@/data/site";
+import type { SiteContent } from "@/schemas/site-content";
 
-/** بيانات منظمة لمحركات البحث (FAQPage) */
-const FAQ_JSON_LD = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: FAQ_ITEMS.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: item.answer,
-    },
-  })),
-};
+interface Props {
+  faq?: SiteContent["faq"];
+}
 
-export default function FaqSection() {
+export default function FaqSection({ faq }: Props) {
+  const items = faq && faq.length > 0 ? faq : FAQ_ITEMS;
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+
   return (
     <section id="faq-section" className="py-20 bg-[#0b0f18] border-t border-[#d4af37]/20 relative">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_JSON_LD) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,7 +43,7 @@ export default function FaqSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* FAQ list */}
           <div className="lg:col-span-8 space-y-3">
-            {FAQ_ITEMS.map((item) => (
+            {items.map((item) => (
               <details
                 key={item.question}
                 className="group p-5 rounded-2xl bg-[#0b0e17] border border-white/5 hover:border-[#d4af37]/40 transition-colors duration-300"
@@ -79,3 +85,4 @@ export default function FaqSection() {
     </section>
   );
 }
+

@@ -2,8 +2,8 @@
 
 import { useSyncExternalStore } from "react";
 import { Clock, Truck } from "lucide-react";
+import type { SiteContent } from "@/schemas/site-content";
 
-/** يحسب الوقت المتبقي حتى منتصف الليل (عرض اليوم) */
 function msUntilMidnight(): number {
   const now = new Date();
   const midnight = new Date(now);
@@ -20,11 +20,6 @@ function formatCountdown(ms: number): string {
   return `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 
-/* ── مصدر وقت خارجي (External Store) ──
- * القيمة تُحسب مرة كل ثانية وتُخزَّن (كاش) حتى تبقى ثابتة بين قراءات React،
- * وهذا هو النمط الرسمي لمنع hydration mismatch: الخادم يقرأ `0`،
- * والعميل يقرأ `0` أثناء الـ hydration ثم ينتقل للقيمة الحقيقية فور اكتماله.
- */
 let cachedSecond = -1;
 let cachedRemaining = 0;
 
@@ -46,19 +41,28 @@ function subscribe(onStoreChange: () => void): () => void {
   return () => clearInterval(timer);
 }
 
-/**
- * شريط عرض عاجل (3.4): عرض اليوم — كافر مجاني + خصم، مع عدّاد تنازلي
- * حتى منتصف الليل. يعمل بدون JS (يعرض نصاً ثابتاً) ويحدّث العدّاد كل ثانية.
- */
-export default function PromoCountdownBar() {
+interface Props {
+  announcement?: SiteContent["announcement"];
+}
+
+export default function PromoCountdownBar({ announcement }: Props) {
   const remaining = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  if (announcement && !announcement.enabled) {
+    return null;
+  }
+
+  const badge = announcement?.badge ?? "عرض اليوم:";
+  const text = announcement?.text ?? "كافر مراتب مجاني + خصم حتى";
+  const highlight = announcement?.highlight ?? "5,100 ج.م";
+  const suffix = announcement?.suffix ?? "على الغرفة المتكاملة";
 
   return (
     <div className="relative z-40 flex items-center justify-center gap-2 border-b border-[#d4af37]/30 bg-gradient-to-l from-[#2a2008] via-[#171204] to-[#2a2008] px-4 py-2 text-center">
       <Truck className="h-4 w-4 shrink-0 text-[#ffd700]" />
       <p className="text-[11px] font-bold text-zinc-100 sm:text-xs">
-        عرض اليوم: كافر مراتب مجاني + خصم حتى{" "}
-        <span className="text-[#ffd700]">5,100 ج.م</span> على الغرفة المتكاملة
+        {badge} {text}{" "}
+        <span className="text-[#ffd700]">{highlight}</span> {suffix}
       </p>
       <span className="flex items-center gap-1.5 rounded-full border border-[#d4af37]/40 bg-black/50 px-2.5 py-0.5 text-[11px] font-black text-[#ffd700]">
         <Clock className="h-3 w-3" />
@@ -69,3 +73,4 @@ export default function PromoCountdownBar() {
     </div>
   );
 }
+
