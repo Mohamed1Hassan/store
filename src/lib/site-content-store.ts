@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "./db";
 import { siteContentSchema, type SiteContent } from "@/schemas/site-content";
 import { DEFAULT_SITE_CONTENT, DEFAULT_SUITE_SCENES } from "./site-content-defaults";
@@ -110,22 +111,33 @@ export async function saveSiteContent(partial: Partial<SiteContent>): Promise<Si
     try {
       await prisma.siteContent.upsert({
         where: { id: "default" },
-        update: { data: parsed as any },
-        create: { id: "default", data: parsed as any },
+        update: { data: parsed as unknown as Prisma.InputJsonValue },
+        create: { id: "default", data: parsed as unknown as Prisma.InputJsonValue },
       });
       return parsed;
     } catch (err) {
-      console.warn("[site-content-store] Prisma saveSiteContent fallback:", err);
+      console.error("[site-content-store] Prisma saveSiteContent failed:", err);
+      // لا نكذب بنجاح وهمي: إن تعذّر الكتابة في القاعدة نرمي خطأ صريح
+      // (نفس سلوك products-store) حتى تظهر رسالة فشل حقيقية في لوحة الإدارة.
+      throw new Error(
+        "تعذّر حفظ المحتوى في قاعدة البيانات (SiteContent) — تأكد من اتصال DATABASE_URL ومن تنفيذ `prisma db push`."
+      );
     }
   }
 
-  if (jsonFallbackWritable()) {
-    try {
-      await mkdir(DATA_DIR, { recursive: true });
-      await writeFile(CONTENT_FILE, JSON.stringify(parsed, null, 2), "utf-8");
-    } catch (err) {
-      console.warn("[site-content-store] فشل الكتابة على site-content.json:", err);
-    }
+  // بدون قاعدة بيانات: نظام الملفات المحلي هو الوحيد المخوّل بالكتابة.
+  if (!jsonFallbackWritable()) {
+    throw new Error(
+      "تعذّر الحفظ: لا توجد قاعدة بيانات (DATABASE_URL غير مضبوط على Vercel) ونظام الملفات للقراءة فقط."
+    );
+  }
+
+  try {
+    await mkdir(DATA_DIR, { recursive: true });
+    await writeFile(CONTENT_FILE, JSON.stringify(parsed, null, 2), "utf-8");
+  } catch (err) {
+    console.error("[site-content-store] فشل الكتابة على site-content.json:", err);
+    throw new Error("تعذّر حفظ المحتوى في site-content.json.");
   }
 
   return parsed;
