@@ -13,6 +13,9 @@ const envSchema = z.object({
   ADMIN_EMAIL: z.string().email("ADMIN_EMAIL غير صالح.").optional(),
   /** كلمة مرور لوحة الإدارة (8 أحرف على الأقل) — تُضبط في .env.local وعلى Vercel فقط */
   ADMIN_PASSWORD: z.string().min(8, "ADMIN_PASSWORD يجب أن تكون 8 أحرف على الأقل.").optional(),
+  /** حساب الأدمن الثاني (اختياري) */
+  ADMIN_EMAIL_2: z.string().email("ADMIN_EMAIL_2 غير صالح.").optional(),
+  ADMIN_PASSWORD_2: z.string().min(8, "ADMIN_PASSWORD_2 يجب أن تكون 8 أحرف على الأقل.").optional(),
   /** سر توقيع جلسة الإدارة — إن غاب يُستخدم NEXTAUTH_SECRET */
   ADMIN_SESSION_SECRET: z.string().min(16, "ADMIN_SESSION_SECRET يجب أن يكون 16 حرفاً على الأقل.").optional(),
   NEXTAUTH_SECRET: z.string().min(16, "NEXTAUTH_SECRET يجب أن يكون 16 حرفاً على الأقل.").optional(),
@@ -38,6 +41,8 @@ function loadEnv(): AppEnv {
     DATABASE_URL: process.env.DATABASE_URL || undefined,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL || undefined,
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || undefined,
+    ADMIN_EMAIL_2: process.env.ADMIN_EMAIL_2 || undefined,
+    ADMIN_PASSWORD_2: process.env.ADMIN_PASSWORD_2 || undefined,
     ADMIN_SESSION_SECRET: process.env.ADMIN_SESSION_SECRET || undefined,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || undefined,
     OWNER_EMAIL: process.env.OWNER_EMAIL || undefined,

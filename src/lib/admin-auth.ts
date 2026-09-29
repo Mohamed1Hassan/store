@@ -39,12 +39,25 @@ export function verifyPassword(provided: string, expected: string): boolean {
   return safeEqual(provided, expected);
 }
 
-/** هل بيانات الدخول صحيحة؟ */
+/** هل بيانات الدخول صحيحة؟ — يدعم حسابين أدمن */
 export function checkAdminCredentials(email: string, password: string): boolean {
   if (!isAdminConfigured()) return false;
-  const emailOk = safeEqual(email.trim().toLowerCase(), (env.ADMIN_EMAIL ?? "").toLowerCase());
-  const passOk = verifyPassword(password, env.ADMIN_PASSWORD ?? "");
-  return emailOk && passOk;
+
+  const emailLower = email.trim().toLowerCase();
+
+  // الحساب الأول
+  const email1Ok = safeEqual(emailLower, (env.ADMIN_EMAIL ?? "").toLowerCase());
+  const pass1Ok = verifyPassword(password, env.ADMIN_PASSWORD ?? "");
+  if (email1Ok && pass1Ok) return true;
+
+  // الحساب الثاني (اختياري)
+  if (env.ADMIN_EMAIL_2 && env.ADMIN_PASSWORD_2) {
+    const email2Ok = safeEqual(emailLower, env.ADMIN_EMAIL_2.toLowerCase());
+    const pass2Ok = verifyPassword(password, env.ADMIN_PASSWORD_2);
+    if (email2Ok && pass2Ok) return true;
+  }
+
+  return false;
 }
 
 /** إصدار قيمة الكوكي لجلسة جديدة — يعيد null إن لم يكن السر مهيأً */
