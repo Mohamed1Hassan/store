@@ -196,5 +196,117 @@ export const PRODUCTS_CATALOG: Product[] = [
       { label: "240×260 سم (رويال)", price: "3,400 ج.م", priceValue: 3400, originalPrice: "4,200 ج.م", savingLabel: "800 ج.م" },
     ],
   },
+  {
+    id: "floor-mattress",
+    name: "المرتبة الأرضية",
+    category: "المرتبة الملكية",
+    tag: "عملية ومريحة",
+    price: "1,100 ج.م",
+    priceValue: 1100,
+    description: "مرتبة أرضية مريحة بارتفاع 15 سم وحشو فايبر سوبر سوفت، مثالية للضيوف والأطفال وسهلة الطي والتخزين.",
+    features: [
+      "ارتفاع 15 سم",
+      "حشو فايبر هولو سوبر سوفت",
+      "قماش قطن ناعم",
+      "مزودة بـ 2 شريط إسكوتش للطي والتخزين"
+    ],
+    sizes: [
+      { label: "100×210 سم", price: "1,100 ج.م", priceValue: 1100 },
+      { label: "120×210 سم", price: "1,200 ج.م", priceValue: 1200 },
+    ],
+    image: "/new_products/1.jpeg",
+  },
+  {
+    id: "fiber-topper",
+    name: "مرتبة التطرية الفايبر",
+    category: "كافر المراتب",
+    tag: "تجديد الراحة",
+    price: "600 ج.م",
+    priceValue: 600,
+    description: "مرتبة تطرية فايبر تضيف طبقة ناعمة ومريحة فوق مرتبتك الأساسية، ارتفاع 13 سم وتساعد على تحسين إحساس الراحة.",
+    features: [
+      "حشو فايبر سفت رول قطعة واحدة",
+      "قماش قطن ناعم",
+      "4 استيكات للتثبيت بإحكام",
+      "ارتفاع 13 سم"
+    ],
+    sizes: [
+      { label: "100 سم", price: "600 ج.م", priceValue: 600 },
+      { label: "120 سم", price: "700 ج.م", priceValue: 700 },
+      { label: "150 سم", price: "820 ج.م", priceValue: 820 },
+      { label: "160 سم", price: "880 ج.م", priceValue: 880 },
+      { label: "170 سم", price: "930 ج.م", priceValue: 930 },
+      { label: "180 سم", price: "990 ج.م", priceValue: 990 },
+      { label: "200 سم", price: "1,150 ج.م", priceValue: 1150 },
+    ],
+    image: "/new_products/2.jpeg",
+  },
+  {
+    id: "blackout-barcelona-curtains",
+    name: "ستائر بلاك أوت وستائر سادة برشلونة",
+    category: "الستائر الملكية",
+    tag: "ألوان مزدوجة وسادة",
+    price: "300 ج.م",
+    priceValue: 300,
+    description: "تشكيلة مميزة من ستائر البلاك أوت مزدوجة الألوان وستائر برشلونة السادة لتناسب جميع الديكورات.",
+    features: [
+      "ستائر بلاك أوت بألوان مزدوجة راقية لحجب الإضاءة",
+      "ستائر برشلونة سادة بتصميم بسيط وأنيق",
+      "خامات وتشطيبات تليق ببيتك",
+      "مقاسات تفصيل حسب الطلب"
+    ],
+    sizes: [
+      { label: "1.5 متر", price: "300 ج.م", priceValue: 300 },
+      { label: "2 متر", price: "400 ج.م", priceValue: 400 },
+      { label: "3 متر", price: "600 ج.م", priceValue: 600 },
+    ],
+    image: "/new_products/3.jpeg",
+  },
+  {
+    id: "soft-fiber-quilt",
+    name: "لحاف فيبر ناعم كثافة 300",
+    category: "اللحاف الملكي",
+    tag: "دفا مميز",
+    price: "450 ج.م",
+    priceValue: 450,
+    description: "لحاف فيبر سفتر بكثافة 300 وقماش قطن ناعم ومريح ليوفر لك الدفء والراحة في الشتاء.",
+    features: [
+      "فيبر سفتر كثافة 300",
+      "قماش قطن ناعم",
+      "خامة مريحة ودفا ممتاز",
+      "تشكيلة مقاسات متعددة"
+    ],
+    sizes: [
+      { label: "120 سم", price: "450 ج.م", priceValue: 450 },
+      { label: "150 سم", price: "550 ج.م", priceValue: 550 },
+      { label: "180 سم", price: "650 ج.م", priceValue: 650 },
+      { label: "200 سم", price: "750 ج.م", priceValue: 750 },
+      { label: "220 سم", price: "850 ج.م", priceValue: 850 },
+    ],
+    image: "/new_products/4.jpeg",
+  },
+  {
+    id: "zipped-mattress-cover",
+    name: "كفر مرتبة بسوستة مبطن",
+    category: "كافر المراتب",
+    tag: "تجديد المرتبة",
+    price: "950 ج.م",
+    priceValue: 950,
+    description: "كفر مرتبة مبطن مزود بسوستة لسهولة التركيب، يجدد شكل مرتبتك ويحميها بالكامل.",
+    features: [
+      "فيبر كثافة 150",
+      "قماش قطن",
+      "مزود بسوستة لسهولة التركيب والخلع",
+      "تشطيب شيك ومريح"
+    ],
+    sizes: [
+      { label: "120 سم", price: "950 ج.م", priceValue: 950 },
+      { label: "150 سم", price: "1,100 ج.م", priceValue: 1100 },
+      { label: "180 سم", price: "1,250 ج.م", priceValue: 1250 },
+      { label: "200 سم", price: "1,400 ج.م", priceValue: 1400 },
+      { label: "بالمتر", price: "900 ج.م", priceValue: 900 },
+    ],
+    image: "/new_products/5.jpeg",
+  }
 ];
 
