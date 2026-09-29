@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+export const productSizeSchema = z.object({
+  label: z.string().trim().min(1, "اسم المقاس مطلوب."),
+  price: z.string().trim().min(1, "سعر المقاس مطلوب."),
+  priceValue: z.number().positive("سعر المقاس يجب أن يكون رقماً موجباً."),
+  originalPrice: z.string().trim().optional(),
+  savingLabel: z.string().trim().optional(),
+});
+
 export const productSchema = z.object({
   slug: z
     .string()
@@ -17,6 +25,7 @@ export const productSchema = z.object({
   description: z.string().trim().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل."),
   features: z.array(z.string().trim()).min(1, "أدخل ميزة واحدة على الأقل."),
   image: z.string().url("رابط الصورة غير صالح.").optional().or(z.literal("")),
+  sizes: z.array(productSizeSchema).optional(),
   available: z.boolean().default(true),
   displayOrder: z.number().int().default(0),
 });

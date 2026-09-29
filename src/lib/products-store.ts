@@ -168,6 +168,7 @@ export async function listProducts(includeHidden = false): Promise<StoredProduct
             description: item.description,
             features: item.features,
             image: item.image ?? undefined,
+            sizes: (item.sizes as any) ?? undefined,
             available: item.available,
             displayOrder: item.displayOrder,
           }));
@@ -216,6 +217,7 @@ export async function getProductBySlug(slug: string): Promise<StoredProduct | nu
           description: rec.description,
           features: rec.features,
           image: rec.image ?? undefined,
+          sizes: (rec.sizes as any) ?? undefined,
           available: rec.available,
           displayOrder: rec.displayOrder,
         };
@@ -248,8 +250,9 @@ export async function saveProduct(input: ProductInput): Promise<StoredProduct> {
 
   if (prisma) {
     try {
-      const rec = await prisma.product.create({
-        data: {
+      const rec = await prisma.product.upsert({
+        where: { slug: input.slug },
+        create: {
           slug: input.slug,
           name: input.name,
           category: input.category,
@@ -261,6 +264,22 @@ export async function saveProduct(input: ProductInput): Promise<StoredProduct> {
           description: input.description,
           features: input.features,
           image: input.image || null,
+          sizes: (input.sizes as any) || null,
+          available: input.available,
+          displayOrder: input.displayOrder,
+        },
+        update: {
+          name: input.name,
+          category: input.category,
+          tag: input.tag,
+          price: input.price,
+          priceValue: input.priceValue,
+          originalPrice: input.originalPrice || null,
+          savingLabel: input.savingLabel || null,
+          description: input.description,
+          features: input.features,
+          image: input.image || null,
+          sizes: (input.sizes as any) || null,
           available: input.available,
           displayOrder: input.displayOrder,
         },
@@ -279,11 +298,12 @@ export async function saveProduct(input: ProductInput): Promise<StoredProduct> {
         description: rec.description,
         features: rec.features,
         image: rec.image ?? undefined,
+        sizes: (rec.sizes as any) ?? undefined,
         available: rec.available,
         displayOrder: rec.displayOrder,
       };
     } catch (err) {
-      console.warn("[products-store] Prisma create fallback:", err);
+      console.warn("[products-store] Prisma upsert fallback:", err);
     }
   }
 
@@ -302,6 +322,7 @@ export async function saveProduct(input: ProductInput): Promise<StoredProduct> {
     description: input.description,
     features: input.features,
     image: input.image || undefined,
+    sizes: input.sizes,
     available: input.available,
     displayOrder: input.displayOrder,
   };
@@ -311,15 +332,12 @@ export async function saveProduct(input: ProductInput): Promise<StoredProduct> {
   } else {
     all.push(item);
   }
-  if (!jsonFallbackWritable()) {
-    throw new Error(
-      "تعذّر الحفظ: لا توجد قاعدة بيانات (DATABASE_URL غير مضبوط على Vercel) ونظام الملفات للقراءة فقط."
-    );
-  }
-  try {
-    await writeAll(all);
-  } catch (err) {
-    console.warn("[products-store] فشل الكتابة على JSON:", err);
+  if (jsonFallbackWritable()) {
+    try {
+      await writeAll(all);
+    } catch (err) {
+      console.warn("[products-store] فشل الكتابة على JSON:", err);
+    }
   }
   return item;
 }
@@ -328,23 +346,45 @@ export async function updateProduct(
   slug: string,
   partial: Partial<ProductInput>
 ): Promise<StoredProduct | null> {
+  const existingProduct = await getProductBySlug(slug);
+  if (!existingProduct) return null;
+
+  const merged = { ...existingProduct, ...partial };
+
   if (prisma) {
     try {
-      const rec = await prisma.product.update({
+      const rec = await prisma.product.upsert({
         where: { slug },
-        data: {
-          name: partial.name,
-          category: partial.category,
-          tag: partial.tag,
-          price: partial.price,
-          priceValue: partial.priceValue,
-          originalPrice: partial.originalPrice || null,
-          savingLabel: partial.savingLabel || null,
-          description: partial.description,
-          features: partial.features,
-          image: partial.image || null,
-          available: partial.available,
-          displayOrder: partial.displayOrder,
+        create: {
+          slug,
+          name: merged.name,
+          category: merged.category,
+          tag: merged.tag,
+          price: merged.price,
+          priceValue: merged.priceValue,
+          originalPrice: merged.originalPrice || null,
+          savingLabel: merged.savingLabel || null,
+          description: merged.description,
+          features: merged.features,
+          image: merged.image || null,
+          sizes: (merged.sizes as any) || null,
+          available: merged.available !== undefined ? merged.available : true,
+          displayOrder: merged.displayOrder || 0,
+        },
+        update: {
+          ...(partial.name !== undefined && { name: partial.name }),
+          ...(partial.category !== undefined && { category: partial.category }),
+          ...(partial.tag !== undefined && { tag: partial.tag }),
+          ...(partial.price !== undefined && { price: partial.price }),
+          ...(partial.priceValue !== undefined && { priceValue: partial.priceValue }),
+          ...(partial.originalPrice !== undefined && { originalPrice: partial.originalPrice || null }),
+          ...(partial.savingLabel !== undefined && { savingLabel: partial.savingLabel || null }),
+          ...(partial.description !== undefined && { description: partial.description }),
+          ...(partial.features !== undefined && { features: partial.features }),
+          ...(partial.image !== undefined && { image: partial.image || null }),
+          ...(partial.sizes !== undefined && { sizes: (partial.sizes as any) || null }),
+          ...(partial.available !== undefined && { available: partial.available }),
+          ...(partial.displayOrder !== undefined && { displayOrder: partial.displayOrder }),
         },
       });
 
@@ -361,34 +401,36 @@ export async function updateProduct(
         description: rec.description,
         features: rec.features,
         image: rec.image ?? undefined,
+        sizes: (rec.sizes as any) ?? undefined,
         available: rec.available,
         displayOrder: rec.displayOrder,
       };
     } catch (err) {
-      console.warn("[products-store] Prisma update fallback:", err);
+      console.warn("[products-store] Prisma upsert fallback:", err);
     }
   }
 
   const all = await readAll();
   const index = all.findIndex((p) => (p.slug || p.id) === slug);
-  if (index === -1) return null;
-  const current = all[index];
-  if (!current) return null;
 
   const updated: StoredProduct = {
-    ...current,
-    ...partial,
+    ...merged,
+    id: slug,
+    slug,
   };
-  all[index] = updated;
-  if (!jsonFallbackWritable()) {
-    throw new Error(
-      "تعذّر التحديث: لا توجد قاعدة بيانات (DATABASE_URL غير مضبوط على Vercel) ونظام الملفات للقراءة فقط."
-    );
+
+  if (index !== -1) {
+    all[index] = updated;
+  } else {
+    all.push(updated);
   }
-  try {
-    await writeAll(all);
-  } catch (err) {
-    console.warn("[products-store] فشل الكتابة على JSON:", err);
+
+  if (jsonFallbackWritable()) {
+    try {
+      await writeAll(all);
+    } catch (err) {
+      console.warn("[products-store] فشل الكتابة على JSON:", err);
+    }
   }
   return updated;
 }
