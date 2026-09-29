@@ -1,4 +1,4 @@
-/** تبويبات الموقع وأقسام المعرض */
+﻿/** تبويبات الموقع وأقسام المعرض */
 export type CategoryId = "room" | "mattress" | "curtains" | "pillows" | "specs" | "duvet";
 
 export interface ProductSize {
@@ -214,7 +214,6 @@ export const PRODUCTS_CATALOG: Product[] = [
       { label: "100×210 سم", price: "1,100 ج.م", priceValue: 1100 },
       { label: "120×210 سم", price: "1,200 ج.م", priceValue: 1200 },
     ],
-    image: "/new_products/1.jpeg",
   },
   {
     id: "fiber-topper",
@@ -239,7 +238,6 @@ export const PRODUCTS_CATALOG: Product[] = [
       { label: "180 سم", price: "990 ج.م", priceValue: 990 },
       { label: "200 سم", price: "1,150 ج.م", priceValue: 1150 },
     ],
-    image: "/new_products/2.jpeg",
   },
   {
     id: "blackout-barcelona-curtains",
@@ -260,7 +258,6 @@ export const PRODUCTS_CATALOG: Product[] = [
       { label: "2 متر", price: "400 ج.م", priceValue: 400 },
       { label: "3 متر", price: "600 ج.م", priceValue: 600 },
     ],
-    image: "/new_products/3.jpeg",
   },
   {
     id: "soft-fiber-quilt",
@@ -283,7 +280,6 @@ export const PRODUCTS_CATALOG: Product[] = [
       { label: "200 سم", price: "750 ج.م", priceValue: 750 },
       { label: "220 سم", price: "850 ج.م", priceValue: 850 },
     ],
-    image: "/new_products/4.jpeg",
   },
   {
     id: "zipped-mattress-cover",
@@ -306,7 +302,6 @@ export const PRODUCTS_CATALOG: Product[] = [
       { label: "200 سم", price: "1,400 ج.م", priceValue: 1400 },
       { label: "بالمتر", price: "900 ج.م", priceValue: 900 },
     ],
-    image: "/new_products/5.jpeg",
   }
 ];
 
