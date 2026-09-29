@@ -180,7 +180,7 @@ export default function HomeClient({ products, siteContent }: Props) {
 
       {/* MATTRESS PROTECTOR SECTION (كافر المراتب) */}
       <ProtectorSection
-        product={products.find((p) => p.id === "medical-mattress-protector")}
+        product={products.find((p) => p.id === "zipped-mattress-cover")}
         protectorContent={siteContent?.protector}
       />
 
@@ -190,9 +190,9 @@ export default function HomeClient({ products, siteContent }: Props) {
         pillowsContent={siteContent?.pillows}
       />
 
-      {/* DUVET SECTION (اللحاف الملكي) */}
+      {/* DUVET SECTION (اللحاف) */}
       <DuvetSection
-        product={products.find((p) => p.id === "sultan-royal-duvet")}
+        product={products.find((p) => p.id === "soft-fiber-quilt")}
         duvetContent={siteContent?.duvet}
       />
 

@@ -49,9 +49,8 @@ export default function CurtainSection({ products = [], curtainsContent }: Props
 
   // خريطة لربط نوع القماش بمنتج الستارة المقابل له في الكتالوج المحدث من الأدمن
   const fabricToSlugMap: Record<string, string> = {
-    velvet: "royal-curtains",
-    linen: "natural-linen-curtains",
-    chiffon: "chiffon-curtains",
+    blackout: "blackout-barcelona-curtains",
+    barcelona: "blackout-barcelona-curtains",
   };
 
   // دمج بيانات وصور الأقمشة مع أحدث المنتجات من لوحة الأدمن إن وُجدت

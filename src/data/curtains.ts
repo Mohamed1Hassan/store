@@ -11,28 +11,20 @@ export interface CurtainFabric {
 
 export const CURTAIN_FABRICS: CurtainFabric[] = [
   {
-    id: "velvet",
-    title: "القطيفة المخملية الثقيلة (Velvet Blackout)",
-    desc: "عزل تام للضوء بنسبة 100% مع عزل صوتي وحراري فائق وانسدال ملكي جذاب.",
+    id: "blackout",
+    title: "ستائر بلاك أوت بألوان مزدوجة",
+    desc: "ألوان مزدوجة راقية لونين في بعض، تحجب الإضاءة تماماً وتعطي شكل شيك وراقي لأي غرفة.",
     colorHex: "#b8860b",
-    features: ["عزل حراري وصوتي", "مانع للأشعة فوق البنفسجية", "ملمس فائق النعومة"],
-    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535057/%D8%A7%D9%84%D9%82%D8%B7%D9%8A%D9%81%D8%A9_%D8%A7%D9%84%D9%85%D8%AE%D9%85%D9%84%D9%8A%D8%A9_%D8%A7%D9%84%D8%AB%D9%82%D9%8A%D9%84%D8%A9_Velvet_Blackout.jpg",
+    features: ["حجب تام للضوء", "ألوان مزدوجة راقية", "مقاسات حسب الطلب"],
+    image: "",
   },
   {
-    id: "linen",
-    title: "الكتان الإسباني الطبيعي (Natural Linen)",
-    desc: "طراز مودرن كلاسيك راقي، يسمح بمرور نسيم الهواء والضوء الخافت الطبيعي.",
+    id: "barcelona",
+    title: "ستائر سادة برشلونة",
+    desc: "تصميم بسيط وراقي يناسب مختلف الديكورات ويضيف لمسة هادية وأنيقة لبيتك.",
     colorHex: "#d4af37",
-    features: ["طبيعي 100%", "مظهر عصري أنيق", "سهل الغسيل والعناية"],
-    image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
-  },
-  {
-    id: "chiffon",
-    title: "الشيفون والحرير الفرنسي المهدل (Soft Sheer)",
-    desc: "طبقة ناعمة كالضباب تضيف رومانسية ساحرة وفخامة للأجواء الملكية.",
-    colorHex: "#e8d8b0",
-    features: ["شفافية شمسية ناعمة", "تطريز ذهبي يدوي", "مقاوم للتجعد"],
-    image: "/videos/curtain-sunlight.jpg",
+    features: ["تصميم بسيط وأنيق", "يناسب جميع الديكورات", "خامات وتشطيبات عالية الجودة"],
+    image: "",
   },
 ];
 
