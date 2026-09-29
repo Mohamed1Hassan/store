@@ -145,7 +145,29 @@ export const siteContentSchema = z.object({
       originBadge: z.string().default("خامات أصلية مضمونة"),
       cardFooter: z.string().default("تفصيل على المقاس لكل نافذة"),
       selectLabel: z.string().default("اختر القماش"),
-      fabrics: z.array(curtainFabricSchema).default([]),
+      fabrics: z.array(curtainFabricSchema).default([
+        {
+          id: "velvet",
+          title: "ستائر السلطان المخملية الفاخرة (Velvet Blackout)",
+          desc: "عزل تام للضوء بنسبة 100% مع عزل صوتي وحراري فائق وانسدال ملكي جذاب.",
+          image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535057/%D8%A7%D9%84%D9%82%D8%B7%D9%8A%D9%81%D8%A9_%D8%A7%D9%84%D9%85%D8%AE%D9%85%D9%84%D9%8A%D8%A9_%D8%A7%D9%84%D8%AB%D9%82%D9%8A%D9%84%D8%A9_Velvet_Blackout.jpg",
+          features: ["عزل ضوئي وحراري تام (Blackout 100%)", "أقمشة قطيفة وشانيل مستوردة فاخرة", "تطريز يدوي وحلقات ستانلس مذهبة"],
+        },
+        {
+          id: "linen",
+          title: "ستائر الكتان الإسباني الطبيعي (Natural Linen)",
+          desc: "طراز مودرن كلاسيك راقي، يسمح بمرور نسيم الهواء والضوء الخافت الطبيعي.",
+          image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
+          features: ["طبيعي 100%", "مظهر عصري أنيق ومريح", "سهل الغسيل والعناية"],
+        },
+        {
+          id: "chiffon",
+          title: "ستائر الشيفون والحرير الفرنسي (Soft Sheer)",
+          desc: "طبقة ناعمة كالضباب تضيف رومانسية ساحرة وفخامة للأجواء الملكية.",
+          image: "",
+          features: ["شفافية شمسية ناعمة", "تطريز ذهبي يدوي فاخر", "مقاوم للتجعد والغسيل المتكرر"],
+        },
+      ]),
     })
     .default({
       badge: "تفصيل وتصميم حسب المقاس",
@@ -157,7 +179,29 @@ export const siteContentSchema = z.object({
       originBadge: "خامات أصلية مضمونة",
       cardFooter: "تفصيل على المقاس لكل نافذة",
       selectLabel: "اختر القماش",
-      fabrics: [],
+      fabrics: [
+        {
+          id: "velvet",
+          title: "ستائر السلطان المخملية الفاخرة (Velvet Blackout)",
+          desc: "عزل تام للضوء بنسبة 100% مع عزل صوتي وحراري فائق وانسدال ملكي جذاب.",
+          image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535057/%D8%A7%D9%84%D9%82%D8%B7%D9%8A%D9%81%D8%A9_%D8%A7%D9%84%D9%85%D8%AE%D9%85%D9%84%D9%8A%D8%A9_%D8%A7%D9%84%D8%AB%D9%82%D9%8A%D9%84%D8%A9_Velvet_Blackout.jpg",
+          features: ["عزل ضوئي وحراري تام (Blackout 100%)", "أقمشة قطيفة وشانيل مستوردة فاخرة", "تطريز يدوي وحلقات ستانلس مذهبة"],
+        },
+        {
+          id: "linen",
+          title: "ستائر الكتان الإسباني الطبيعي (Natural Linen)",
+          desc: "طراز مودرن كلاسيك راقي، يسمح بمرور نسيم الهواء والضوء الخافت الطبيعي.",
+          image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
+          features: ["طبيعي 100%", "مظهر عصري أنيق ومريح", "سهل الغسيل والعناية"],
+        },
+        {
+          id: "chiffon",
+          title: "ستائر الشيفون والحرير الفرنسي (Soft Sheer)",
+          desc: "طبقة ناعمة كالضباب تضيف رومانسية ساحرة وفخامة للأجواء الملكية.",
+          image: "",
+          features: ["شفافية شمسية ناعمة", "تطريز ذهبي يدوي فاخر", "مقاوم للتجعد والغسيل المتكرر"],
+        },
+      ],
     }),
   testimonials: z
     .object({
