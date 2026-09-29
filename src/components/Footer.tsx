@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Crown, Phone, MapPin, Clock, ShieldCheck, Sparkles } from "lucide-react";
-import { PHONE_DISPLAY, PHONE_TEL, STORE_HOURS } from "@/data/site";
+import { PHONE_DISPLAY, PHONE_TEL, STORE_HOURS, STORE_ADDRESS } from "@/data/site";
 import type { SiteContent } from "@/schemas/site-content";
 
 interface Props {
@@ -27,8 +27,7 @@ export default function Footer({ footerContent, contactContent }: Props) {
 
   const phoneDisplay = contactContent?.phoneDisplay || PHONE_DISPLAY;
   const storeHours = contactContent?.storeHours || STORE_HOURS;
-  const location =
-    contactContent?.location || "معارضنا في خدمة عملائنا بأرقى المواقع ونوفر الشحن لكافة المحافظات";
+  const location = contactContent?.location || STORE_ADDRESS;
 
   return (
     <footer className="bg-[#05070a] border-t border-[#d4af37]/20 pt-16 pb-12 text-zinc-400">

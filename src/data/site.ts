@@ -14,6 +14,9 @@ export const PHONE_TEL = "+201055280865";
 
 export const STORE_HOURS = "يومياً من 10 صباحاً حتى 11 مساءً";
 
+/** عنوان المعرض */
+export const STORE_ADDRESS = "الجيزة — طريق سقارة السياحي، بجوار كوبري زويل";
+
 /** اسم المتجر الرسمي */
 export const SITE_NAME = "السلطان للمفروشات والمراتب والستائر";
 
