@@ -22,20 +22,26 @@ import CartDrawer from "@/components/CartDrawer";
 import WhatsAppFloatButton from "@/components/WhatsAppFloatButton";
 
 export default function ProductDetailClient({ product }: { product: StoredProduct }) {
-  const hasSizes = product.sizes && product.sizes.length > 0;
-  const sizeOptions = hasSizes
-    ? product.sizes!.map((s) => s.label)
-    : ["مقاس قياسي", "تفصيل خاص"];
+  const defaultSizeOptions = [
+    { label: "120 × 200 سم", price: product.price, priceValue: product.priceValue, originalPrice: product.originalPrice, savingLabel: product.savingLabel },
+    { label: "160 × 200 سم", price: product.price, priceValue: product.priceValue, originalPrice: product.originalPrice, savingLabel: product.savingLabel },
+    { label: "180 × 200 سم", price: product.price, priceValue: product.priceValue, originalPrice: product.originalPrice, savingLabel: product.savingLabel },
+    { label: "200 × 200 سم", price: product.price, priceValue: product.priceValue, originalPrice: product.originalPrice, savingLabel: product.savingLabel },
+    { label: "تفصيل خاص", price: product.price, priceValue: product.priceValue, originalPrice: product.originalPrice, savingLabel: product.savingLabel },
+  ];
 
-  const [selectedSize, setSelectedSize] = useState<string>(sizeOptions[0]);
+  const availableSizes =
+    product.sizes && product.sizes.length > 0 ? product.sizes : defaultSizeOptions;
+
+  const sizeLabels = availableSizes.map((s) => s.label);
+
+  const [selectedSize, setSelectedSize] = useState<string>(sizeLabels[0]);
   const [quantity, setQuantity] = useState(1);
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
   const productSlug = product.slug || product.id;
 
-  const currentSizeObj = hasSizes
-    ? product.sizes!.find((s) => s.label === selectedSize)
-    : null;
+  const currentSizeObj = availableSizes.find((s) => s.label === selectedSize);
 
   const displayPrice = currentSizeObj ? currentSizeObj.price : product.price;
   const displayPriceValue = currentSizeObj ? currentSizeObj.priceValue : product.priceValue;
@@ -212,27 +218,25 @@ export default function ProductDetailClient({ product }: { product: StoredProduc
               </ul>
             </div>
 
-            {hasSizes && (
-              <div className="mb-6">
-                <label className="block text-xs font-bold text-zinc-300 mb-2">المقاس المطلوب:</label>
-                <div className="flex flex-wrap gap-2">
-                  {sizeOptions.map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      onClick={() => setSelectedSize(size)}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
-                        selectedSize === size
-                          ? "bg-[#d4af37] text-black shadow-md shadow-[#d4af37]/30"
-                          : "bg-white/5 border border-white/10 text-zinc-300 hover:border-[#d4af37]/40"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
+            <div className="mb-6">
+              <label className="block text-xs font-bold text-zinc-300 mb-2">المقاس المطلوب:</label>
+              <div className="flex flex-wrap gap-2">
+                {sizeLabels.map((size) => (
+                  <button
+                    key={size}
+                    type="button"
+                    onClick={() => setSelectedSize(size)}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+                      selectedSize === size
+                        ? "bg-[#d4af37] text-black shadow-md shadow-[#d4af37]/30"
+                        : "bg-white/5 border border-white/10 text-zinc-300 hover:border-[#d4af37]/40"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
               </div>
-            )}
+            </div>
 
             <div className="space-y-3 pt-4 border-t border-white/10">
               <div className="flex items-center gap-3">

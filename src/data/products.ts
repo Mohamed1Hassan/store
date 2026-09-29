@@ -44,6 +44,12 @@ export const PRODUCTS_CATALOG: Product[] = [
       "كافر وواقي حماية للمرتبة"
     ],
     image: "https://res.cloudinary.com/aogjvfdt/image/upload/f_auto,q_auto/v1790535054/%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%86_%D8%A7%D9%84%D8%A5%D8%B3%D8%A8%D8%A7%D9%86%D9%8A_%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D9%8A_Natural_Linen.jpg",
+    sizes: [
+      { label: "120×200 سم", price: "14,500 ج.م", priceValue: 14500, originalPrice: "18,000 ج.م", savingLabel: "3,500 ج.م" },
+      { label: "160×200 سم", price: "18,900 ج.م", priceValue: 18900, originalPrice: "24,000 ج.م", savingLabel: "5,100 ج.م" },
+      { label: "180×200 سم", price: "21,500 ج.م", priceValue: 21500, originalPrice: "27,000 ج.م", savingLabel: "5,500 ج.م" },
+      { label: "200×200 سم", price: "24,000 ج.م", priceValue: 24000, originalPrice: "30,000 ج.م", savingLabel: "6,000 ج.م" },
+    ],
   },
   {
     id: "sultan-royal-mattress",
@@ -184,6 +190,11 @@ export const PRODUCTS_CATALOG: Product[] = [
       "مضاد للبكتيريا وعثة الفراش وآمن للبشرة الحساسة",
     ],
     image: "https://res.cloudinary.com/aogjvfdt/image/upload/v1790637937/WhatsApp_Image_2026-09-28_at_2.58.11_PM.jpg",
+    sizes: [
+      { label: "160×220 سم (فردي)", price: "2,100 ج.م", priceValue: 2100, originalPrice: "2,700 ج.م", savingLabel: "600 ج.م" },
+      { label: "220×240 سم (مزدوج)", price: "2,800 ج.م", priceValue: 2800, originalPrice: "3,600 ج.م", savingLabel: "800 ج.م" },
+      { label: "240×260 سم (رويال)", price: "3,400 ج.م", priceValue: 3400, originalPrice: "4,200 ج.م", savingLabel: "800 ج.م" },
+    ],
   },
 ];
 

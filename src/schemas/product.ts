@@ -24,7 +24,7 @@ export const productSchema = z.object({
   savingLabel: z.string().trim().max(50).optional(),
   description: z.string().trim().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل."),
   features: z.array(z.string().trim()).min(1, "أدخل ميزة واحدة على الأقل."),
-  image: z.string().url("رابط الصورة غير صالح.").optional().or(z.literal("")),
+  image: z.string().trim().optional(),
   sizes: z.array(productSizeSchema).optional(),
   available: z.boolean().default(true),
   displayOrder: z.number().int().default(0),
